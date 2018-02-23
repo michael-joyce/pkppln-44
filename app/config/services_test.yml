@@ -1,0 +1,19 @@
+# Learn more about services, parameters and containers at
+# https://symfony.com/doc/current/service_container.html
+parameters:
+    container.autowiring.strict_mode: true
+
+services:
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: true
+
+    Nines\UserBundle\Menu\Builder:
+        tags:
+            - { name: knp_menu.menu_builder, method: userNavMenu, alias: user}
+            
+    AppBundle\Services\:
+        resource: '../../src/AppBundle/Services'
+        public: true

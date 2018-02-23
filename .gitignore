@@ -17,3 +17,5 @@
 /web/bundles/
 /nbproject
 
+web/bower
+phpcs.xml

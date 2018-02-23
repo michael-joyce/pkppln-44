@@ -8,6 +8,7 @@ imports:
 #        query_cache_driver: apc
 
 monolog:
+    use_microseconds: false
     handlers:
         main:
             type: fingers_crossed
@@ -16,7 +17,7 @@ monolog:
         nested:
             type: stream
             path: '%kernel.logs_dir%/%kernel.environment%.log'
-            level: debug
+            level: warning
         console:
             type: console
             process_psr_3_messages: false
