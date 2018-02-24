@@ -39,6 +39,12 @@ services:
         public: true
         tags: ['controller.service_arguments']
 
+    AppBundle\EventListener\TermsOfUseListener:
+        tags:
+            - { name: doctrine.event_listener, event: postPersist }
+            - { name: doctrine.event_listener, event: postUpdate }
+            - { name: doctrine.event_listener, event: preRemove }
+            
     AppBundle\Menu\Builder:
         tags:
             - { name: knp_menu.menu_builder, method: mainMenu, alias: main}

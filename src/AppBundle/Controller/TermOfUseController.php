@@ -15,7 +15,6 @@ use AppBundle\Form\TermOfUseType;
 /**
  * TermOfUse controller.
  *
- * @Security("has_role('ROLE_USER')")
  * @Route("/termofuse")
  */
 class TermOfUseController extends Controller
@@ -46,52 +45,6 @@ class TermOfUseController extends Controller
             'termOfUses' => $termOfUses,
         );
     }
-    /**
-     * Search for TermOfUse entities.
-     *
-     * To make this work, add a method like this one to the 
-     * AppBundle:TermOfUse repository. Replace the fieldName with
-     * something appropriate, and adjust the generated search.html.twig
-     * template.
-     * 
-     * <code><pre>
-     *    public function searchQuery($q) {
-     *        $qb = $this->createQueryBuilder('e');
-     *        // Simple search against a field
-     *        $qb->where("e.fieldName like '%$q%'");
-     *        // Full text matching with Beberlei's Doctrine Extensions for MySQL
-     *        // https://github.com/beberlei/DoctrineExtensions/
-     *        // $qb->addSelect("MATCH_AGAINST (e.name, :q 'IN BOOLEAN MODE') as score");
-     *        // $qb->add('where', "MATCH_AGAINST (e.name, :q 'IN BOOLEAN MODE') > 0.5");
-     *        return $qb->getQuery();
-     *    }
-     * </pre></code>
-     * 
-     * @param Request $request
-     *   Dependency injected HTTP request object.
-     * 
-     * @Route("/search", name="termofuse_search")
-     * @Method("GET")
-     * @Template()
-     */
-    public function searchAction(Request $request)
-    {
-        $em = $this->getDoctrine()->getManager();
-	$repo = $em->getRepository('AppBundle:TermOfUse');
-	$q = $request->query->get('q');
-	if($q) {
-	    $query = $repo->searchQuery($q);
-            $paginator = $this->get('knp_paginator');
-            $termOfUses = $paginator->paginate($query, $request->query->getInt('page', 1), 25);
-	} else {
-            $termOfUses = array();
-	}
-
-        return array(
-            'termOfUses' => $termOfUses,
-            'q' => $q,
-        );
-    }
 
     /**
      * Creates a new TermOfUse entity.
@@ -105,13 +58,10 @@ class TermOfUseController extends Controller
      * @Route("/new", name="termofuse_new")
      * @Method({"GET", "POST"})
      * @Template()
+     * @Security("has_role('ROLE_ADMIN')")
      */
     public function newAction(Request $request)
     {
-        if( ! $this->isGranted('ROLE_CONTENT_ADMIN')) {
-            $this->addFlash('danger', 'You must login to access this page.');
-            return $this->redirect($this->generateUrl('fos_user_security_login'));
-        }
         $termOfUse = new TermOfUse();
         $form = $this->createForm(TermOfUseType::class, $termOfUse);
         $form->handleRequest($request);
@@ -167,13 +117,10 @@ class TermOfUseController extends Controller
      * @Route("/{id}/edit", name="termofuse_edit")
      * @Method({"GET", "POST"})
      * @Template()
+     * @Security("has_role('ROLE_ADMIN')")
      */
     public function editAction(Request $request, TermOfUse $termOfUse)
     {
-        if( ! $this->isGranted('ROLE_CONTENT_ADMIN')) {
-            $this->addFlash('danger', 'You must login to access this page.');
-            return $this->redirect($this->generateUrl('fos_user_security_login'));
-        }
         $editForm = $this->createForm(TermOfUseType::class, $termOfUse);
         $editForm->handleRequest($request);
 
@@ -193,7 +140,6 @@ class TermOfUseController extends Controller
     /**
      * Deletes a TermOfUse entity.
      *
-     *
      * @param Request $request
      *   Dependency injected HTTP request object.
      * @param TermOfUse $termOfUse
@@ -204,13 +150,10 @@ class TermOfUseController extends Controller
      * 
      * @Route("/{id}/delete", name="termofuse_delete")
      * @Method("GET")
+     * @Security("has_role('ROLE_ADMIN')")
      */
     public function deleteAction(Request $request, TermOfUse $termOfUse)
     {
-        if( ! $this->isGranted('ROLE_CONTENT_ADMIN')) {
-            $this->addFlash('danger', 'You must login to access this page.');
-            return $this->redirect($this->generateUrl('fos_user_security_login'));
-        }
         $em = $this->getDoctrine()->getManager();
         $em->remove($termOfUse);
         $em->flush();
