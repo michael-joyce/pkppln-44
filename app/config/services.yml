@@ -39,6 +39,10 @@ services:
         public: true
         tags: ['controller.service_arguments']
 
+    AppBundle\Menu\Builder:
+        tags:
+            - { name: knp_menu.menu_builder, method: mainMenu, alias: main}
+            
     # add more services, or override services that need manual wiring
     # AppBundle\Service\ExampleService:
     #     arguments:

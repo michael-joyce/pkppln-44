@@ -1,0 +1,96 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Deposit List{% endblock %}
+
+{% block pageheader %}
+    <h1>Deposit List</h1>
+    <p class="count">
+        Displaying {{ deposits|length }} deposits of {{ deposits.getTotalItemCount }} total.
+    </p>
+ {% endblock %} 
+
+{% block body %}
+
+        <div class='btn-toolbar pull-right'>
+        <div class='btn-group'>
+            {% if is_granted('ROLE_ADMIN') %}
+            <a href="{{ path('journal_deposit_new') }}" class="btn btn-default">
+                <span class="glyphicon glyphicon-plus"></span> New
+            </a>
+            {% endif %}
+            <a href="{{ path('journal_deposit_search') }}" class="btn btn-default">
+                <span class="glyphicon glyphicon-search"></span> Search
+            </a>
+        </div>
+    </div>
+        
+    <table class="table table-bordered table-condensed table-hover table-striped">
+        <thead>
+            <tr>
+                <th>Journal Version</th>
+                <th>License</th>
+                <th>File Type</th>
+                <th>Deposit Uuid</th>
+                <th>Received</th>
+                <th>Action</th>
+                <th>Volume</th>
+                <th>Issue</th>
+                <th>Pub Date</th>
+                <th>Checksum Type</th>
+                <th>Checksum Value</th>
+                <th>Url</th>
+                <th>Size</th>
+                <th>State</th>
+                <th>Error Log</th>
+                <th>Pln State</th>
+                <th>Package Size</th>
+                <th>Package Path</th>
+                <th>Package Checksum Type</th>
+                <th>Package Checksum Value</th>
+                <th>Deposit Date</th>
+                <th>Deposit Receipt</th>
+                <th>Processing Log</th>
+                <th>Harvest Attempts</th>
+                </tr>
+        </thead>
+        <tbody>
+        {% for deposit in deposits %}
+            <tr>
+                <td>
+                    <a href="{{ path('journal_deposit_show', { 'id': deposit.id }) }}">
+                        {{ deposit.journalVersion }}
+                    </a>
+                </td>
+                <td>{% if deposit.license %}{{ deposit.license|join(', ') }}{% endif %}</td>
+                <td>{{ deposit.fileType }}</td>
+                <td>{{ deposit.depositUuid }}</td>
+                <td>{% if deposit.received %}{{ deposit.received|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{{ deposit.action }}</td>
+                <td>{{ deposit.volume }}</td>
+                <td>{{ deposit.issue }}</td>
+                <td>{% if deposit.pubDate %}{{ deposit.pubDate|date('Y-m-d') }}{% endif %}</td>
+                <td>{{ deposit.checksumType }}</td>
+                <td>{{ deposit.checksumValue }}</td>
+                <td>{{ deposit.url }}</td>
+                <td>{{ deposit.size }}</td>
+                <td>{{ deposit.state }}</td>
+                <td>{% if deposit.errorLog %}{{ deposit.errorLog|join(', ') }}{% endif %}</td>
+                <td>{{ deposit.plnState }}</td>
+                <td>{{ deposit.packageSize }}</td>
+                <td>{{ deposit.packagePath }}</td>
+                <td>{{ deposit.packageChecksumType }}</td>
+                <td>{{ deposit.packageChecksumValue }}</td>
+                <td>{% if deposit.depositDate %}{{ deposit.depositDate|date('Y-m-d') }}{% endif %}</td>
+                <td>{{ deposit.depositReceipt }}</td>
+                <td>{{ deposit.processingLog }}</td>
+                <td>{{ deposit.harvestAttempts }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+        
+    <div class="navigation">
+        {{ knp_pagination_render(deposits) }}
+    </div>
+
+{% endblock %}
