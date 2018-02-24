@@ -7,48 +7,44 @@
     <p class="count">
         Displaying {{ documents|length }} documents of {{ documents.getTotalItemCount }} total.
     </p>
- {% endblock %} 
+{% endblock %} 
 
 {% block body %}
 
-        <div class='btn-toolbar pull-right'>
+    <div class='btn-toolbar pull-right'>
         <div class='btn-group'>
             {% if is_granted('ROLE_ADMIN') %}
-            <a href="{{ path('document_new') }}" class="btn btn-default">
-                <span class="glyphicon glyphicon-plus"></span> New
-            </a>
+                <a href="{{ path('document_new') }}" class="btn btn-default">
+                    <span class="glyphicon glyphicon-plus"></span> New
+                </a>
             {% endif %}
             <a href="{{ path('document_search') }}" class="btn btn-default">
                 <span class="glyphicon glyphicon-search"></span> Search
             </a>
         </div>
     </div>
-        
+
     <table class="table table-bordered table-condensed table-hover table-striped">
         <thead>
             <tr>
                 <th>Title</th>
                 <th>Path</th>
-                <th>Summary</th>
-                <th>Content</th>
-                </tr>
+            </tr>
         </thead>
         <tbody>
-        {% for document in documents %}
-            <tr>
-                <td>
-                    <a href="{{ path('document_show', { 'id': document.id }) }}">
-                        {{ document.title }}
-                    </a>
-                </td>
-                <td>{{ document.path }}</td>
-                <td>{{ document.summary }}</td>
-                <td>{{ document.content }}</td>
-            </tr>
-        {% endfor %}
+            {% for document in documents %}
+                <tr>
+                    <td>
+                        <a href="{{ path('document_show', { 'id': document.id }) }}">
+                            {{ document.title }}
+                        </a>
+                    </td>
+                    <td>{{ document.path }}</td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
-        
+
     <div class="navigation">
         {{ knp_pagination_render(documents) }}
     </div>

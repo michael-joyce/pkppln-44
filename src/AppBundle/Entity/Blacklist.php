@@ -9,7 +9,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Blacklist
  *
- * @ORM\Table(name="blacklist")
+ * @ORM\Table(name="blacklist", indexes={
+ *  @ORM\Index(columns={"uuid"}, flags={"fulltext"})
+ * })
  * @ORM\Entity(repositoryClass="AppBundle\Repository\BlacklistRepository")
  */
 class Blacklist extends AbstractEntity

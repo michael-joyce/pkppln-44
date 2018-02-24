@@ -15,7 +15,7 @@ use AppBundle\Form\WhitelistType;
 /**
  * Whitelist controller.
  *
- * @Security("has_role('ROLE_USER')")
+ * @Security("has_role('ROLE_ADMIN')")
  * @Route("/whitelist")
  */
 class WhitelistController extends Controller
@@ -108,10 +108,6 @@ class WhitelistController extends Controller
      */
     public function newAction(Request $request)
     {
-        if( ! $this->isGranted('ROLE_CONTENT_ADMIN')) {
-            $this->addFlash('danger', 'You must login to access this page.');
-            return $this->redirect($this->generateUrl('fos_user_security_login'));
-        }
         $whitelist = new Whitelist();
         $form = $this->createForm(WhitelistType::class, $whitelist);
         $form->handleRequest($request);
@@ -170,10 +166,6 @@ class WhitelistController extends Controller
      */
     public function editAction(Request $request, Whitelist $whitelist)
     {
-        if( ! $this->isGranted('ROLE_CONTENT_ADMIN')) {
-            $this->addFlash('danger', 'You must login to access this page.');
-            return $this->redirect($this->generateUrl('fos_user_security_login'));
-        }
         $editForm = $this->createForm(WhitelistType::class, $whitelist);
         $editForm->handleRequest($request);
 
@@ -207,10 +199,6 @@ class WhitelistController extends Controller
      */
     public function deleteAction(Request $request, Whitelist $whitelist)
     {
-        if( ! $this->isGranted('ROLE_CONTENT_ADMIN')) {
-            $this->addFlash('danger', 'You must login to access this page.');
-            return $this->redirect($this->generateUrl('fos_user_security_login'));
-        }
         $em = $this->getDoctrine()->getManager();
         $em->remove($whitelist);
         $em->flush();

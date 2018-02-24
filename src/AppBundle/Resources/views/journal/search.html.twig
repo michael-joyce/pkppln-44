@@ -1,11 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Blacklist List{% endblock %}
+{% block title %}Journal List{% endblock %}
 
 {% block pageheader %}
-    <h1>Blacklist List</h1>
+    <h1>Journal List</h1>
     <p class="count">
-        Displaying {{ blacklists|length }} blacklists of {{ blacklists.getTotalItemCount }} total.
+        Displaying {{ journals|length }} journals of {{ journals.getTotalItemCount }} total.
     </p>
  {% endblock %} 
 
@@ -14,11 +14,11 @@
         <div class='btn-toolbar pull-right'>
         <div class='btn-group'>
             {% if is_granted('ROLE_ADMIN') %}
-            <a href="{{ path('blacklist_new') }}" class="btn btn-default">
+            <a href="{{ path('journal_new') }}" class="btn btn-default">
                 <span class="glyphicon glyphicon-plus"></span> New
             </a>
             {% endif %}
-            <a href="{{ path('blacklist_search') }}" class="btn btn-default">
+            <a href="{{ path('journal_search') }}" class="btn btn-default">
                 <span class="glyphicon glyphicon-search"></span> Search
             </a>
         </div>
@@ -28,25 +28,29 @@
         <thead>
             <tr>
                 <th>Uuid</th>
-                <th>Comment</th>
+                <th>Ojs Version</th>
+                <th>Title</th>
+                <th>Publisher Name</th>
                 </tr>
         </thead>
         <tbody>
-        {% for blacklist in blacklists %}
+        {% for journal in journals %}
             <tr>
                 <td>
-                    <a href="{{ path('blacklist_show', { 'id': blacklist.id }) }}">
-                        {{ blacklist.uuid }}
+                    <a href="{{ path('journal_show', { 'id': journal.id }) }}">
+                        {{ journal.uuid }}
                     </a>
                 </td>
-                <td>{{ blacklist.comment }}</td>
+                <td>{{ journal.ojsVersion }}</td>
+                <td>{{ journal.title }}</td>
+                <td>{{ journal.publisherName }}</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
         
     <div class="navigation">
-        {{ knp_pagination_render(blacklists) }}
+        {{ knp_pagination_render(journals) }}
     </div>
 
 {% endblock %}

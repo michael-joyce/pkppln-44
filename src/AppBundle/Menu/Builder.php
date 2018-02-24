@@ -21,11 +21,12 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  *
  */
 class Builder implements ContainerAwareInterface {
+
     use ContainerAwareTrait;
 
     // U+25BE, black down-pointing small triangle.
     const CARET = ' ▾';
-    
+
     /**
      * @var FactoryInterface
      */
@@ -40,14 +41,18 @@ class Builder implements ContainerAwareInterface {
      * @var TokenStorageInterface
      */
     private $tokenStorage;
-    
+
     /**
      * @var EntityManagerInterface
      */
     private $em;
 
     /**
-     *
+     * 
+     * @param FactoryInterface $factory
+     * @param AuthorizationCheckerInterface $authChecker
+     * @param TokenStorageInterface $tokenStorage
+     * @param EntityManagerInterface $em
      */
     public function __construct(FactoryInterface $factory, AuthorizationCheckerInterface $authChecker, TokenStorageInterface $tokenStorage, EntityManagerInterface $em) {
         $this->factory = $factory;
@@ -57,7 +62,9 @@ class Builder implements ContainerAwareInterface {
     }
 
     /**
-     *
+     * 
+     * @param type $role
+     * @return boolean
      */
     private function hasRole($role) {
         if (!$this->tokenStorage->getToken()) {
@@ -74,15 +81,36 @@ class Builder implements ContainerAwareInterface {
         $menu->setChildrenAttributes(array(
             'class' => 'nav navbar-nav',
         ));
-        
+
         $menu->addChild('home', array(
             'label' => 'Home',
             'route' => 'homepage',
         ));
-                
+
+        $menu->addChild('terms', array(
+            'label' => 'Terms of Use',
+            'route' => 'termofuse_index',
+        ));
+
         if (!$this->hasRole('ROLE_USER')) {
             return $menu;
         }
+
+        $journals = $menu->addChild('journals', array(
+            'uri' => '#',
+            'label' => 'Journals ' . self::CARET,
+        ));
+        $journals->setAttribute('dropdown', true);
+        $journals->setLinkAttribute('class', 'dropdown-toggle');
+        $journals->setLinkAttribute('data-toggle', 'dropdown');
+        $journals->setChildrenAttribute('class', 'dropdown-menu');
+
+        $journals->addChild('All Journals', array('route' => 'journal_index'));
+        $journals->addChild('Search Journals', array('route' => 'journal_search'));
+        $journals->addChild('Whitelist', array('route' => 'whitelist_index'));
+        $journals->addChild('Blacklist', array('route' => 'blacklist_index'));
+        
+        $menu->addChild('Docs', array('route' => 'document_index'));
         
         return $menu;
     }

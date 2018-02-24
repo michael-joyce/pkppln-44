@@ -15,7 +15,7 @@ use AppBundle\Form\JournalType;
 /**
  * Journal controller.
  *
- * @Security("has_role('ROLE_USER')")
+ * @Security("has_role('ROLE_ADMIN')")
  * @Route("/journal")
  */
 class JournalController extends Controller
@@ -108,10 +108,6 @@ class JournalController extends Controller
      */
     public function newAction(Request $request)
     {
-        if( ! $this->isGranted('ROLE_CONTENT_ADMIN')) {
-            $this->addFlash('danger', 'You must login to access this page.');
-            return $this->redirect($this->generateUrl('fos_user_security_login'));
-        }
         $journal = new Journal();
         $form = $this->createForm(JournalType::class, $journal);
         $form->handleRequest($request);
@@ -170,10 +166,6 @@ class JournalController extends Controller
      */
     public function editAction(Request $request, Journal $journal)
     {
-        if( ! $this->isGranted('ROLE_CONTENT_ADMIN')) {
-            $this->addFlash('danger', 'You must login to access this page.');
-            return $this->redirect($this->generateUrl('fos_user_security_login'));
-        }
         $editForm = $this->createForm(JournalType::class, $journal);
         $editForm->handleRequest($request);
 
@@ -207,10 +199,6 @@ class JournalController extends Controller
      */
     public function deleteAction(Request $request, Journal $journal)
     {
-        if( ! $this->isGranted('ROLE_CONTENT_ADMIN')) {
-            $this->addFlash('danger', 'You must login to access this page.');
-            return $this->redirect($this->generateUrl('fos_user_security_login'));
-        }
         $em = $this->getDoctrine()->getManager();
         $em->remove($journal);
         $em->flush();

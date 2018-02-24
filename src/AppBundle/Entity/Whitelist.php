@@ -9,7 +9,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Whitelist
  *
- * @ORM\Table(name="whitelist")
+ * @ORM\Table(name="whitelist", indexes={
+ *  @ORM\Index(columns={"uuid"}, flags={"fulltext"})
+ * })
  * @ORM\Entity(repositoryClass="AppBundle\Repository\WhitelistRepository")
  */
 class Whitelist extends AbstractEntity

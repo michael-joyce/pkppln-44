@@ -15,6 +15,7 @@ use AppBundle\Form\TermOfUseType;
 /**
  * TermOfUse controller.
  *
+ * @Security("has_role('ROLE_USER')")
  * @Route("/termofuse")
  */
 class TermOfUseController extends Controller
@@ -58,7 +59,6 @@ class TermOfUseController extends Controller
      * @Route("/new", name="termofuse_new")
      * @Method({"GET", "POST"})
      * @Template()
-     * @Security("has_role('ROLE_ADMIN')")
      */
     public function newAction(Request $request)
     {
@@ -117,7 +117,6 @@ class TermOfUseController extends Controller
      * @Route("/{id}/edit", name="termofuse_edit")
      * @Method({"GET", "POST"})
      * @Template()
-     * @Security("has_role('ROLE_ADMIN')")
      */
     public function editAction(Request $request, TermOfUse $termOfUse)
     {
@@ -150,7 +149,6 @@ class TermOfUseController extends Controller
      * 
      * @Route("/{id}/delete", name="termofuse_delete")
      * @Method("GET")
-     * @Security("has_role('ROLE_ADMIN')")
      */
     public function deleteAction(Request $request, TermOfUse $termOfUse)
     {

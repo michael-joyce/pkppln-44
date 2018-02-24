@@ -15,7 +15,7 @@ use AppBundle\Form\DocumentType;
 /**
  * Document controller.
  *
- * @Security("has_role('ROLE_USER')")
+ * @Security("has_role('ROLE_ADMIN')")
  * @Route("/document")
  */
 class DocumentController extends Controller
@@ -108,10 +108,6 @@ class DocumentController extends Controller
      */
     public function newAction(Request $request)
     {
-        if( ! $this->isGranted('ROLE_CONTENT_ADMIN')) {
-            $this->addFlash('danger', 'You must login to access this page.');
-            return $this->redirect($this->generateUrl('fos_user_security_login'));
-        }
         $document = new Document();
         $form = $this->createForm(DocumentType::class, $document);
         $form->handleRequest($request);
@@ -170,10 +166,6 @@ class DocumentController extends Controller
      */
     public function editAction(Request $request, Document $document)
     {
-        if( ! $this->isGranted('ROLE_CONTENT_ADMIN')) {
-            $this->addFlash('danger', 'You must login to access this page.');
-            return $this->redirect($this->generateUrl('fos_user_security_login'));
-        }
         $editForm = $this->createForm(DocumentType::class, $document);
         $editForm->handleRequest($request);
 
@@ -207,10 +199,6 @@ class DocumentController extends Controller
      */
     public function deleteAction(Request $request, Document $document)
     {
-        if( ! $this->isGranted('ROLE_CONTENT_ADMIN')) {
-            $this->addFlash('danger', 'You must login to access this page.');
-            return $this->redirect($this->generateUrl('fos_user_security_login'));
-        }
         $em = $this->getDoctrine()->getManager();
         $em->remove($document);
         $em->flush();

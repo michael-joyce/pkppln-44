@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Deposit controller.
  *
- * @Security("has_role('ROLE_USER')")
+ * @Security("has_role('ROLE_ADMIN')")
  * @Route("/journal/{journalId}/deposit")
  * @ParamConverter("journal", options={"id"="journalId"})
  */
@@ -110,10 +110,6 @@ class DepositController extends Controller
      */
     public function newAction(Request $request, Journal $journal)
     {
-        if( ! $this->isGranted('ROLE_CONTENT_ADMIN')) {
-            $this->addFlash('danger', 'You must login to access this page.');
-            return $this->redirect($this->generateUrl('fos_user_security_login'));
-        }
         $deposit = new Deposit();
         $form = $this->createForm(DepositType::class, $deposit);
         $form->handleRequest($request);
@@ -172,10 +168,6 @@ class DepositController extends Controller
      */
     public function editAction(Request $request, Journal $journal, Deposit $deposit)
     {
-        if( ! $this->isGranted('ROLE_CONTENT_ADMIN')) {
-            $this->addFlash('danger', 'You must login to access this page.');
-            return $this->redirect($this->generateUrl('fos_user_security_login'));
-        }
         $editForm = $this->createForm(DepositType::class, $deposit);
         $editForm->handleRequest($request);
 
@@ -209,10 +201,6 @@ class DepositController extends Controller
      */
     public function deleteAction(Request $request, Journal $journal, Deposit $deposit)
     {
-        if( ! $this->isGranted('ROLE_CONTENT_ADMIN')) {
-            $this->addFlash('danger', 'You must login to access this page.');
-            return $this->redirect($this->generateUrl('fos_user_security_login'));
-        }
         $em = $this->getDoctrine()->getManager();
         $em->remove($deposit);
         $em->flush();

@@ -9,7 +9,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Journal
  *
- * @ORM\Table(name="journal")
+ * @ORM\Table(name="journal", indexes={
+ *  @ORM\Index(columns={"uuid", "title", "issn", "url", "email", "publisher_name", "publisher_url"}, flags={"fulltext"})
+ * })
  * @ORM\Entity(repositoryClass="AppBundle\Repository\JournalRepository")
  */
 class Journal extends AbstractEntity {

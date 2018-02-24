@@ -28,17 +28,9 @@
         <thead>
             <tr>
                 <th>Uuid</th>
-                <th>Contacted</th>
                 <th>Ojs Version</th>
-                <th>Notified</th>
                 <th>Title</th>
-                <th>Issn</th>
-                <th>Url</th>
-                <th>Status</th>
-                <th>Terms Accepted</th>
-                <th>Email</th>
                 <th>Publisher Name</th>
-                <th>Publisher Url</th>
                 </tr>
         </thead>
         <tbody>
@@ -49,17 +41,9 @@
                         {{ journal.uuid }}
                     </a>
                 </td>
-                <td>{% if journal.contacted %}{{ journal.contacted|date('Y-m-d H:i:s') }}{% endif %}</td>
                 <td>{{ journal.ojsVersion }}</td>
-                <td>{% if journal.notified %}{{ journal.notified|date('Y-m-d H:i:s') }}{% endif %}</td>
                 <td>{{ journal.title }}</td>
-                <td>{{ journal.issn }}</td>
-                <td>{{ journal.url }}</td>
-                <td>{{ journal.status }}</td>
-                <td>{% if journal.termsAccepted %}Yes{% else %}No{% endif %}</td>
-                <td>{{ journal.email }}</td>
                 <td>{{ journal.publisherName }}</td>
-                <td>{{ journal.publisherUrl }}</td>
             </tr>
         {% endfor %}
         </tbody>
