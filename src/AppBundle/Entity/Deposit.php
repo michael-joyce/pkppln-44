@@ -238,6 +238,11 @@ class Deposit extends AbstractEntity
      */
     private $harvestAttempts;
     
+    public function __construct() {
+        $this->errorLog = array();
+        $this->harvestAttempts = 0;
+    }
+    
     public function __toString() {
         
     }
