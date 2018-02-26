@@ -23,3 +23,6 @@ parameters:
     router.request_context.scheme: http
     router.request_context.base_url: /lom/web/app_dev.php
     secure_cookies: false
+
+    # processing directory. Paths are absolute or relative to the project directory.
+    pln.data_dir: data

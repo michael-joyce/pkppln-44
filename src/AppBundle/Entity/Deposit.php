@@ -220,7 +220,7 @@ class Deposit extends AbstractEntity
      *
      * @var string
      * @Assert\Url
-     * @ORM\Column(type="string", length=2048)
+     * @ORM\Column(type="string", length=2048, nullable=true)
      */
     private $depositReceipt;
 
@@ -239,8 +239,14 @@ class Deposit extends AbstractEntity
     private $harvestAttempts;
     
     public function __construct() {
+        $this->license = array();
+        $this->received = new DateTime();
+        $this->processingLog = '';
+        $this->state = 'depositedByJournal';
         $this->errorLog = array();
+        $this->errorCount = 0;
         $this->harvestAttempts = 0;
+        $this->journalVersion = '2.4.8';
     }
     
     public function __toString() {
@@ -328,7 +334,7 @@ class Deposit extends AbstractEntity
      */
     public function setDepositUuid($depositUuid)
     {
-        $this->depositUuid = $depositUuid;
+        $this->depositUuid = strtoupper($depositUuid);
 
         return $this;
     }

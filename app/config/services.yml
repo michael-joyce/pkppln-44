@@ -49,6 +49,11 @@ services:
         tags:
             - { name: knp_menu.menu_builder, method: mainMenu, alias: main}
             
+    AppBundle\Services\FilePaths:
+        arguments:
+            $dataDir: '%pln.data_dir%'
+            $projectDir: '%kernel.project_dir%'
+            
     # add more services, or override services that need manual wiring
     # AppBundle\Service\ExampleService:
     #     arguments:
