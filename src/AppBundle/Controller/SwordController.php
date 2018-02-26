@@ -9,16 +9,20 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Deposit;
 use AppBundle\Entity\Journal;
+use AppBundle\Entity\TermOfUse;
 use AppBundle\Services\BlackWhiteList;
+use AppBundle\Utilities\Namespaces;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Description of SwordController
@@ -122,7 +126,6 @@ class SwordController extends Controller {
             $journal = new Journal();
             $journal->setUuid($uuid);
             $journal->setUrl($url);
-            $journal->setTimestamp();
             $journal->setTitle('unknown');
             $journal->setIssn('unknown');
             $journal->setStatus('new');
@@ -133,6 +136,50 @@ class SwordController extends Controller {
             $journal->setStatus('healthy');
         }
         return $journal;
+    }
+    
+    /**
+     * Figure out which message to return for the network status widget in OJS.
+     *
+     * @param Journal $journal
+     *
+     * @return string
+     */
+    private function getNetworkMessage(Journal $journal)
+    {
+        if ($journal->getOjsVersion() === null) {
+            return $this->getParameter('pln.network_default');
+        }
+        if (version_compare($journal->getOjsVersion(), $this->getParameter('pln.min_ojs_version'), '>=')) {
+            return $this->getParameter('pln.network_accepting');
+        }
+
+        return $this->getParameter('pln.network_oldojs');
+    }    
+    
+    /**
+     * Get the XML from an HTTP request.
+     *
+     * @param Request $request
+     *   Depedency injected http request.
+     *
+     * @return SimpleXMLElement
+     *   Parsed XML.
+     *
+     * @throws BadRequestHttpException
+     */
+    private function getXml(Request $request) {
+        $content = $request->getContent();
+        if (!$content || !is_string($content)) {
+            throw new BadRequestHttpException("Expected request body. Found none.", null, Response::HTTP_BAD_REQUEST);
+        }
+        try {
+            $xml = simplexml_load_string($content);
+            Namespaces::registerNamespaces($xml);
+            return $xml;
+        } catch (\Exception $e) {
+            throw new BadRequestHttpException("Cannot parse request XML.", $e, Response::HTTP_BAD_REQUEST);
+        }
     }
     
     /**
@@ -169,19 +216,125 @@ class SwordController extends Controller {
         }
 
         $journal = $this->journalContact($obh, $journalUrl);
-
+        $termsRepo = $this->getDoctrine()->getRepository(TermOfUse::class);
         return array(
             'onBehalfOf' => $obh,
             'accepting' => $accepting ? 'Yes' : 'No',
+            'maxUpload' => $this->getParameter('pln.max_upload'),
+            'checksumType' => $this->getParameter('pln.checksum_type'),
             'message' => $this->getNetworkMessage($journal),
-            'colIri' => $this->generateUrl(
-                'create_deposit',
-                array('journal_uuid' => $obh),
-                UrlGeneratorInterface::ABSOLUTE_URL
-            ),
-            'terms' => $this->getTermsOfUse(),
-            'termsUpdated' => $this->getDoctrine()->getManager()->getRepository('AppBundle:TermOfUse')->getLastUpdated(),
+            'journal' => $journal,
+            'terms' => $termsRepo->getTerms(),
+            'termsUpdated' => $termsRepo->getLastUpdated(),
         );
     }
 
+    /**
+     * Create a deposit.
+     *
+     * @Route("/col-iri/{uuid}", name="sword_create_deposit", requirements={
+     *      "journal_uuid": ".{36}",
+     * })
+     * @ParamConverter("journal", options={"uuid"="uuid"})
+     * @Method("POST")
+     *
+     * @param Request $request
+     * @param Journal $journal
+     *
+     * @return Response
+     */
+    public function createDepositAction(Request $request, Journal $journal)
+    {
+        $accepting = $this->checkAccess($journal->getUuid());
+        $acceptingLog = 'not accepting';
+        if ($accepting) {
+            $acceptingLog = 'accepting';
+        }
+
+        if (!$accepting) {
+            throw new BadRequestHttpException('Not authorized to create deposits.', 400);
+        }
+
+        try {
+            $xml = $this->getXml($request);
+            $journal->setStatus('healthy');
+            $deposit = $this->get('depositbuilder')->fromXml($journal, $xml);
+        } catch (\Exception $e) {
+            throw new BadRequestHttpException($e->getMessage(), $e, 400);
+        }
+
+        /* @var Response */
+        $response = $this->statementAction($request, $journal->getUuid(), $deposit->getDepositUuid());
+        $response->headers->set(
+            'Location',
+            $deposit->getDepositReceipt(),
+            true
+        );
+        $response->setStatusCode(Response::HTTP_CREATED);
+
+        return $response;
+    }
+
+    /**
+     * Check that status of a deposit by fetching the sword statemt.
+     *
+     * @Route("/cont-iri/{journal_uuid}/{deposit_uuid}/state", name="sword_statement", requirements={
+     *      "journal_uuid": ".{36}",
+     *      "deposit_uuid": ".{36}"
+     * })
+     * @ParamConverter("journal", options={"uuid"="journal_uuid"})
+     * @ParamConverter("deposit", options={"deposit_uuid"="deposit_uuid"})
+     * @Method("GET")
+     *
+     * @param Request $request
+     * @param Journal $journal
+     * @param Deposit $deposit
+     *
+     * @return Response
+     */
+    public function statementAction(Request $request, Journal $journal, Deposit $deposit) {
+        
+    }
+    
+    /**
+     * Edit a deposit with an HTTP PUT.
+     *
+     * @Route("/cont-iri/{journal_uuid}/{deposit_uuid}/edit", name="sword_edit", requirements={
+     *      "journal_uuid": ".{36}",
+     *      "deposit_uuid": ".{36}"
+     * })
+     * @ParamConverter("journal", options={"uuid"="journal_uuid"})
+     * @ParamConverter("deposit", options={"deposit_uuid"="deposit_uuid"})
+     * @Method("GET")
+     *
+     * @param Request $request
+     * @param Journal $journal
+     * @param Deposit $deposit
+     *
+     * @return Response
+     */
+    public function editAction(Request $request, Journal $journal, Deposit $deposit) {
+        
+    }
+    
+    /**
+     *
+     * @Route("/original/{journal_uuid}/{deposit_uuid}", name="sword_original_deposit", requirements={
+     *      "journal_uuid": ".{36}",
+     *      "deposit_uuid": ".{36}"
+     * })
+     * @ParamConverter("journal", options={"uuid"="journal_uuid"})
+     * @ParamConverter("deposit", options={"deposit_uuid"="deposit_uuid"})
+     * @Method("GET")
+     *
+     * @param Request $request
+     * @param Journal $journal
+     * @param Deposit $deposit
+     *
+     * @return BinaryFileResponse
+     */
+    public function originalDepositAction(Request $request, Journal $journal, Deposit $deposit) {
+        
+    }
+    
 }

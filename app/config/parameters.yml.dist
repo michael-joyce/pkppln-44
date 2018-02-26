@@ -29,3 +29,17 @@ parameters:
 
     # processing directory. Paths are absolute or relative to the project directory.
     pln.data_dir: data
+
+    # messages to send to journals.
+    pln.network_default: The PKP PLN does not know about this journal yet.
+    pln.network_accepting: The PKP PLN can accept deposits from this journal.
+    pln.network_oldojs: This journal must be running OJS 2.4.8 to make deposits to the PKP PLN.
+
+    # Minimum OJS version:
+    pln.min_ojs_version: 2.4.8.0
+
+    # Maximum file upload size in 1000-byte kb.
+    pln.max_upload: 10000
+    
+    # checksum algorithm to use when verifying integrity.
+    pln.checksum_type: SHA-1
