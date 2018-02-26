@@ -24,5 +24,8 @@ parameters:
     router.request_context.base_url: /lom/web/app_dev.php
     secure_cookies: false
 
+    # should the staging server accept deposits?
+    pln.accepting: false
+
     # processing directory. Paths are absolute or relative to the project directory.
     pln.data_dir: data
