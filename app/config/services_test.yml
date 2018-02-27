@@ -21,6 +21,6 @@ services:
     AppBundle\Services\FilePaths:
         public: true
         arguments:
-            $dataDir: '%pln.data_dir%'
+            $root: '%pln.data_dir%'
             $projectDir: '%kernel.project_dir%'
             

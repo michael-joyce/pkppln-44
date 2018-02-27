@@ -2,6 +2,9 @@
 
 namespace AppBundle\Entity;
 
+use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Nines\UtilBundle\Entity\AbstractEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -18,6 +21,8 @@ class Journal extends AbstractEntity {
 
     /**
      * List of states where a deposit has been sent to LOCKSSOMatic.
+     * 
+     * @todo shouldn't this live in Deposit?
      */
     const SENTSTATES = array(
         'deposited',
@@ -43,7 +48,7 @@ class Journal extends AbstractEntity {
     /**
      * When the journal last contacted the staging server.
      *
-     * @var \DateTime
+     * @var DateTime
      * @ORM\Column(type="datetime", nullable=false)
      */
     private $contacted;
@@ -59,7 +64,7 @@ class Journal extends AbstractEntity {
     /**
      * When the journal manager was notified.
      *
-     * @var \DateTime
+     * @var DateTime
      * @ORM\Column(type="datetime", nullable=true)
      */
     private $notified;
@@ -143,7 +148,7 @@ class Journal extends AbstractEntity {
     private $deposits;
 
     public function __toString() {
-        
+        return $this->uuid;
     }
 
     /**
@@ -171,7 +176,7 @@ class Journal extends AbstractEntity {
     /**
      * Set contacted
      *
-     * @param \DateTime $contacted
+     * @param DateTime $contacted
      *
      * @return Journal
      */
@@ -184,7 +189,7 @@ class Journal extends AbstractEntity {
     /**
      * Get contacted
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getContacted() {
         return $this->contacted;
@@ -215,7 +220,7 @@ class Journal extends AbstractEntity {
     /**
      * Set notified
      *
-     * @param \DateTime $notified
+     * @param DateTime $notified
      *
      * @return Journal
      */
@@ -228,7 +233,7 @@ class Journal extends AbstractEntity {
     /**
      * Get notified
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getNotified() {
         return $this->notified;
@@ -417,11 +422,11 @@ class Journal extends AbstractEntity {
     /**
      * Add deposit
      *
-     * @param \AppBundle\Entity\Deposit $deposit
+     * @param Deposit $deposit
      *
      * @return Journal
      */
-    public function addDeposit(\AppBundle\Entity\Deposit $deposit) {
+    public function addDeposit(Deposit $deposit) {
         $this->deposits[] = $deposit;
 
         return $this;
@@ -430,16 +435,16 @@ class Journal extends AbstractEntity {
     /**
      * Remove deposit
      *
-     * @param \AppBundle\Entity\Deposit $deposit
+     * @param Deposit $deposit
      */
-    public function removeDeposit(\AppBundle\Entity\Deposit $deposit) {
+    public function removeDeposit(Deposit $deposit) {
         $this->deposits->removeElement($deposit);
     }
 
     /**
      * Get deposits
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getDeposits() {
         return $this->deposits;

@@ -13,22 +13,23 @@ class FilePathsTest extends TestCase {
     /**
      * @dataProvider testRootDirData
      */
-    public function testRootDir($expected, $rootDir) {
-        $fp = new FilePaths($rootDir);
+    public function testRootDir($expected, $rootDir, $projectDir) {
+        $fp = new FilePaths($rootDir, $projectDir);
         $this->assertEquals($expected, $fp->getRootPath());
     }
 
     public function testRootDirData() {
         return [
-            ['', ''],
-            ['/path/to/data', '/path/to/data'],
+            ['', '', ''],
+            ['/path/to/data', '/path/to/data', '/path/to/project'],
+            ['/path/to/project/data', 'data', '/path/to/project'],
         ];
     }
 
     public function testGetRestoreDir() {
         $mock = $this->createMock(Filesystem::class);
         $mock->method('exists')->willReturn(true);
-        $fp = new FilePaths('/data', $mock);
+        $fp = new FilePaths('/data', '/path/', $mock);
         $journal = new Journal();
         $journal->setUuid('abc123');
         $this->assertEquals('/data/restore/ABC123', $fp->getRestoreDir($journal));
@@ -37,7 +38,7 @@ class FilePathsTest extends TestCase {
     public function testGetRestoreFile() {
         $mock = $this->createMock(Filesystem::class);
         $mock->method('exists')->willReturn(true);
-        $fp = new FilePaths('/data', $mock);
+        $fp = new FilePaths('/data', '/path/', $mock);
         $journal = new Journal();
         $journal->setUuid('abc123');
         $deposit = new Deposit();
@@ -49,7 +50,7 @@ class FilePathsTest extends TestCase {
     public function testGetHarvestDir() {
         $mock = $this->createMock(Filesystem::class);
         $mock->method('exists')->willReturn(true);
-        $fp = new FilePaths('/data', $mock);
+        $fp = new FilePaths('/data', '/path/', $mock);
         $journal = new Journal();
         $journal->setUuid('abc123');
         $this->assertEquals('/data/harvest/ABC123', $fp->getHarvestDir($journal));
@@ -58,7 +59,7 @@ class FilePathsTest extends TestCase {
     public function testGetHarvestFile() {
         $mock = $this->createMock(Filesystem::class);
         $mock->method('exists')->willReturn(true);
-        $fp = new FilePaths('/data', $mock);
+        $fp = new FilePaths('/data', '/path/', $mock);
         $journal = new Journal();
         $journal->setUuid('abc123');
         $deposit = new Deposit();
@@ -70,7 +71,7 @@ class FilePathsTest extends TestCase {
     public function testGetProcessingDir() {
         $mock = $this->createMock(Filesystem::class);
         $mock->method('exists')->willReturn(true);
-        $fp = new FilePaths('/data', $mock);
+        $fp = new FilePaths('/data', '/path/', $mock);
         $journal = new Journal();
         $journal->setUuid('abc123');
         $this->assertEquals('/data/processing/ABC123', $fp->getProcessingDir($journal));
@@ -79,7 +80,7 @@ class FilePathsTest extends TestCase {
     public function testGetProcessingBagPath() {
         $mock = $this->createMock(Filesystem::class);
         $mock->method('exists')->willReturn(true);
-        $fp = new FilePaths('/data', $mock);
+        $fp = new FilePaths('/data', '/path/', $mock);
         $journal = new Journal();
         $journal->setUuid('abc123');
         $deposit = new Deposit();
@@ -91,7 +92,7 @@ class FilePathsTest extends TestCase {
     public function testGetStagingDir() {
         $mock = $this->createMock(Filesystem::class);
         $mock->method('exists')->willReturn(true);
-        $fp = new FilePaths('/data', $mock);
+        $fp = new FilePaths('/data', '/path/', $mock);
         $journal = new Journal();
         $journal->setUuid('abc123');
         $this->assertEquals('/data/staged/ABC123', $fp->getStagingDir($journal));
@@ -100,7 +101,7 @@ class FilePathsTest extends TestCase {
     public function testGetStagingBagPath() {
         $mock = $this->createMock(Filesystem::class);
         $mock->method('exists')->willReturn(true);
-        $fp = new FilePaths('/data', $mock);
+        $fp = new FilePaths('/data', '/path/', $mock);
         $journal = new Journal();
         $journal->setUuid('abc123');
         $deposit = new Deposit();
@@ -110,7 +111,7 @@ class FilePathsTest extends TestCase {
     }
 
     public function testGetOnixPath() {
-        $fp = new FilePaths('/data');
+        $fp = new FilePaths('/data', '/path/');
         $this->assertEquals('/data/onix.xml', $fp->getOnixPath());
     }
 

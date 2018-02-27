@@ -35,8 +35,12 @@ class FilePaths {
     /**
      * Build the service.
      */
-    public function __construct($root, FileSystem $fs = null) {
-        $this->root = $root;
+    public function __construct($root, $projectDir, FileSystem $fs = null) {
+        if($root && $root[0] !== '/') {
+            $this->root = $projectDir . '/' . $root;
+        } else {
+            $this->root = $root;
+        }
         if ($fs) {
             $this->fs = $fs;
         } else {

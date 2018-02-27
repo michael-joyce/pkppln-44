@@ -57,7 +57,7 @@ services:
             
     AppBundle\Services\FilePaths:
         arguments:
-            $dataDir: '%pln.data_dir%'
+            $root: '%pln.data_dir%'
             $projectDir: '%kernel.project_dir%'
             
     # add more services, or override services that need manual wiring

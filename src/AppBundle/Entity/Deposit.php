@@ -15,14 +15,14 @@ use Symfony\Component\Validator\Constraints as Assert;
  * })
  * @ORM\Entity(repositoryClass="AppBundle\Repository\DepositRepository")
  */
-class Deposit extends AbstractEntity
-{
+class Deposit extends AbstractEntity {
+
     /**
      * The journal version was added to the PKP PLN plugin in OJS version 3. If
      * a deposit doesn't have a version attribute, then assume it is OJS 2.4.8.
      */
     const DEFAULT_JOURNAL_VERSION = '2.4.8';
-    
+
     /**
      * The journal that sent this deposit.
      *
@@ -32,7 +32,7 @@ class Deposit extends AbstractEntity
      * @ORM\JoinColumn(name="journal_id", referencedColumnName="id")
      */
     private $journal;
-    
+
     /**
      * The version of OJS that made the deposit and created the export file. 
      * 
@@ -232,13 +232,13 @@ class Deposit extends AbstractEntity
      * @ORM\Column(type="text")
      */
     private $processingLog;
-    
+
     /**
      * @var integer
      * @ORM\Column(type="integer")
      */
     private $harvestAttempts;
-    
+
     public function __construct() {
         $this->license = array();
         $this->received = new DateTime();
@@ -247,11 +247,11 @@ class Deposit extends AbstractEntity
         $this->errorLog = array();
         $this->errorCount = 0;
         $this->harvestAttempts = 0;
-        $this->journalVersion = '2.4.8';
+        $this->journalVersion = self::DEFAULT_JOURNAL_VERSION;
     }
-    
+
     public function __toString() {
-        
+        return $this->getDepositUuid();
     }
 
     /**
@@ -261,8 +261,7 @@ class Deposit extends AbstractEntity
      *
      * @return Deposit
      */
-    public function setJournalVersion($journalVersion)
-    {
+    public function setJournalVersion($journalVersion) {
         $this->journalVersion = $journalVersion;
 
         return $this;
@@ -273,8 +272,7 @@ class Deposit extends AbstractEntity
      *
      * @return string
      */
-    public function getJournalVersion()
-    {
+    public function getJournalVersion() {
         return $this->journalVersion;
     }
 
@@ -285,11 +283,22 @@ class Deposit extends AbstractEntity
      *
      * @return Deposit
      */
-    public function setLicense($license)
-    {
+    public function setLicense($license) {
         $this->license = $license;
 
         return $this;
+    }
+
+    /**
+     * Add a bit of licensing information to a deposit.
+     *
+     * @param type $key
+     * @param type $value
+     */
+    public function addLicense($key, $value) {
+        if(trim($value)) {
+            $this->license[$key] = trim($value);
+        }
     }
 
     /**
@@ -297,8 +306,7 @@ class Deposit extends AbstractEntity
      *
      * @return array
      */
-    public function getLicense()
-    {
+    public function getLicense() {
         return $this->license;
     }
 
@@ -309,8 +317,7 @@ class Deposit extends AbstractEntity
      *
      * @return Deposit
      */
-    public function setFileType($fileType)
-    {
+    public function setFileType($fileType) {
         $this->fileType = $fileType;
 
         return $this;
@@ -321,8 +328,7 @@ class Deposit extends AbstractEntity
      *
      * @return string
      */
-    public function getFileType()
-    {
+    public function getFileType() {
         return $this->fileType;
     }
 
@@ -333,8 +339,7 @@ class Deposit extends AbstractEntity
      *
      * @return Deposit
      */
-    public function setDepositUuid($depositUuid)
-    {
+    public function setDepositUuid($depositUuid) {
         $this->depositUuid = strtoupper($depositUuid);
 
         return $this;
@@ -345,8 +350,7 @@ class Deposit extends AbstractEntity
      *
      * @return string
      */
-    public function getDepositUuid()
-    {
+    public function getDepositUuid() {
         return $this->depositUuid;
     }
 
@@ -357,8 +361,7 @@ class Deposit extends AbstractEntity
      *
      * @return Deposit
      */
-    public function setReceived($received)
-    {
+    public function setReceived($received) {
         $this->received = $received;
 
         return $this;
@@ -369,8 +372,7 @@ class Deposit extends AbstractEntity
      *
      * @return DateTime
      */
-    public function getReceived()
-    {
+    public function getReceived() {
         return $this->received;
     }
 
@@ -381,8 +383,7 @@ class Deposit extends AbstractEntity
      *
      * @return Deposit
      */
-    public function setAction($action)
-    {
+    public function setAction($action) {
         $this->action = $action;
 
         return $this;
@@ -393,8 +394,7 @@ class Deposit extends AbstractEntity
      *
      * @return string
      */
-    public function getAction()
-    {
+    public function getAction() {
         return $this->action;
     }
 
@@ -405,8 +405,7 @@ class Deposit extends AbstractEntity
      *
      * @return Deposit
      */
-    public function setVolume($volume)
-    {
+    public function setVolume($volume) {
         $this->volume = $volume;
 
         return $this;
@@ -417,8 +416,7 @@ class Deposit extends AbstractEntity
      *
      * @return integer
      */
-    public function getVolume()
-    {
+    public function getVolume() {
         return $this->volume;
     }
 
@@ -429,8 +427,7 @@ class Deposit extends AbstractEntity
      *
      * @return Deposit
      */
-    public function setIssue($issue)
-    {
+    public function setIssue($issue) {
         $this->issue = $issue;
 
         return $this;
@@ -441,8 +438,7 @@ class Deposit extends AbstractEntity
      *
      * @return integer
      */
-    public function getIssue()
-    {
+    public function getIssue() {
         return $this->issue;
     }
 
@@ -453,8 +449,7 @@ class Deposit extends AbstractEntity
      *
      * @return Deposit
      */
-    public function setPubDate($pubDate)
-    {
+    public function setPubDate($pubDate) {
         $this->pubDate = $pubDate;
 
         return $this;
@@ -465,8 +460,7 @@ class Deposit extends AbstractEntity
      *
      * @return DateTime
      */
-    public function getPubDate()
-    {
+    public function getPubDate() {
         return $this->pubDate;
     }
 
@@ -477,8 +471,7 @@ class Deposit extends AbstractEntity
      *
      * @return Deposit
      */
-    public function setChecksumType($checksumType)
-    {
+    public function setChecksumType($checksumType) {
         $this->checksumType = $checksumType;
 
         return $this;
@@ -489,8 +482,7 @@ class Deposit extends AbstractEntity
      *
      * @return string
      */
-    public function getChecksumType()
-    {
+    public function getChecksumType() {
         return $this->checksumType;
     }
 
@@ -498,11 +490,10 @@ class Deposit extends AbstractEntity
      * Set checksumValue
      *
      * @param string $checksumValue
-     *
+     * @todo uppercase the checksum value.
      * @return Deposit
      */
-    public function setChecksumValue($checksumValue)
-    {
+    public function setChecksumValue($checksumValue) {
         $this->checksumValue = $checksumValue;
 
         return $this;
@@ -513,8 +504,7 @@ class Deposit extends AbstractEntity
      *
      * @return string
      */
-    public function getChecksumValue()
-    {
+    public function getChecksumValue() {
         return $this->checksumValue;
     }
 
@@ -525,8 +515,7 @@ class Deposit extends AbstractEntity
      *
      * @return Deposit
      */
-    public function setUrl($url)
-    {
+    public function setUrl($url) {
         $this->url = $url;
 
         return $this;
@@ -537,8 +526,7 @@ class Deposit extends AbstractEntity
      *
      * @return string
      */
-    public function getUrl()
-    {
+    public function getUrl() {
         return $this->url;
     }
 
@@ -549,8 +537,7 @@ class Deposit extends AbstractEntity
      *
      * @return Deposit
      */
-    public function setSize($size)
-    {
+    public function setSize($size) {
         $this->size = $size;
 
         return $this;
@@ -561,8 +548,7 @@ class Deposit extends AbstractEntity
      *
      * @return integer
      */
-    public function getSize()
-    {
+    public function getSize() {
         return $this->size;
     }
 
@@ -573,8 +559,7 @@ class Deposit extends AbstractEntity
      *
      * @return Deposit
      */
-    public function setState($state)
-    {
+    public function setState($state) {
         $this->state = $state;
 
         return $this;
@@ -585,8 +570,7 @@ class Deposit extends AbstractEntity
      *
      * @return string
      */
-    public function getState()
-    {
+    public function getState() {
         return $this->state;
     }
 
@@ -597,8 +581,7 @@ class Deposit extends AbstractEntity
      *
      * @return Deposit
      */
-    public function setErrorLog($errorLog)
-    {
+    public function setErrorLog($errorLog) {
         $this->errorLog = $errorLog;
 
         return $this;
@@ -609,8 +592,7 @@ class Deposit extends AbstractEntity
      *
      * @return array
      */
-    public function getErrorLog()
-    {
+    public function getErrorLog() {
         return $this->errorLog;
     }
 
@@ -621,8 +603,7 @@ class Deposit extends AbstractEntity
      *
      * @return Deposit
      */
-    public function setPlnState($plnState)
-    {
+    public function setPlnState($plnState) {
         $this->plnState = $plnState;
 
         return $this;
@@ -633,8 +614,7 @@ class Deposit extends AbstractEntity
      *
      * @return string
      */
-    public function getPlnState()
-    {
+    public function getPlnState() {
         return $this->plnState;
     }
 
@@ -645,8 +625,7 @@ class Deposit extends AbstractEntity
      *
      * @return Deposit
      */
-    public function setPackageSize($packageSize)
-    {
+    public function setPackageSize($packageSize) {
         $this->packageSize = $packageSize;
 
         return $this;
@@ -657,8 +636,7 @@ class Deposit extends AbstractEntity
      *
      * @return integer
      */
-    public function getPackageSize()
-    {
+    public function getPackageSize() {
         return $this->packageSize;
     }
 
@@ -666,11 +644,10 @@ class Deposit extends AbstractEntity
      * Set packagePath
      *
      * @param string $packagePath
-     *
+     * @todo is package path used anywhere? FilePaths should take care of this.
      * @return Deposit
      */
-    public function setPackagePath($packagePath)
-    {
+    public function setPackagePath($packagePath) {
         $this->packagePath = $packagePath;
 
         return $this;
@@ -681,8 +658,7 @@ class Deposit extends AbstractEntity
      *
      * @return string
      */
-    public function getPackagePath()
-    {
+    public function getPackagePath() {
         return $this->packagePath;
     }
 
@@ -693,8 +669,7 @@ class Deposit extends AbstractEntity
      *
      * @return Deposit
      */
-    public function setPackageChecksumType($packageChecksumType)
-    {
+    public function setPackageChecksumType($packageChecksumType) {
         $this->packageChecksumType = $packageChecksumType;
 
         return $this;
@@ -705,8 +680,7 @@ class Deposit extends AbstractEntity
      *
      * @return string
      */
-    public function getPackageChecksumType()
-    {
+    public function getPackageChecksumType() {
         return $this->packageChecksumType;
     }
 
@@ -717,8 +691,7 @@ class Deposit extends AbstractEntity
      *
      * @return Deposit
      */
-    public function setPackageChecksumValue($packageChecksumValue)
-    {
+    public function setPackageChecksumValue($packageChecksumValue) {
         $this->packageChecksumValue = $packageChecksumValue;
 
         return $this;
@@ -729,8 +702,7 @@ class Deposit extends AbstractEntity
      *
      * @return string
      */
-    public function getPackageChecksumValue()
-    {
+    public function getPackageChecksumValue() {
         return $this->packageChecksumValue;
     }
 
@@ -741,8 +713,7 @@ class Deposit extends AbstractEntity
      *
      * @return Deposit
      */
-    public function setDepositDate($depositDate)
-    {
+    public function setDepositDate($depositDate) {
         $this->depositDate = $depositDate;
 
         return $this;
@@ -753,8 +724,7 @@ class Deposit extends AbstractEntity
      *
      * @return DateTime
      */
-    public function getDepositDate()
-    {
+    public function getDepositDate() {
         return $this->depositDate;
     }
 
@@ -765,8 +735,7 @@ class Deposit extends AbstractEntity
      *
      * @return Deposit
      */
-    public function setDepositReceipt($depositReceipt)
-    {
+    public function setDepositReceipt($depositReceipt) {
         $this->depositReceipt = $depositReceipt;
 
         return $this;
@@ -777,8 +746,7 @@ class Deposit extends AbstractEntity
      *
      * @return string
      */
-    public function getDepositReceipt()
-    {
+    public function getDepositReceipt() {
         return $this->depositReceipt;
     }
 
@@ -789,8 +757,7 @@ class Deposit extends AbstractEntity
      *
      * @return Deposit
      */
-    public function setProcessingLog($processingLog)
-    {
+    public function setProcessingLog($processingLog) {
         $this->processingLog = $processingLog;
 
         return $this;
@@ -801,9 +768,18 @@ class Deposit extends AbstractEntity
      *
      * @return string
      */
-    public function getProcessingLog()
-    {
+    public function getProcessingLog() {
         return $this->processingLog;
+    }
+
+    /**
+     * Append to the processing history.
+     *
+     * @param string $content
+     */
+    public function addToProcessingLog($content) {
+        $date = date(DateTime::ATOM);
+        $this->processingLog .= "{$date}\n{$content}\n\n";
     }
 
     /**
@@ -813,8 +789,7 @@ class Deposit extends AbstractEntity
      *
      * @return Deposit
      */
-    public function setHarvestAttempts($harvestAttempts)
-    {
+    public function setHarvestAttempts($harvestAttempts) {
         $this->harvestAttempts = $harvestAttempts;
 
         return $this;
@@ -825,8 +800,7 @@ class Deposit extends AbstractEntity
      *
      * @return integer
      */
-    public function getHarvestAttempts()
-    {
+    public function getHarvestAttempts() {
         return $this->harvestAttempts;
     }
 
@@ -837,8 +811,7 @@ class Deposit extends AbstractEntity
      *
      * @return Deposit
      */
-    public function setJournal(Journal $journal = null)
-    {
+    public function setJournal(Journal $journal = null) {
         $this->journal = $journal;
 
         return $this;
@@ -849,8 +822,8 @@ class Deposit extends AbstractEntity
      *
      * @return Journal
      */
-    public function getJournal()
-    {
+    public function getJournal() {
         return $this->journal;
     }
+
 }

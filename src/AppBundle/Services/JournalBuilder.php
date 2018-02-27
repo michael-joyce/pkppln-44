@@ -9,8 +9,10 @@
 
 namespace AppBundle\Services;
 
+use AppBundle\Entity\Journal;
+use AppBundle\Utilities\Xpath;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use SimpleXMLElement;
 
 /**
  * Description of JournalBuilder
