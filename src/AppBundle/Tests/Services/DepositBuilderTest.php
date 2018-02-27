@@ -43,6 +43,7 @@ class DepositBuilderTest extends BaseTestCase {
     }
     
     public function testBuild() {
+        $this->markTestIncomplete('Finish writing the damn tests.');
         $this->builder->fromXml($this->getReference('journal.1'), $xml);
     }
     

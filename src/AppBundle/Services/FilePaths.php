@@ -23,7 +23,7 @@ class FilePaths {
      *
      * @var string
      */
-    private $baseDir;
+    private $root;
 
     /**
      * Symfony filesystem object.
@@ -35,65 +35,60 @@ class FilePaths {
     /**
      * Build the service.
      */
-    public function __construct($dataDir, $projectDir) {
-        if ($dataDir[0] === '/') {
-            $this->baseDir = $dataDir;
+    public function __construct($root, FileSystem $fs = null) {
+        $this->root = $root;
+        if ($fs) {
+            $this->fs = $fs;
         } else {
-            $this->baseDir = $projectDir . '/' . $dataDir;
+            $this->fs = new Filesystem();
         }
-        $this->fs = new Filesystem();
-    }
-
-    public function getBaseDir() {
-        return $this->baseDir;
     }
 
     /**
-     * Get an absolute path to a processing directory for the journal.
-     *
-     * @param string  $dirname
-     * @param Journal $journal
-     *
+     * Get the root file system path.
+     * 
      * @return string
+     *   Path to the root.
      */
-    protected function absolutePath($dirname, Journal $journal = null) {
-        $path = $this->baseDir . '/' . $dirname;
-        if (substr($dirname, -1) !== '/') {
-            $path .= '/';
-        }
-        if (!$this->fs->exists($path)) {
-            $this->fs->mkdir($path);
-        }
-        if ($journal !== null) {
-            return $path . $journal->getUuid();
-        }
-
-        return realpath($path);
+    public function getRootPath() {
+        return $this->root;
     }
 
     public function getRestoreDir(Journal $journal) {
-        $path = $this->absolutePath('restore', $journal);
+        $path = implode('/', array(
+            $this->getRootPath(),
+            'restore',
+            $journal->getUuid(),
+        ));
         if (!$this->fs->exists($path)) {
-            $this->logger->notice("Creating directory {$path}");
             $this->fs->mkdir($path);
         }
 
+        return $path;
+    }
+    
+    public function getRestoreFile(Deposit $deposit) {
+        $path = implode('/', array(
+            $this->getRestoreDir($deposit->getJournal()), 
+            $deposit->getDepositUuid() . '.zip',
+        ));
         return $path;
     }
 
     /**
      * Get the harvest directory.
      *
-     * @see AppKernel#getRootDir
-     *
      * @param Journal $journal
      *
      * @return string
      */
-    final public function getHarvestDir(Journal $journal = null) {
-        $path = $this->absolutePath('received', $journal);
+    final public function getHarvestDir(Journal $journal) {
+        $path = implode('/', array(
+            $this->getRootPath(),
+            'harvest',
+            $journal->getUuid(),
+        ));
         if (!$this->fs->exists($path)) {
-            $this->logger->notice("Creating directory {$path}");
             $this->fs->mkdir($path);
         }
 
@@ -108,9 +103,11 @@ class FilePaths {
      * @return type
      */
     final public function getHarvestFile(Deposit $deposit) {
-        $path = $this->getHarvestDir($deposit->getJournal());
-
-        return $path . '/' . $deposit->getFileName();
+        $path = implode('/', array(
+            $this->getHarvestDir($deposit->getJournal()),
+            $deposit->getDepositUuid() . '.zip',
+        ));
+        return $path;
     }
 
     /**
@@ -121,12 +118,15 @@ class FilePaths {
      * @return string
      */
     final public function getProcessingDir(Journal $journal) {
-        $path = $this->absolutePath('processing', $journal);
+        $path = implode('/', array(
+            $this->getRootPath(),
+            'processing',
+            $journal->getUuid(),
+        ));
         if (!$this->fs->exists($path)) {
             $this->logger->notice("Creating directory {$path}");
             $this->fs->mkdir($path);
         }
-
         return $path;
     }
 
@@ -138,9 +138,15 @@ class FilePaths {
      * @return type
      */
     public function getProcessingBagPath(Deposit $deposit) {
-        $path = $this->getProcessingDir($deposit->getJournal());
-
-        return $path . '/' . $deposit->getDepositUuid();
+        $path = implode('/', array(
+            $this->getProcessingDir($deposit->getJournal()),
+            $deposit->getDepositUuid(),
+        ));
+        if (!$this->fs->exists($path)) {
+            $this->logger->notice("Creating directory {$path}");
+            $this->fs->mkdir($path);
+        }
+        return $path;
     }
 
     /**
@@ -151,7 +157,11 @@ class FilePaths {
      * @return string
      */
     final public function getStagingDir(Journal $journal) {
-        $path = $this->absolutePath('staged', $journal);
+        $path = implode('/', array(
+            $this->getRootPath(),
+            'staged',
+            $journal->getUuid(),
+        ));
         if (!$this->fs->exists($path)) {
             $this->logger->notice("Creating directory {$path}");
             $this->fs->mkdir($path);
@@ -176,12 +186,10 @@ class FilePaths {
     /**
      * Get the path to the onix feed file.
      *
-     * @param string $_format
-     *
      * @return string
      */
-    public function getOnixPath($_format = 'xml') {
-        return $this->baseDir . '/onix.' . $_format;
+    public function getOnixPath() {
+        return $this->root . '/onix.xml';
     }
 
 }

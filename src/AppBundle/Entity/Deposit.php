@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Nines\UtilBundle\Entity\AbstractEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -76,7 +77,7 @@ class Deposit extends AbstractEntity
     /**
      * When the deposit was received.
      *
-     * @var \DateTime
+     * @var DateTime
      * @ORM\Column(type="datetime", nullable=false)
      */
     private $received;
@@ -109,7 +110,7 @@ class Deposit extends AbstractEntity
     /**
      * Publication date of the deposit content.
      *
-     * @var \DateTime
+     * @var DateTime
      * @ORM\Column(type="date")
      */
     private $pubDate;
@@ -210,7 +211,7 @@ class Deposit extends AbstractEntity
     /**
      * Date the deposit was sent to LOCKSSOmatic or the PLN.
      *
-     * @var \DateTime
+     * @var DateTime
      * @ORM\Column(type="date", nullable=true)
      */
     private $depositDate;
@@ -352,7 +353,7 @@ class Deposit extends AbstractEntity
     /**
      * Set received
      *
-     * @param \DateTime $received
+     * @param DateTime $received
      *
      * @return Deposit
      */
@@ -366,7 +367,7 @@ class Deposit extends AbstractEntity
     /**
      * Get received
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getReceived()
     {
@@ -448,7 +449,7 @@ class Deposit extends AbstractEntity
     /**
      * Set pubDate
      *
-     * @param \DateTime $pubDate
+     * @param DateTime $pubDate
      *
      * @return Deposit
      */
@@ -462,7 +463,7 @@ class Deposit extends AbstractEntity
     /**
      * Get pubDate
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getPubDate()
     {
@@ -736,7 +737,7 @@ class Deposit extends AbstractEntity
     /**
      * Set depositDate
      *
-     * @param \DateTime $depositDate
+     * @param DateTime $depositDate
      *
      * @return Deposit
      */
@@ -750,7 +751,7 @@ class Deposit extends AbstractEntity
     /**
      * Get depositDate
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getDepositDate()
     {
@@ -832,11 +833,11 @@ class Deposit extends AbstractEntity
     /**
      * Set journal
      *
-     * @param \AppBundle\Entity\Journal $journal
+     * @param Journal $journal
      *
      * @return Deposit
      */
-    public function setJournal(\AppBundle\Entity\Journal $journal = null)
+    public function setJournal(Journal $journal = null)
     {
         $this->journal = $journal;
 
@@ -846,7 +847,7 @@ class Deposit extends AbstractEntity
     /**
      * Get journal
      *
-     * @return \AppBundle\Entity\Journal
+     * @return Journal
      */
     public function getJournal()
     {
