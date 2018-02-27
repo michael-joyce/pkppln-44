@@ -37,7 +37,7 @@ class LoadDeposit extends Fixture implements DependentFixtureInterface {
             $fixture->setPubDate(new DateTime("2016-{$i}-{$i}T12:00:00"));
             $fixture->setChecksumType('sha1');
             $fixture->setChecksumValue(sha1(self::UUIDS[$i]));
-            $fixture->setUrl('http://example.com/path/to/{$i}.zip');
+            $fixture->setUrl("http://example.com/path/to/{$i}.zip");
             $fixture->setSize(1000 + $i * 1000);
             $fixture->setState('depositedByJournal');
             $fixture->setErrorLog(array());

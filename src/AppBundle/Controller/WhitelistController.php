@@ -15,7 +15,7 @@ use AppBundle\Form\WhitelistType;
 /**
  * Whitelist controller.
  *
- * @Security("has_role('ROLE_ADMIN')")
+ * @Security("has_role('ROLE_USER')")
  * @Route("/whitelist")
  */
 class WhitelistController extends Controller
@@ -102,6 +102,7 @@ class WhitelistController extends Controller
      * @return array|RedirectResponse
      *   Array data for the template processor or a redirect to the Whitelist.
      * 
+     * @Security("has_role('ROLE_ADMIN')")
      * @Route("/new", name="whitelist_new")
      * @Method({"GET", "POST"})
      * @Template()
@@ -160,6 +161,7 @@ class WhitelistController extends Controller
      * @return array|RedirectResponse
      *   Array data for the template processor or a redirect to the Whitelist.
      * 
+     * @Security("has_role('ROLE_ADMIN')")
      * @Route("/{id}/edit", name="whitelist_edit")
      * @Method({"GET", "POST"})
      * @Template()
@@ -194,6 +196,7 @@ class WhitelistController extends Controller
      * @return array|RedirectResponse
      *   A redirect to the whitelist_index.
      * 
+     * @Security("has_role('ROLE_ADMIN')")
      * @Route("/{id}/delete", name="whitelist_delete")
      * @Method("GET")
      */

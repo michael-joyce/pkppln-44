@@ -15,7 +15,7 @@ use AppBundle\Form\DocumentType;
 /**
  * Document controller.
  *
- * @Security("has_role('ROLE_ADMIN')")
+ * @Security("has_role('ROLE_USER')")
  * @Route("/document")
  */
 class DocumentController extends Controller
@@ -102,6 +102,7 @@ class DocumentController extends Controller
      * @return array|RedirectResponse
      *   Array data for the template processor or a redirect to the Document.
      * 
+     * @Security("has_role('ROLE_ADMIN')")
      * @Route("/new", name="document_new")
      * @Method({"GET", "POST"})
      * @Template()
@@ -160,6 +161,7 @@ class DocumentController extends Controller
      * @return array|RedirectResponse
      *   Array data for the template processor or a redirect to the Document.
      * 
+     * @Security("has_role('ROLE_ADMIN')")
      * @Route("/{id}/edit", name="document_edit")
      * @Method({"GET", "POST"})
      * @Template()
@@ -194,6 +196,7 @@ class DocumentController extends Controller
      * @return array|RedirectResponse
      *   A redirect to the document_index.
      * 
+     * @Security("has_role('ROLE_ADMIN')")
      * @Route("/{id}/delete", name="document_delete")
      * @Method("GET")
      */

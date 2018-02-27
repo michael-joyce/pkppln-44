@@ -15,7 +15,7 @@ use AppBundle\Form\BlacklistType;
 /**
  * Blacklist controller.
  *
- * @Security("has_role('ROLE_ADMIN')")
+ * @Security("has_role('ROLE_USER')")
  * @Route("/blacklist")
  */
 class BlacklistController extends Controller
@@ -102,6 +102,7 @@ class BlacklistController extends Controller
      * @return array|RedirectResponse
      *   Array data for the template processor or a redirect to the Blacklist.
      * 
+     * @Security("has_role('ROLE_ADMIN')")
      * @Route("/new", name="blacklist_new")
      * @Method({"GET", "POST"})
      * @Template()
@@ -160,6 +161,7 @@ class BlacklistController extends Controller
      * @return array|RedirectResponse
      *   Array data for the template processor or a redirect to the Blacklist.
      * 
+     * @Security("has_role('ROLE_ADMIN')")
      * @Route("/{id}/edit", name="blacklist_edit")
      * @Method({"GET", "POST"})
      * @Template()
@@ -194,6 +196,7 @@ class BlacklistController extends Controller
      * @return array|RedirectResponse
      *   A redirect to the blacklist_index.
      * 
+     * @Security("has_role('ROLE_ADMIN')")
      * @Route("/{id}/delete", name="blacklist_delete")
      * @Method("GET")
      */

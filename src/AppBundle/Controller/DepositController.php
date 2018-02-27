@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Deposit controller.
  *
- * @Security("has_role('ROLE_ADMIN')")
+ * @Security("has_role('ROLE_USER')")
  * @Route("/journal/{journalId}/deposit")
  * @ParamConverter("journal", options={"id"="journalId"})
  */
@@ -46,6 +46,7 @@ class DepositController extends Controller
 
         return array(
             'deposits' => $deposits,
+            'journal' => $journal,
         );
     }
     /**
@@ -94,41 +95,7 @@ class DepositController extends Controller
             'q' => $q,
         );
     }
-
-    /**
-     * Creates a new Deposit entity.
-     *
-     * @param Request $request
-     *   Dependency injected HTTP request object.
-     *
-     * @return array|RedirectResponse
-     *   Array data for the template processor or a redirect to the Deposit.
-     * 
-     * @Route("/new", name="deposit_new")
-     * @Method({"GET", "POST"})
-     * @Template()
-     */
-    public function newAction(Request $request, Journal $journal)
-    {
-        $deposit = new Deposit();
-        $form = $this->createForm(DepositType::class, $deposit);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($deposit);
-            $em->flush();
-
-            $this->addFlash('success', 'The new deposit was created.');
-            return $this->redirectToRoute('deposit_show', array('id' => $deposit->getId()));
-        }
-
-        return array(
-            'deposit' => $deposit,
-            'form' => $form->createView(),
-        );
-    }
-
+    
     /**
      * Finds and displays a Deposit entity.
      *
@@ -146,66 +113,9 @@ class DepositController extends Controller
     {
 
         return array(
+            'journal' => $journal,
             'deposit' => $deposit,
         );
     }
 
-    /**
-     * Displays a form to edit an existing Deposit entity.
-     *
-     * 
-     * @param Request $request
-     *   Dependency injected HTTP request object.
-     * @param Deposit $deposit
-     *   The Deposit to edit.
-     * 
-     * @return array|RedirectResponse
-     *   Array data for the template processor or a redirect to the Deposit.
-     * 
-     * @Route("/{id}/edit", name="deposit_edit")
-     * @Method({"GET", "POST"})
-     * @Template()
-     */
-    public function editAction(Request $request, Journal $journal, Deposit $deposit)
-    {
-        $editForm = $this->createForm(DepositType::class, $deposit);
-        $editForm->handleRequest($request);
-
-        if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->flush();
-            $this->addFlash('success', 'The deposit has been updated.');
-            return $this->redirectToRoute('deposit_show', array('id' => $deposit->getId()));
-        }
-
-        return array(
-            'deposit' => $deposit,
-            'edit_form' => $editForm->createView(),
-        );
-    }
-
-    /**
-     * Deletes a Deposit entity.
-     *
-     *
-     * @param Request $request
-     *   Dependency injected HTTP request object.
-     * @param Deposit $deposit
-     *   The Deposit to delete.
-     * 
-     * @return array|RedirectResponse
-     *   A redirect to the deposit_index.
-     * 
-     * @Route("/{id}/delete", name="deposit_delete")
-     * @Method("GET")
-     */
-    public function deleteAction(Request $request, Journal $journal, Deposit $deposit)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $em->remove($deposit);
-        $em->flush();
-        $this->addFlash('success', 'The deposit was deleted.');
-
-        return $this->redirectToRoute('deposit_index');
-    }
 }

@@ -56,6 +56,7 @@ class TermOfUseController extends Controller
      * @return array|RedirectResponse
      *   Array data for the template processor or a redirect to the TermOfUse.
      * 
+     * @Security("has_role('ROLE_ADMIN')")
      * @Route("/new", name="termofuse_new")
      * @Method({"GET", "POST"})
      * @Template()
@@ -114,6 +115,7 @@ class TermOfUseController extends Controller
      * @return array|RedirectResponse
      *   Array data for the template processor or a redirect to the TermOfUse.
      * 
+     * @Security("has_role('ROLE_ADMIN')")
      * @Route("/{id}/edit", name="termofuse_edit")
      * @Method({"GET", "POST"})
      * @Template()
@@ -147,6 +149,7 @@ class TermOfUseController extends Controller
      * @return array|RedirectResponse
      *   A redirect to the termofuse_index.
      * 
+     * @Security("has_role('ROLE_ADMIN')")
      * @Route("/{id}/delete", name="termofuse_delete")
      * @Method("GET")
      */

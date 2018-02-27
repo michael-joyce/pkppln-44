@@ -15,7 +15,7 @@ use AppBundle\Form\JournalType;
 /**
  * Journal controller.
  *
- * @Security("has_role('ROLE_ADMIN')")
+ * @Security("has_role('ROLE_USER')")
  * @Route("/journal")
  */
 class JournalController extends Controller
@@ -94,40 +94,6 @@ class JournalController extends Controller
     }
 
     /**
-     * Creates a new Journal entity.
-     *
-     * @param Request $request
-     *   Dependency injected HTTP request object.
-     *
-     * @return array|RedirectResponse
-     *   Array data for the template processor or a redirect to the Journal.
-     * 
-     * @Route("/new", name="journal_new")
-     * @Method({"GET", "POST"})
-     * @Template()
-     */
-    public function newAction(Request $request)
-    {
-        $journal = new Journal();
-        $form = $this->createForm(JournalType::class, $journal);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($journal);
-            $em->flush();
-
-            $this->addFlash('success', 'The new journal was created.');
-            return $this->redirectToRoute('journal_show', array('id' => $journal->getId()));
-        }
-
-        return array(
-            'journal' => $journal,
-            'form' => $form->createView(),
-        );
-    }
-
-    /**
      * Finds and displays a Journal entity.
      *
      * @param Journal $journal
@@ -148,62 +114,4 @@ class JournalController extends Controller
         );
     }
 
-    /**
-     * Displays a form to edit an existing Journal entity.
-     *
-     * 
-     * @param Request $request
-     *   Dependency injected HTTP request object.
-     * @param Journal $journal
-     *   The Journal to edit.
-     * 
-     * @return array|RedirectResponse
-     *   Array data for the template processor or a redirect to the Journal.
-     * 
-     * @Route("/{id}/edit", name="journal_edit")
-     * @Method({"GET", "POST"})
-     * @Template()
-     */
-    public function editAction(Request $request, Journal $journal)
-    {
-        $editForm = $this->createForm(JournalType::class, $journal);
-        $editForm->handleRequest($request);
-
-        if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->flush();
-            $this->addFlash('success', 'The journal has been updated.');
-            return $this->redirectToRoute('journal_show', array('id' => $journal->getId()));
-        }
-
-        return array(
-            'journal' => $journal,
-            'edit_form' => $editForm->createView(),
-        );
-    }
-
-    /**
-     * Deletes a Journal entity.
-     *
-     *
-     * @param Request $request
-     *   Dependency injected HTTP request object.
-     * @param Journal $journal
-     *   The Journal to delete.
-     * 
-     * @return array|RedirectResponse
-     *   A redirect to the journal_index.
-     * 
-     * @Route("/{id}/delete", name="journal_delete")
-     * @Method("GET")
-     */
-    public function deleteAction(Request $request, Journal $journal)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $em->remove($journal);
-        $em->flush();
-        $this->addFlash('success', 'The journal was deleted.');
-
-        return $this->redirectToRoute('journal_index');
-    }
 }
