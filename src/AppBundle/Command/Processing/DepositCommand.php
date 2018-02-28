@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Command;
+namespace AppBundle\Command\Processing;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -9,9 +9,9 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * PlnValidateXmlCommand command.
+ * PlnDepositCommand command.
  */
-class ValidateXmlCommand extends ContainerAwareCommand
+class DepositCommand extends ContainerAwareCommand
 {
     /**
      * Configure the command.
@@ -19,7 +19,7 @@ class ValidateXmlCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('pln:validate:xml')
+            ->setName('pln:deposit')
             ->setDescription('...')
             ->addArgument('argument', InputArgument::OPTIONAL, 'Argument description')
             ->addOption('option', null, InputOption::VALUE_NONE, 'Option description')

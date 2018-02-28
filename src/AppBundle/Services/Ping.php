@@ -81,11 +81,16 @@ class Ping {
             return;
         }
         $whitelist = new Whitelist();
-        $whitelist->setUuid($journal->getUuid);
+        $whitelist->setUuid($journal->getUuid());
         $whitelist->setComment("{$journal->getUrl()} added by ping.");
         $this->em->persist($whitelist);
     }
     
+    /**
+     * 
+     * @param Journal $journal
+     * @return PingResult
+     */
     public function ping(Journal $journal) {
         try {
             $response = $this->client->get($journal->getGatewayUrl(), self::CONF);

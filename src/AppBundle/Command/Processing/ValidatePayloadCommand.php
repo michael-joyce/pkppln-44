@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Command;
+namespace AppBundle\Command\Processing;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -9,9 +9,9 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * PlnScanCommand command.
+ * PlnValidatePayloadCommand command.
  */
-class ScanCommand extends ContainerAwareCommand
+class ValidatePayloadCommand extends ContainerAwareCommand
 {
     /**
      * Configure the command.
@@ -19,7 +19,7 @@ class ScanCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('pln:scan')
+            ->setName('pln:validate:payload')
             ->setDescription('...')
             ->addArgument('argument', InputArgument::OPTIONAL, 'Argument description')
             ->addOption('option', null, InputOption::VALUE_NONE, 'Option description')
