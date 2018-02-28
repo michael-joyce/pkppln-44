@@ -42,7 +42,19 @@
             </tr>
             <tr>
                 <th>Url</th>
-                <td>{{ journal.url }}</td>
+                <td>
+                    <a href="{{ journal.url }}">
+                        {{ journal.url }}
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <th>Ping Url</th>
+                <td>
+                    <a href="{{ journal.getGatewayUrl }}">
+                        {{ journal.getGatewayUrl }}
+                    </a>
+                </td>
             </tr>
             <tr>
                 <th>Status</th>
@@ -77,10 +89,10 @@
     {% if journal.deposits | length > 0 %}    
     <h2>Deposits</h2>
     <ul>
-        {% for deposits in journal.deposits %}
+        {% for deposit in journal.deposits %}
         <li>
-            <a href="{{ path("deposits_show", {"id":deposits.id}) }}">
-                {{ deposits }}
+            <a href="{{ path("deposit_show", {"journalId": journal.id, "id":deposit.id}) }}">
+                {{ deposit }}
             </a>
         </li>
         {% endfor %} 

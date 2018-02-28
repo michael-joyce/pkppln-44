@@ -62,5 +62,9 @@ class BlackWhiteList {
         $repo = $this->em->getRepository(Blacklist::class);
         return $this->getEntry($repo, $uuid);
     }
+    
+    public function isListed($uuid) {
+        return $this->isWhitelisted($uuid) || $this->isBlacklisted($uuid);
+    }
 
 }

@@ -52,8 +52,38 @@ class JournalBuilder {
         $journal->setIssn(Xpath::getXmlValue($xml, '//pkp:issn'));
         $journal->setPublisherName(Xpath::getXmlValue($xml, '//pkp:publisherName'));
         $journal->setPublisherUrl(html_entity_decode(Xpath::getXmlValue($xml, '//pkp:publisherUrl'))); // &amp; -> &
+        $journal->setContacted(new \DateTime());
         $this->em->persist($journal);
 
+        return $journal;
+    }
+    
+    /**
+     * The journal with UUID $uuid has contacted the PLN. 
+     * 
+     * @param string $uuid
+     * @param string $url
+     *
+     * @return Journal
+     */
+    public function fromRequest($uuid, $url) {
+        $journal = $this->em->getRepository('AppBundle:Journal')->findOneBy(array(
+            'uuid' => strtoupper($uuid),
+        ));
+        if ($journal === null) {
+            $journal = new Journal();
+            $journal->setUuid($uuid);
+            $journal->setTitle('unknown');
+            $journal->setIssn('unknown');
+            $journal->setStatus('new');
+            $journal->setEmail('unknown@unknown.com');
+            $this->em->persist($journal);
+        }
+        $journal->setUrl($url);
+        $journal->setContacted(new \DateTime());
+        if ($journal->getStatus() !== 'new') {
+            $journal->setStatus('healthy');
+        }
         return $journal;
     }
 

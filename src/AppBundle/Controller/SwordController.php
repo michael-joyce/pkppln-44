@@ -13,7 +13,11 @@ use AppBundle\Entity\Deposit;
 use AppBundle\Entity\Journal;
 use AppBundle\Entity\TermOfUse;
 use AppBundle\Services\BlackWhiteList;
+use AppBundle\Services\DepositBuilder;
+use AppBundle\Services\JournalBuilder;
 use AppBundle\Utilities\Namespaces;
+use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -23,6 +27,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Description of SwordController
@@ -35,8 +40,14 @@ class SwordController extends Controller {
      */
     private $blackwhitelist;
     
-    public function __construct(BlackWhiteList $blackwhitelist) {
+    /**
+     * @var EntityManagerInterface
+     */
+    private $em;
+    
+    public function __construct(BlackWhiteList $blackwhitelist, EntityManagerInterface $em) {
         $this->blackwhitelist = $blackwhitelist;
+        $this->em = $em;
     }
     
     /**
@@ -97,45 +108,6 @@ class SwordController extends Controller {
         }
 
         return $this->getParameter('pln.accepting');
-    }
-
-    /**
-     * The journal with UUID $uuid has contacted the PLN. 
-     * 
-     * Add a record for the journal if there isn't one, otherwise update the 
-     * timestamp. The new journal record will be persisted to the database but
-     * not flushed.
-     *
-     * @param string $uuid
-     * @param string $url
-     *
-     * @return Journal
-     */
-    private function journalContact($uuid, $url)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $journal = $em->getRepository(Journal::class)->findOneBy(array(
-            'uuid' => strtoupper($uuid),
-        ));
-        if ($journal !== null) {
-            $journal->setTimestamp();
-            if ($journal->getUrl() !== $url) {
-                $journal->setUrl($url);
-            }
-        } else {
-            $journal = new Journal();
-            $journal->setUuid($uuid);
-            $journal->setUrl($url);
-            $journal->setTitle('unknown');
-            $journal->setIssn('unknown');
-            $journal->setStatus('new');
-            $journal->setEmail('unknown@unknown.com');
-            $em->persist($journal);
-        }
-        if ($journal->getStatus() !== 'new') {
-            $journal->setStatus('healthy');
-        }
-        return $journal;
     }
     
     /**
@@ -198,7 +170,7 @@ class SwordController extends Controller {
      * @return array
      * @Template
      */
-    public function serviceDocumentAction(Request $request)
+    public function serviceDocumentAction(Request $request, JournalBuilder $builder)
     {
         $obh = strtoupper($this->fetchHeader($request, 'On-Behalf-Of'));
         $journalUrl = $this->fetchHeader($request, 'Journal-Url');
@@ -215,7 +187,11 @@ class SwordController extends Controller {
             throw new BadRequestHttpException("Missing Journal-Url header.", null, 400);
         }
 
-        $journal = $this->journalContact($obh, $journalUrl);
+        $journal = $builder->fromRequest($obh, $journalUrl);
+        if( ! $journal->getTermsAccepted()) {
+            $this->accepting = false;
+        }
+        $this->em->flush();
         $termsRepo = $this->getDoctrine()->getRepository(TermOfUse::class);
         return array(
             'onBehalfOf' => $obh,
@@ -233,9 +209,9 @@ class SwordController extends Controller {
      * Create a deposit.
      *
      * @Route("/col-iri/{uuid}", name="sword_create_deposit", requirements={
-     *      "journal_uuid": ".{36}",
+     *      "uuid": ".{36}",
      * })
-     * @ParamConverter("journal", options={"uuid"="uuid"})
+     * @ParamConverter("journal", options={"mapping": {"uuid"="uuid"}})
      * @Method("POST")
      *
      * @param Request $request
@@ -243,33 +219,29 @@ class SwordController extends Controller {
      *
      * @return Response
      */
-    public function createDepositAction(Request $request, Journal $journal)
+    public function createDepositAction(Request $request, Journal $journal, JournalBuilder $journalBuilder, DepositBuilder $depositBuilder)
     {
         $accepting = $this->checkAccess($journal->getUuid());
-        $acceptingLog = 'not accepting';
-        if ($accepting) {
-            $acceptingLog = 'accepting';
+        if( ! $journal->getTermsAccepted()) {
+            $this->accepting = false;
         }
 
         if (!$accepting) {
-            throw new BadRequestHttpException('Not authorized to create deposits.', 400);
+            throw new BadRequestHttpException('Not authorized to create deposits.', null, 400);
         }
 
-        try {
-            $xml = $this->getXml($request);
-            $journal->setStatus('healthy');
-            $deposit = $this->get('depositbuilder')->fromXml($journal, $xml);
-        } catch (\Exception $e) {
-            throw new BadRequestHttpException($e->getMessage(), $e, 400);
-        }
+        $xml = $this->getXml($request);
+        // update the journal metadata
+        $journalBuilder->fromXml($xml, $journal->getUuid());
+        $deposit = $depositBuilder->fromXml($journal, $xml);
+        $this->em->flush();
 
         /* @var Response */
-        $response = $this->statementAction($request, $journal->getUuid(), $deposit->getDepositUuid());
-        $response->headers->set(
-            'Location',
-            $deposit->getDepositReceipt(),
-            true
-        );
+        $response = $this->statementAction($request, $journal, $deposit);
+        $response->headers->set('Location', $this->generateUrl('sword_statement', array(
+            'journal_uuid' => $journal->getUuid(),
+            'deposit_uuid' => $deposit->getDepositUuid(),
+        ), UrlGeneratorInterface::ABSOLUTE_URL));
         $response->setStatusCode(Response::HTTP_CREATED);
 
         return $response;
@@ -282,8 +254,8 @@ class SwordController extends Controller {
      *      "journal_uuid": ".{36}",
      *      "deposit_uuid": ".{36}"
      * })
-     * @ParamConverter("journal", options={"uuid"="journal_uuid"})
-     * @ParamConverter("deposit", options={"deposit_uuid"="deposit_uuid"})
+     * @ParamConverter("journal", options={"mapping": {"journal_uuid"="uuid"}})
+     * @ParamConverter("deposit", options={"mapping": {"deposit_uuid"="depositUuid"}})
      * @Method("GET")
      *
      * @param Request $request
@@ -293,7 +265,21 @@ class SwordController extends Controller {
      * @return Response
      */
     public function statementAction(Request $request, Journal $journal, Deposit $deposit) {
-        
+        $accepting = $this->checkAccess($journal->getUuid());
+        if( !$accepting && !$this->isGranted('ROLE_USER')) {
+            throw new BadRequestHttpException('Not authorized to request statements.', null, 400);            
+        }
+        if($journal !== $deposit->getJournal()) {
+            throw new BadRequestHttpException('Deposit does not belong to journal.', null, 400);
+        }
+        $journal->setContacted(new DateTime());
+        $journal->setStatus('healthy');
+        $this->em->flush();
+        $response = $this->render('AppBundle:sword:statement.xml.twig', array(
+            'deposit' => $deposit,
+        ));
+        $response->headers->set('Content-Type', 'text/xml');
+        return $response;
     }
     
     /**
@@ -303,9 +289,9 @@ class SwordController extends Controller {
      *      "journal_uuid": ".{36}",
      *      "deposit_uuid": ".{36}"
      * })
-     * @ParamConverter("journal", options={"uuid"="journal_uuid"})
-     * @ParamConverter("deposit", options={"deposit_uuid"="deposit_uuid"})
-     * @Method("GET")
+     * @ParamConverter("journal", options={"mapping": {"journal_uuid"="uuid"}})
+     * @ParamConverter("deposit", options={"mapping": {"deposit_uuid"="depositUuid"}})
+     * @Method("PUT")
      *
      * @param Request $request
      * @param Journal $journal
@@ -313,8 +299,27 @@ class SwordController extends Controller {
      *
      * @return Response
      */
-    public function editAction(Request $request, Journal $journal, Deposit $deposit) {
-        
+    public function editAction(Request $request, Journal $journal, Deposit $deposit, DepositBuilder $builder) {
+        $accepting = $this->checkAccess($journal->getUuid());
+        if (!$accepting) {
+            throw new BadRequestHttpException('Not authorized to create deposits.', null, 400);
+        }
+        if($journal !== $deposit->getJournal()) {
+            throw new BadRequestHttpException('Deposit does not belong to journal.', null, 400);
+        }
+        $xml = $this->getXml($request);
+        $newDeposit = $builder->fromXml($journal, $xml);
+        $this->em->flush();
+
+        /* @var Response */
+        $response = $this->statementAction($request, $journal, $deposit);
+        $response->headers->set('Location', $this->generateUrl('sword_statement', array(
+            'journal_uuid' => $journal->getUuid(),
+            'deposit_uuid' => $deposit->getDepositUuid(),
+        ), UrlGeneratorInterface::ABSOLUTE_URL));
+        $response->setStatusCode(Response::HTTP_CREATED);
+
+        return $response;        
     }
     
     /**

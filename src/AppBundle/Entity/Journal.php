@@ -102,8 +102,8 @@ class Journal extends AbstractEntity {
      * @var string
      * @ORM\Column(type="string", nullable=false)
      */
-    private $status = 'healthy';
-
+    private $status;
+    
     /**
      * True if a ping reports that the journal manager has accepts the terms of
      * use.
@@ -126,7 +126,7 @@ class Journal extends AbstractEntity {
      * Name of the publisher.
      *
      * @var string
-     * @ORM\Column(type="string", nullable=false)
+     * @ORM\Column(type="string", nullable=true)
      */
     private $publisherName;
 
@@ -147,6 +147,13 @@ class Journal extends AbstractEntity {
      */
     private $deposits;
 
+    public function __construct() {
+        parent::__construct();
+        $this->status = 'healthy';
+        $this->contacted = new \DateTime();
+        $this->termsAccepted = false;
+    }
+    
     public function __toString() {
         return $this->uuid;
     }
