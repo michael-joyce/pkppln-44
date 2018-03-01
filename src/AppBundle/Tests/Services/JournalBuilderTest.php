@@ -12,6 +12,7 @@ namespace AppBundle\Tests\Services;
 use AppBundle\Entity\Journal;
 use AppBundle\Services\JournalBuilder;
 use AppBundle\Utilities\Namespaces;
+use DateTime;
 use Nines\UtilBundle\Tests\Util\BaseTestCase;
 
 /**
@@ -39,6 +40,10 @@ class JournalBuilderTest extends BaseTestCase {
         $this->assertInstanceOf(Journal::class, $this->journal);
     }
     
+    public function testGetContacted() {
+        $this->assertInstanceOf(DateTime::class, $this->journal->getContacted());
+    }
+    
     /**
      * @dataProvider journalData
      */
@@ -49,7 +54,6 @@ class JournalBuilderTest extends BaseTestCase {
     public function journalData() {
         return [
             ['B99FE131-48B5-440A-A552-4F1BF2BFDE82', 'getUuid'],
-            [null, 'getContacted'],
             [null, 'getOjsVersion'],
             [null, 'getNotified'],
             ['Intl J Test', 'getTitle'],

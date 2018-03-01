@@ -24,3 +24,6 @@ services:
             $root: '%pln.data_dir%'
             $projectDir: '%kernel.project_dir%'
             
+    AppBundle\Services\Ping:
+        arguments:
+            $minOjsVersion: '%pln.min_ojs_version%'
