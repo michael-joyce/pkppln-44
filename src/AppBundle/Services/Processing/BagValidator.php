@@ -29,7 +29,7 @@ use ZipArchive;
 /**
  * Validate a bag, according to the bagit spec.
  */
-class ValidateBag
+class BagValidator
 {
     /**
      * {@inheritdoc}

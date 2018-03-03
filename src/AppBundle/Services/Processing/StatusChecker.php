@@ -31,7 +31,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @see SwordClient
  */
-class Status
+class StatusChecker
 {
     /**
      * @var SwordClient

@@ -13,7 +13,7 @@ use DOMElement;
 use DOMXPath;
 use Exception;
 
-class ScanViruses {
+class VirusScanner {
     
     /**
      * @var ClamAvAdapter

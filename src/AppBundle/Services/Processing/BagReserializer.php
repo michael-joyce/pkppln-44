@@ -28,7 +28,7 @@ use BagIt;
 /**
  * Take a processed bag and reserialize it.
  */
-class ReserializeBag
+class BagReserializer
 {
     /**
      * {@inheritdoc}

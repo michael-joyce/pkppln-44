@@ -13,7 +13,7 @@ use DOMDocument;
 /**
  * Validate the OJS XML export.
  */
-class ValidateXml
+class XmlValidator
 {
     /**
      * The PKP Public Identifier for OJS export XML.
