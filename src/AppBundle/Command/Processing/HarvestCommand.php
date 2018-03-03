@@ -2,6 +2,7 @@
 
 namespace AppBundle\Command\Processing;
 
+use AppBundle\Services\Processing\Harvester;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,6 +14,19 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class HarvestCommand extends ContainerAwareCommand
 {
+    /**
+     * @var Harvester
+     */
+    private $harvester;
+
+    /**
+     * @param \AppBundle\Command\Processing\Harvester $harvester
+     */    
+    public function __construct(Harvester $harvester) {
+        parent::__construct();
+        $this->harvester = $harvester;
+    }
+    
     /**
      * Configure the command.
      */

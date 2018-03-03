@@ -64,6 +64,10 @@ services:
         arguments:
             $minOjsVersion: '%pln.min_ojs_version%'
             
+    AppBundle\Services\Processing\Harvester:
+        arguments: 
+            $maxHarvestAttempts: '%pln.max_harvest_attepmts%'
+            
     # add more services, or override services that need manual wiring
     # AppBundle\Service\ExampleService:
     #     arguments:

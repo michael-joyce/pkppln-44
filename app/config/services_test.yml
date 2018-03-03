@@ -27,3 +27,7 @@ services:
     AppBundle\Services\Ping:
         arguments:
             $minOjsVersion: '%pln.min_ojs_version%'
+
+    AppBundle\Services\Processing\Harvester:
+        arguments: 
+            $maxHarvestAttempts: '%pln.max_harvest_attepmts%'

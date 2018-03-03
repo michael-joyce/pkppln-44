@@ -74,6 +74,7 @@ class Ping {
         $journal->setTitle($result->getJournalTitle());
         $journal->setOjsVersion($result->getOjsRelease());
         $journal->setTermsAccepted($result->areTermsAccepted() === 'yes');
+        $journal->setStatus('healthy');
         if(version_compare($result->getOjsRelease(), $this->minOjsVersion, '<')) {
             return;
         }

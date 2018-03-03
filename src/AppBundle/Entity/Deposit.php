@@ -595,6 +595,10 @@ class Deposit extends AbstractEntity {
     public function getErrorLog() {
         return $this->errorLog;
     }
+    
+    public function addErrorLog($error) {
+        $this->errorLog[] = $error;
+    }
 
     /**
      * Set plnState

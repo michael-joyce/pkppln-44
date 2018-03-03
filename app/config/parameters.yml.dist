@@ -43,3 +43,6 @@ parameters:
     
     # checksum algorithm to use when verifying integrity.
     pln.checksum_type: SHA-1
+
+    # Stop trying to harvest after pln.maxHarvestAttempts failures.
+    pln.max_harvest_attepmts: 5
