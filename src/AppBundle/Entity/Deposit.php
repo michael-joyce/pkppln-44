@@ -494,7 +494,7 @@ class Deposit extends AbstractEntity {
      * @return Deposit
      */
     public function setChecksumValue($checksumValue) {
-        $this->checksumValue = $checksumValue;
+        $this->checksumValue = strtoupper($checksumValue);
 
         return $this;
     }

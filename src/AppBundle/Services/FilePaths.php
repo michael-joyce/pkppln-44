@@ -86,7 +86,7 @@ class FilePaths {
      *
      * @return string
      */
-    final public function getHarvestDir(Journal $journal) {
+    public function getHarvestDir(Journal $journal) {
         $path = implode('/', array(
             $this->getRootPath(),
             'harvest',
@@ -106,7 +106,7 @@ class FilePaths {
      *
      * @return type
      */
-    final public function getHarvestFile(Deposit $deposit) {
+    public function getHarvestFile(Deposit $deposit) {
         $path = implode('/', array(
             $this->getHarvestDir($deposit->getJournal()),
             $deposit->getDepositUuid() . '.zip',
@@ -121,7 +121,7 @@ class FilePaths {
      *
      * @return string
      */
-    final public function getProcessingDir(Journal $journal) {
+    public function getProcessingDir(Journal $journal) {
         $path = implode('/', array(
             $this->getRootPath(),
             'processing',
@@ -160,7 +160,7 @@ class FilePaths {
      *
      * @return string
      */
-    final public function getStagingDir(Journal $journal) {
+    public function getStagingDir(Journal $journal) {
         $path = implode('/', array(
             $this->getRootPath(),
             'staged',
@@ -181,7 +181,7 @@ class FilePaths {
      *
      * @return type
      */
-    final public function getStagingBagPath(Deposit $deposit) {
+    public function getStagingBagPath(Deposit $deposit) {
         $path = $this->getStagingDir($deposit->getJournal());
 
         return $path . '/' . $deposit->getDepositUuid() . '.zip';

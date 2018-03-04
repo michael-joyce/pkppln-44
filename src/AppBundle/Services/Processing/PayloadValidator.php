@@ -1,25 +1,9 @@
 <?php
 
-/*
- * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 namespace AppBundle\Services\Processing;
 
 use AppBundle\Entity\Deposit;
+use AppBundle\Services\FilePaths;
 use Exception;
 
 /**
@@ -27,7 +11,23 @@ use Exception;
  */
 class PayloadValidator {
 
-    protected function hashFile($algorithm, $filepath) {
+    /**
+     * @var FilePaths
+     */
+    private $fp;
+
+    /**
+     * @param FilePaths $fp
+     */
+    public function __construct(FilePaths $fp) {
+        $this->fp = $fp;
+    }
+
+    public function setFilePaths(FilePaths $filePaths) {
+        $this->fp = $filePaths;
+    }
+    
+    public function hashFile($algorithm, $filepath) {
         $handle = fopen($filepath, "r");
         $context = null;
         switch (strtolower($algorithm)) {
@@ -39,7 +39,7 @@ class PayloadValidator {
                 $context = hash_init('md5');
                 break;
             default:
-                throw new \Exception("Unknown hash algorithm {$algorithm}");
+                throw new Exception("Unknown hash algorithm {$algorithm}");
         }
         while (($data = fread($handle, 64 * 1024))) {
             hash_update($context, $data);
@@ -49,13 +49,9 @@ class PayloadValidator {
         return strtoupper($hash);
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function processDeposit(Deposit $deposit) {
-
+    public function processDeposit(Deposit $deposit) {
         try {
-            $depositPath = $this->filePaths->getHarvestFile($deposit);
+            $depositPath = $this->fp->getHarvestFile($deposit);
             $checksumValue = $this->hashFile($deposit->getChecksumType(), $depositPath);
             if ($checksumValue !== $deposit->getChecksumValue()) {
                 throw new Exception("Deposit checksum does not match. Expected {$deposit->getChecksumValue()} != Actual {$checksumValue}");
@@ -65,7 +61,6 @@ class PayloadValidator {
             $deposit->addToProcessingLog($e->getMessage());
             return false;
         }
-        return true;
     }
 
 }
