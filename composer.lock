@@ -2549,16 +2549,16 @@
         },
         {
             "name": "sensiolabs/security-checker",
-            "version": "v4.1.7",
+            "version": "v4.1.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sensiolabs/security-checker.git",
-                "reference": "d539ccba2b4dce515de04f16b7ed7ae5b9eeb434"
+                "reference": "dc270d5fec418cc6ac983671dba5d80ffaffb142"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sensiolabs/security-checker/zipball/d539ccba2b4dce515de04f16b7ed7ae5b9eeb434",
-                "reference": "d539ccba2b4dce515de04f16b7ed7ae5b9eeb434",
+                "url": "https://api.github.com/repos/sensiolabs/security-checker/zipball/dc270d5fec418cc6ac983671dba5d80ffaffb142",
+                "reference": "dc270d5fec418cc6ac983671dba5d80ffaffb142",
                 "shasum": ""
             },
             "require": {
@@ -2590,7 +2590,7 @@
                 }
             ],
             "description": "A security checker for your composer.lock",
-            "time": "2018-01-11T05:54:03+00:00"
+            "time": "2018-02-28T22:10:01+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -3110,16 +3110,16 @@
         },
         {
             "name": "symfony/symfony",
-            "version": "v3.4.4",
+            "version": "v3.4.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "5220b6f9fcdee261c6fdd3e096f3b204fba5d906"
+                "reference": "8a023e125a68c0bce08d2a8c72d67e07f0d74cab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/5220b6f9fcdee261c6fdd3e096f3b204fba5d906",
-                "reference": "5220b6f9fcdee261c6fdd3e096f3b204fba5d906",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/8a023e125a68c0bce08d2a8c72d67e07f0d74cab",
+                "reference": "8a023e125a68c0bce08d2a8c72d67e07f0d74cab",
                 "shasum": ""
             },
             "require": {
@@ -3260,7 +3260,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2018-01-29T12:30:04+00:00"
+            "time": "2018-03-01T19:24:09+00:00"
         },
         {
             "name": "tetranz/select2entity-bundle",
@@ -3368,16 +3368,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.35.0",
+            "version": "v1.35.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "daa657073e55b0a78cce8fdd22682fddecc6385f"
+                "reference": "9c24f2cd39dc1906b76879e099970b7e53724601"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/daa657073e55b0a78cce8fdd22682fddecc6385f",
-                "reference": "daa657073e55b0a78cce8fdd22682fddecc6385f",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/9c24f2cd39dc1906b76879e099970b7e53724601",
+                "reference": "9c24f2cd39dc1906b76879e099970b7e53724601",
                 "shasum": ""
             },
             "require": {
@@ -3429,7 +3429,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2017-09-27T18:06:46+00:00"
+            "time": "2018-03-03T16:21:29+00:00"
         }
     ],
     "packages-dev": [
@@ -4999,16 +4999,16 @@
         },
         {
             "name": "symfony/phpunit-bridge",
-            "version": "v4.0.4",
+            "version": "v4.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/phpunit-bridge.git",
-                "reference": "c12fc01946942723ee824b5f09d241f5de15c037"
+                "reference": "14ffbbe2a72d0f6339b24eb830dd38cf63ba6630"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/phpunit-bridge/zipball/c12fc01946942723ee824b5f09d241f5de15c037",
-                "reference": "c12fc01946942723ee824b5f09d241f5de15c037",
+                "url": "https://api.github.com/repos/symfony/phpunit-bridge/zipball/14ffbbe2a72d0f6339b24eb830dd38cf63ba6630",
+                "reference": "14ffbbe2a72d0f6339b24eb830dd38cf63ba6630",
                 "shasum": ""
             },
             "require": {
@@ -5061,7 +5061,7 @@
             ],
             "description": "Symfony PHPUnit Bridge",
             "homepage": "https://symfony.com",
-            "time": "2018-01-21T19:06:11+00:00"
+            "time": "2018-02-19T16:50:22+00:00"
         },
         {
             "name": "webmozart/assert",
