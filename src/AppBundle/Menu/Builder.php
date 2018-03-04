@@ -9,8 +9,6 @@
 
 namespace AppBundle\Menu;
 
-use AppBundle\Entity\Pln;
-use Doctrine\ORM\EntityManagerInterface;
 use Knp\Menu\FactoryInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
@@ -18,53 +16,62 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
- *
+ * Application menu builder.
  */
 class Builder implements ContainerAwareInterface {
 
     use ContainerAwareTrait;
 
-    // U+25BE, black down-pointing small triangle.
+    /**
+     * U+25BE, black down-pointing small triangle.
+     */
     const CARET = ' ▾';
 
     /**
+     * Item factory.
+     *
      * @var FactoryInterface
      */
     private $factory;
 
     /**
+     * Authorization checker for getting user roles.
+     *
      * @var AuthorizationCheckerInterface
      */
     private $authChecker;
 
     /**
+     * Login token storage.
+     *
      * @var TokenStorageInterface
      */
     private $tokenStorage;
 
     /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-
-    /**
+     * Build the menu builder.
      *
      * @param FactoryInterface $factory
+     *   Dependency injected menu factory.
      * @param AuthorizationCheckerInterface $authChecker
+     *   Dependency injected authorization checker.
      * @param TokenStorageInterface $tokenStorage
-     * @param EntityManagerInterface $em
+     *   Dependency injected token storage service.
      */
-    public function __construct(FactoryInterface $factory, AuthorizationCheckerInterface $authChecker, TokenStorageInterface $tokenStorage, EntityManagerInterface $em) {
+    public function __construct(FactoryInterface $factory, AuthorizationCheckerInterface $authChecker, TokenStorageInterface $tokenStorage) {
         $this->factory = $factory;
         $this->authChecker = $authChecker;
         $this->tokenStorage = $tokenStorage;
-        $this->em = $em;
     }
 
     /**
+     * Check if the currently logged in user has a given role.
      *
-     * @param mixed $role
+     * @param string $role
+     *   Named role.
+     *
      * @return bool
+     *   True if the use has a role.
      */
     private function hasRole($role) {
         if (!$this->tokenStorage->getToken()) {
@@ -74,7 +81,13 @@ class Builder implements ContainerAwareInterface {
     }
 
     /**
+     * Build the app's main navigation menu.
      *
+     * @param array $options
+     *   Unused array of options.
+     *
+     * @return ItemInterface
+     *   The complete menu.
      */
     public function mainMenu(array $options) {
         $menu = $this->factory->createItem('root');

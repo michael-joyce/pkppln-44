@@ -15,7 +15,10 @@ use Doctrine\ORM\EntityRepository;
 class JournalRepository extends EntityRepository {
 
     /**
-     *
+     * Get a list of journals that need to be pinged.
+     * 
+     * @return Collection|Journal[]
+     *   List of journals.
      */
     public function getJournalsToPing() {
         
