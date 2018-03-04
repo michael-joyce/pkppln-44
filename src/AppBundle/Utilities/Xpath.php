@@ -21,11 +21,17 @@ class Xpath {
      * Get a single XML value as a string.
      *
      * @param SimpleXMLElement $xml
+     *   XML document with the data.
      * @param string $xpath
+     *   XPath query to evaluate.
+     * @param string $default
+     *   Default value to return if no value is found.
      *
      * @return string
+     *   The result is cast to string and returned.
      *
      * @throws Exception
+     *   If there are more than one result.
      */
     public static function getXmlValue(SimpleXMLElement $xml, $xpath, $default = null) {
         $data = $xml->xpath($xpath);
@@ -39,7 +45,15 @@ class Xpath {
     }
     
     /**
+     * Query an XML document.
      *
+     * @param SimpleXMLElement $xml
+     *   XML document with the data.
+     * @param string $xpath
+     *   XPath query to evaluate.
+     *
+     * @return array
+     *   An array of SimpleXMLElement objects or false.
      */
     public static function query(SimpleXMLElement $xml, $xpath) {
         return $xml->xpath($xpath);
