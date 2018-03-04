@@ -2,47 +2,77 @@
 
 namespace AppBundle\Command\Processing;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
+use AppBundle\Entity\Deposit;
+use AppBundle\Services\Processing\BagValidator;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * PlnValidateBagCommand command.
  */
-class ValidateBagCommand extends ContainerAwareCommand
+class ValidateBagCommand extends AbstractProcessingCmd
 {
     /**
-     * Configure the command.
+     * @var BagValidator
+     */
+    private $bagValidator;
+    
+    public function __construct(EntityManagerInterface $em, BagValidator $bagValidator) {
+        parent::__construct($em);
+        $this->bagValidator = $bagValidator;
+    }
+    
+    /**
+     * {@inheritdoc}
      */
     protected function configure()
     {
-        $this
-            ->setName('pln:validate:bag')
-            ->setDescription('...')
-            ->addArgument('argument', InputArgument::OPTIONAL, 'Argument description')
-            ->addOption('option', null, InputOption::VALUE_NONE, 'Option description')
-        ;
+        $this->setName('pln:validate:bag');
+        $this->setDescription('Validate PLN deposit packages.');
+        parent::configure();
+    }
+
+    protected function processDeposit(Deposit $deposit) {
+        return $this->bagValidator->processDeposit($deposit);
     }
 
     /**
-     * Execute the command.
-     *
-     * @param InputInterface $input
-     *   Command input, as defined in the configure() method.
-     * @param OutputInterface $output
-     *   Output destination.
+     * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    public function nextState()
     {
-        $argument = $input->getArgument('argument');
+        return 'bag-validated';
+    }
 
-        if ($input->getOption('option')) {
-            // ...
-        }
+    /**
+     * {@inheritdoc}
+     */
+    public function processingState()
+    {
+        return 'payload-validated';
+    }
 
-        $output->writeln('Command result.');
+    /**
+     * {@inheritdoc}
+     */
+    public function failureLogMessage()
+    {
+        return 'Bag checksum validation failed.';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function successLogMessage()
+    {
+        return 'Bag checksum validation succeeded.';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function errorState()
+    {
+        return 'bag-error';
     }
 
 }

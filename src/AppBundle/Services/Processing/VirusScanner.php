@@ -3,7 +3,6 @@
 namespace AppBundle\Services\Processing;
 
 // Autoloading doesn't work for bagit. 
-require_once 'vendor/scholarslab/bagit/lib/bagit.php';
 
 use AppBundle\Entity\Deposit;
 use BagIt;

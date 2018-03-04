@@ -2,47 +2,71 @@
 
 namespace AppBundle\Command\Processing;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
+use AppBundle\Entity\Deposit;
+use AppBundle\Services\Processing\PayloadValidator;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * PlnValidatePayloadCommand command.
  */
-class ValidatePayloadCommand extends ContainerAwareCommand
-{
+class ValidatePayloadCommand extends AbstractProcessingCmd {
+
     /**
-     * Configure the command.
+     * @var PayloadValidator
      */
-    protected function configure()
-    {
-        $this
-            ->setName('pln:validate:payload')
-            ->setDescription('...')
-            ->addArgument('argument', InputArgument::OPTIONAL, 'Argument description')
-            ->addOption('option', null, InputOption::VALUE_NONE, 'Option description')
-        ;
+    private $payloadValidator;
+
+    public function __construct(EntityManagerInterface $em, PayloadValidator $payloadValidator) {
+        parent::__construct($em);
+        $this->payloadValidator = $payloadValidator;
     }
 
     /**
-     * Execute the command.
-     *
-     * @param InputInterface $input
-     *   Command input, as defined in the configure() method.
-     * @param OutputInterface $output
-     *   Output destination.
+     * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $argument = $input->getArgument('argument');
+    protected function configure() {
+        $this->setName('pln:validate:payload');
+        $this->setDescription('Validate PLN deposit packages.');
+        parent::configure();
+    }
 
-        if ($input->getOption('option')) {
-            // ...
-        }
+    protected function processDeposit(Deposit $deposit) {
+        return $this->payloadValidator->processDeposit($deposit);
+    }
 
-        $output->writeln('Command result.');
+    /**
+     * {@inheritdoc}
+     */
+    public function nextState() {
+        return 'payload-validated';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function processingState() {
+        return 'harvested';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function failureLogMessage() {
+        return 'Payload checksum validation failed.';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function successLogMessage() {
+        return 'Payload checksum validation succeeded.';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function errorState() {
+        return 'payload-error';
     }
 
 }

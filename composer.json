@@ -4,7 +4,11 @@
     "type": "project",
     "autoload": {
         "psr-4": {
-            "": "src/"
+            "AppBundle\\": "src/AppBundle",
+            "Nines\\": "src/Nines"
+        },
+        "psr-0": {
+            "BagIt": "vendor/scholarslab/bagit/lib/"        
         },
         "classmap": [
             "app/AppKernel.php",

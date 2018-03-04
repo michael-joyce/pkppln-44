@@ -41,8 +41,9 @@ class Harvester {
         'headers' => array(
             'User-Agent' => 'PkpPlnBot 1.0; http://pkp.sfu.ca',
         ),
+        'decode_content' => false,
     );
-    
+
     /**
      * File sizes reported via HTTP HEAD must this close to to the file size
      * as reported in the deposit. Threshold = 0.02 is 2%.
@@ -53,7 +54,7 @@ class Harvester {
      * @var Client
      */
     private $client;
-    
+
     /**
      * @var Filesystem
      */
@@ -63,7 +64,7 @@ class Harvester {
      * @var int
      */
     private $maxAttempts;
-    
+
     /**
      * @var FilePaths
      */
@@ -87,7 +88,7 @@ class Harvester {
     public function setClient(Client $client) {
         $this->client = $client;
     }
-    
+
     /**
      * Set the file system client.
      *
@@ -145,14 +146,14 @@ class Harvester {
      * @throws Exception
      */
     public function checkSize(Deposit $deposit) {
-        $head = $this->client->head($deposit->getUrl());
-        if ($head->getStatusCode() !== 200 || !$head->hasHeader('Content-Length')) {
-            throw new Exception("HTTP HEAD request cannot check file size: HTTP {$head->getStatusCode()} - {$head->getReasonPhrase()} - {$deposit->getUrl()}");
+        $response = $this->client->head($deposit->getUrl(), self::CONF);
+        if ($response->getStatusCode() != 200 || !$response->hasHeader('Content-Length')) {
+            throw new Exception("HTTP HEAD request cannot check file size: HTTP {$response->getStatusCode()} - {$response->getReasonPhrase()} - {$deposit->getUrl()}");
         }
-        $values = $head->getHeader('Content-Length');
+        $values = $response->getHeader('Content-Length');
         $reported = (int) $values[0];
         if ($reported === 0) {
-            throw new Exception("HTTP HEAD response does not include file size: HTTP {$head->getStatusCode()} - {$head->getReasonPhrase()} - {$deposit->getUrl()}");
+            throw new Exception("HTTP HEAD response does not include file size: HTTP {$response->getStatusCode()} - {$response->getReasonPhrase()} - {$deposit->getUrl()}");
         }
         $expected = $deposit->getSize() * 1000;
         $difference = abs($reported - $expected) / (($reported + $expected) / 2.0);
@@ -178,7 +179,7 @@ class Harvester {
             $deposit->setHarvestAttempts($deposit->getHarvestAttempts() + 1);
             $this->checkSize($deposit);
             $response = $this->fetchDeposit($deposit->getUrl(), $deposit->getSize());
-            $deposit->setFileType($response->getHeader('Content-Type'));
+            $deposit->setFileType($response->getHeaderLine('Content-Type'));
             $filePath = $this->filePaths->getHarvestFile($deposit);
             return $this->writeDeposit($filePath, $response);
         } catch (Exception $e) {

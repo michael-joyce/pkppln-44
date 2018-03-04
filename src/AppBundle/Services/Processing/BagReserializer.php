@@ -19,7 +19,6 @@
 
 namespace AppBundle\Services\Processing;
 
-require_once 'vendor/scholarslab/bagit/lib/bagit.php';
 
 use AppBundle\Entity\AuContainer;
 use AppBundle\Entity\Deposit;

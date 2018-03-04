@@ -19,12 +19,11 @@
 
 namespace AppBundle\Services\Processing;
 
-// sigh. Something isn't autoloading here.
-require_once 'vendor/scholarslab/bagit/lib/bagit.php';
-
 use AppBundle\Entity\Deposit;
+use AppBundle\Services\FilePaths;
 use BagIt;
-use ZipArchive;
+use Exception;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Validate a bag, according to the bagit spec.
@@ -32,96 +31,50 @@ use ZipArchive;
 class BagValidator {
 
     /**
-     * {@inheritdoc}
+     * @var FilePaths
      */
-    protected function configure() {
-        $this->setName('pln:validate-bag');
-        $this->setDescription('Validate PLN deposit packages.');
-        parent::configure();
+    private $filePaths;
+
+    /**
+     * @var FileSystem
+     */
+    private $fs;
+
+    /**
+     * 
+     * @param FilePaths $fp
+     * @param Filesystem $fs
+     */
+    public function __construct(FilePaths $fp, Filesystem $fs) {
+        $this->filePaths = $fp;
+        $this->fs = $fs;
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function processDeposit(Deposit $deposit) {
+    public function processDeposit(Deposit $deposit) {
         $harvestedPath = $this->filePaths->getHarvestFile($deposit);
-        $extractedPath = $this->filePaths->getProcessingBagPath($deposit);
-        $this->logger->info("Processing {$harvestedPath}");
 
         if (!$this->fs->exists($harvestedPath)) {
             throw new Exception("Deposit file {$harvestedPath} does not exist");
         }
 
-        $zipFile = new ZipArchive();
-        if ($zipFile->open($harvestedPath) === false) {
-            throw new Exception("Cannot open {$harvestedPath}: " . $zipFile->getStatusString());
-        }
-
-        $this->logger->info("Extracting to {$extractedPath}");
-
-        if (file_exists($extractedPath)) {
-            $this->logger->warning("{$extractedPath} is not empty. Removing it.");
-            $this->fs->remove($extractedPath);
-        }
-        // dirname() is neccessary here - extractTo will create one layer too many
-        // directories otherwise.
-        if ($zipFile->extractTo(dirname($extractedPath)) === false) {
-            throw new Exception("Cannot extract to {$extractedPath} " . $zipFile->getStatusString());
-        }
-        $this->logger->info("Validating {$extractedPath}");
-
-        $bag = new BagIt($extractedPath);
+        $bag = new BagIt($harvestedPath);
         $bag->validate();
 
         if (count($bag->getBagErrors()) > 0) {
             foreach ($bag->getBagErrors() as $error) {
                 $deposit->addErrorLog("Bagit validation error for {$error[0]} - {$error[1]}");
             }
-            $this->logger->warning("BagIt validation failed for {$deposit->getDepositUuid()}");
-
-            return false;
+            throw new Exception("BagIt validation failed for {$deposit->getDepositUuid()}");
         }
         $journalVersion = $bag->getBagInfoData('PKP-PLN-OJS-Version');
         if ($journalVersion && $journalVersion !== $deposit->getJournalVersion()) {
-            $this->logger->warning("Bag journal version tag {$journalVersion} does not match deposit journal version {$deposit->getJournalVersion()}");
+            $deposit->addErrorLog("Bag journal version tag {$journalVersion} does not match deposit journal version {$deposit->getJournalVersion()}");
         }
 
         return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function nextState() {
-        return 'bag-validated';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function processingState() {
-        return 'payload-validated';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function failureLogMessage() {
-        return 'Bag checksum validation failed.';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function successLogMessage() {
-        return 'Bag checksum validation succeeded.';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function errorState() {
-        return 'bag-error';
     }
 
 }

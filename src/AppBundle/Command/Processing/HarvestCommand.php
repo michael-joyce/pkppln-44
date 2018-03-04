@@ -2,61 +2,74 @@
 
 namespace AppBundle\Command\Processing;
 
+use AppBundle\Entity\Deposit;
 use AppBundle\Services\Processing\Harvester;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * PlnHarvestCommand command.
  */
-class HarvestCommand extends ContainerAwareCommand
-{
+class HarvestCommand extends AbstractProcessingCmd {
+
     /**
      * @var Harvester
      */
     private $harvester;
 
     /**
-     * @param \AppBundle\Command\Processing\Harvester $harvester
-     */    
-    public function __construct(Harvester $harvester) {
-        parent::__construct();
+     * @param Harvester $harvester
+     */
+    public function __construct(EntityManagerInterface $em, Harvester $harvester) {
+        parent::__construct($em);
         $this->harvester = $harvester;
     }
-    
+
     /**
-     * Configure the command.
+     * {@inheritdoc}
      */
-    protected function configure()
-    {
-        $this
-            ->setName('pln:harvest')
-            ->setDescription('...')
-            ->addArgument('argument', InputArgument::OPTIONAL, 'Argument description')
-            ->addOption('option', null, InputOption::VALUE_NONE, 'Option description')
-        ;
+    protected function configure() {
+        $this->setName('pln:harvest');
+        $this->setDescription('Harvest OJS deposits.');
+        parent::configure();
+    }
+
+    protected function processDeposit(Deposit $deposit) {
+        return $this->harvester->processDeposit($deposit);
     }
 
     /**
-     * Execute the command.
-     *
-     * @param InputInterface $input
-     *   Command input, as defined in the configure() method.
-     * @param OutputInterface $output
-     *   Output destination.
+     * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $argument = $input->getArgument('argument');
+    public function nextState() {
+        return 'harvested';
+    }
 
-        if ($input->getOption('option')) {
-            // ...
-        }
+    /**
+     * {@inheritdoc}
+     */
+    public function errorState() {
+        return 'harvest-error';
+    }
 
-        $output->writeln('Command result.');
+    /**
+     * {@inheritdoc}
+     */
+    public function processingState() {
+        return 'depositedByJournal';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function failureLogMessage() {
+        return 'Deposit harvest failed.';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function successLogMessage() {
+        return 'Deposit harvest succeeded.';
     }
 
 }
