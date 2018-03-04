@@ -23,10 +23,16 @@ class PayloadValidator {
         $this->fp = $fp;
     }
 
+    /**
+     *
+     */
     public function setFilePaths(FilePaths $filePaths) {
         $this->fp = $filePaths;
     }
     
+    /**
+     *
+     */
     public function hashFile($algorithm, $filepath) {
         $handle = fopen($filepath, "r");
         $context = null;
@@ -35,9 +41,11 @@ class PayloadValidator {
             case 'sha1':
                 $context = hash_init('sha1');
                 break;
+
             case 'md5':
                 $context = hash_init('md5');
                 break;
+
             default:
                 throw new Exception("Unknown hash algorithm {$algorithm}");
         }
@@ -49,6 +57,9 @@ class PayloadValidator {
         return strtoupper($hash);
     }
 
+    /**
+     *
+     */
     public function processDeposit(Deposit $deposit) {
         try {
             $depositPath = $this->fp->getHarvestFile($deposit);

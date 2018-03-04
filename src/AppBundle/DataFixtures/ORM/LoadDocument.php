@@ -12,7 +12,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 class LoadDocument extends Fixture {
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     public function load(ObjectManager $em) {
         for ($i = 0; $i < 4; $i++) {

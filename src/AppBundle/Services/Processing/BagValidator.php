@@ -29,13 +29,12 @@ use ZipArchive;
 /**
  * Validate a bag, according to the bagit spec.
  */
-class BagValidator
-{
+class BagValidator {
+
     /**
      * {@inheritdoc}
      */
-    protected function configure()
-    {
+    protected function configure() {
         $this->setName('pln:validate-bag');
         $this->setDescription('Validate PLN deposit packages.');
         parent::configure();
@@ -44,8 +43,7 @@ class BagValidator
     /**
      * {@inheritdoc}
      */
-    protected function processDeposit(Deposit $deposit)
-    {
+    protected function processDeposit(Deposit $deposit) {
         $harvestedPath = $this->filePaths->getHarvestFile($deposit);
         $extractedPath = $this->filePaths->getProcessingBagPath($deposit);
         $this->logger->info("Processing {$harvestedPath}");
@@ -56,7 +54,7 @@ class BagValidator
 
         $zipFile = new ZipArchive();
         if ($zipFile->open($harvestedPath) === false) {
-            throw new Exception("Cannot open {$harvestedPath}: ".$zipFile->getStatusString());
+            throw new Exception("Cannot open {$harvestedPath}: " . $zipFile->getStatusString());
         }
 
         $this->logger->info("Extracting to {$extractedPath}");
@@ -68,7 +66,7 @@ class BagValidator
         // dirname() is neccessary here - extractTo will create one layer too many
         // directories otherwise.
         if ($zipFile->extractTo(dirname($extractedPath)) === false) {
-            throw new Exception("Cannot extract to {$extractedPath} ".$zipFile->getStatusString());
+            throw new Exception("Cannot extract to {$extractedPath} " . $zipFile->getStatusString());
         }
         $this->logger->info("Validating {$extractedPath}");
 
@@ -84,7 +82,7 @@ class BagValidator
             return false;
         }
         $journalVersion = $bag->getBagInfoData('PKP-PLN-OJS-Version');
-        if($journalVersion && $journalVersion !== $deposit->getJournalVersion()) {
+        if ($journalVersion && $journalVersion !== $deposit->getJournalVersion()) {
             $this->logger->warning("Bag journal version tag {$journalVersion} does not match deposit journal version {$deposit->getJournalVersion()}");
         }
 
@@ -94,40 +92,36 @@ class BagValidator
     /**
      * {@inheritdoc}
      */
-    public function nextState()
-    {
+    public function nextState() {
         return 'bag-validated';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function processingState()
-    {
+    public function processingState() {
         return 'payload-validated';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function failureLogMessage()
-    {
+    public function failureLogMessage() {
         return 'Bag checksum validation failed.';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function successLogMessage()
-    {
+    public function successLogMessage() {
         return 'Bag checksum validation succeeded.';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function errorState()
-    {
+    public function errorState() {
         return 'bag-error';
     }
+
 }

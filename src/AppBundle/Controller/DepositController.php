@@ -20,8 +20,8 @@ use Symfony\Component\HttpFoundation\Request;
  * @Route("/journal/{journalId}/deposit")
  * @ParamConverter("journal", options={"id"="journalId"})
  */
-class DepositController extends Controller
-{
+class DepositController extends Controller {
+
     /**
      * Lists all Deposit entities.
      *
@@ -30,13 +30,12 @@ class DepositController extends Controller
      *
      * @return array
      *   Array data for the template processor.
-     * 
+     *
      * @Route("/", name="deposit_index")
      * @Method("GET")
      * @Template()
      */
-    public function indexAction(Request $request, Journal $journal)
-    {
+    public function indexAction(Request $request, Journal $journal) {
         $em = $this->getDoctrine()->getManager();
         $qb = $em->createQueryBuilder();
         $qb->select('e')->from(Deposit::class, 'e')->orderBy('e.id', 'ASC');
@@ -49,14 +48,15 @@ class DepositController extends Controller
             'journal' => $journal,
         );
     }
+
     /**
      * Search for Deposit entities.
      *
-     * To make this work, add a method like this one to the 
+     * To make this work, add a method like this one to the
      * AppBundle:Deposit repository. Replace the fieldName with
      * something appropriate, and adjust the generated search.html.twig
      * template.
-     * 
+     *
      * <code><pre>
      *    public function searchQuery($q) {
      *        $qb = $this->createQueryBuilder('e');
@@ -69,26 +69,25 @@ class DepositController extends Controller
      *        return $qb->getQuery();
      *    }
      * </pre></code>
-     * 
+     *
      * @param Request $request
      *   Dependency injected HTTP request object.
-     * 
+     *
      * @Route("/search", name="deposit_search")
      * @Method("GET")
      * @Template()
      */
-    public function searchAction(Request $request, Journal $journal)
-    {
+    public function searchAction(Request $request, Journal $journal) {
         $em = $this->getDoctrine()->getManager();
-	$repo = $em->getRepository('AppBundle:Deposit');
-	$q = $request->query->get('q');
-	if($q) {
-	    $query = $repo->searchQuery($q);
+        $repo = $em->getRepository('AppBundle:Deposit');
+        $q = $request->query->get('q');
+        if ($q) {
+            $query = $repo->searchQuery($q);
             $paginator = $this->get('knp_paginator');
             $deposits = $paginator->paginate($query, $request->query->getInt('page', 1), 25);
-	} else {
+        } else {
             $deposits = array();
-	}
+        }
 
         return array(
             'deposits' => $deposits,
@@ -104,13 +103,12 @@ class DepositController extends Controller
      *
      * @return array
      *   Array data for the template processor.
-     *      
+     *
      * @Route("/{id}", name="deposit_show")
      * @Method("GET")
      * @Template()
      */
-    public function showAction(Journal $journal, Deposit $deposit)
-    {
+    public function showAction(Journal $journal, Deposit $deposit) {
 
         return array(
             'journal' => $journal,

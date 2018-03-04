@@ -28,13 +28,12 @@ use BagIt;
 /**
  * Take a processed bag and reserialize it.
  */
-class BagReserializer
-{
+class BagReserializer {
+
     /**
      * {@inheritdoc}
      */
-    protected function configure()
-    {
+    protected function configure() {
         $this->setName('pln:reserialize');
         $this->setDescription('Reserialize the deposit bag.');
         parent::configure();
@@ -43,12 +42,12 @@ class BagReserializer
     /**
      * Add the metadata from the database to the bag-info.txt file.
      *
-     * @param BagIt   $bag
+     * @param BagIt $bag
      * @param Deposit $deposit
      */
-    protected function addMetadata(BagIt $bag, Deposit $deposit)
-    {
-        $bag->bagInfoData = array(); // @todo this is very very bad. Once BagItPHP is updated it should be $bag->clearAllBagInfo();
+    protected function addMetadata(BagIt $bag, Deposit $deposit) {
+        // @todo this is very very bad. Once BagItPHP is updated it should be $bag->clearAllBagInfo();
+        $bag->bagInfoData = array();
         $bag->setBagInfoData('External-Identifier', $deposit->getDepositUuid());
         $bag->setBagInfoData('PKP-PLN-Deposit-UUID', $deposit->getDepositUuid());
         $bag->setBagInfoData('PKP-PLN-Deposit-Received', $deposit->getReceived()->format('c'));
@@ -66,15 +65,14 @@ class BagReserializer
         $bag->setBagInfoData('PKP-PLN-Publisher-URL', $journal->getPublisherUrl());
 
         foreach ($deposit->getLicense() as $key => $value) {
-            $bag->setBagInfoData('PKP-PLN-'.$key, $value);
+            $bag->setBagInfoData('PKP-PLN-' . $key, $value);
         }
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function processDeposit(Deposit $deposit)
-    {
+    protected function processDeposit(Deposit $deposit) {
         $extractedPath = $this->filePaths->getProcessingBagPath($deposit);
         $this->logger->info("Reserializing {$extractedPath}");
 
@@ -99,7 +97,8 @@ class BagReserializer
 
         $bag->package($path, 'zip');
         $deposit->setPackagePath($path);
-        $deposit->setPackageSize(ceil(filesize($path) / 1000)); // bytes to kb.
+        // Bytes to kb.
+        $deposit->setPackageSize(ceil(filesize($path) / 1000));
         $deposit->setPackageChecksumType('sha1');
         $deposit->setPackageChecksumValue(hash_file('sha1', $path));
 
@@ -121,40 +120,36 @@ class BagReserializer
     /**
      * {@inheritdoc}
      */
-    public function failureLogMessage()
-    {
+    public function failureLogMessage() {
         return 'Bag Reserialize failed.';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function nextState()
-    {
+    public function nextState() {
         return 'reserialized';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function processingState()
-    {
+    public function processingState() {
         return 'virus-checked';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function successLogMessage()
-    {
+    public function successLogMessage() {
         return 'Bag Reserialize succeeded.';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function errorState()
-    {
+    public function errorState() {
         return 'reserialize-error';
     }
+
 }

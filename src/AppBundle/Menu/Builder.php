@@ -48,7 +48,7 @@ class Builder implements ContainerAwareInterface {
     private $em;
 
     /**
-     * 
+     *
      * @param FactoryInterface $factory
      * @param AuthorizationCheckerInterface $authChecker
      * @param TokenStorageInterface $tokenStorage
@@ -62,9 +62,9 @@ class Builder implements ContainerAwareInterface {
     }
 
     /**
-     * 
-     * @param type $role
-     * @return boolean
+     *
+     * @param mixed $role
+     * @return bool
      */
     private function hasRole($role) {
         if (!$this->tokenStorage->getToken()) {

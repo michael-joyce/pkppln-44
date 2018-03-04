@@ -13,8 +13,7 @@ use DOMDocument;
 /**
  * Validate the OJS XML export.
  */
-class XmlValidator
-{
+class XmlValidator {
     /**
      * The PKP Public Identifier for OJS export XML.
      */
@@ -23,8 +22,7 @@ class XmlValidator
     /**
      * {@inheritdoc}
      */
-    protected function configure()
-    {
+    protected function configure() {
         $this->setName('pln:validate-xml');
         $this->setDescription('Validate OJS XML export files.');
         parent::configure();
@@ -33,8 +31,7 @@ class XmlValidator
     /**
      * Log errors generated during the validation.
      */
-    private function logErrors(DtdValidator $validator)
-    {
+    private function logErrors(DtdValidator $validator) {
         foreach ($validator->getErrors() as $error) {
             $this->logger->warning(implode(':', array($error['file'], $error['line'], $error['message'])));
         }
@@ -54,17 +51,16 @@ class XmlValidator
      * @return DOMDocument
      *
      * @param Deposit $deposit
-     * @param string  $filename
-     * @param string  $report
+     * @param string $filename
+     * @param string $report
      */
-    private function loadXml(Deposit $deposit, $filename, &$report)
-    {
+    private function loadXml(Deposit $deposit, $filename, &$report) {
         $dom = new DOMDocument();
         try {
             $dom->load($filename, LIBXML_COMPACT | LIBXML_PARSEHUGE);
         } catch (Exception $ex) {
             if (strpos($ex->getMessage(), 'Input is not proper UTF-8') === false) {
-                $deposit->addErrorLog('XML file '.basename($filename).' is not parseable: '.$ex->getMessage());
+                $deposit->addErrorLog('XML file ' . basename($filename) . ' is not parseable: ' . $ex->getMessage());
                 $report .= $ex->getMessage();
                 $report .= "\nCannot validate XML.\n";
 
@@ -75,18 +71,19 @@ class XmlValidator
             $filteredFilename = "{$filename}-filtered.xml";
             $in = fopen($filename, 'rb');
             $out = fopen($filteredFilename, 'wb');
-            $blockSize = 64 * 1024; // 64k blocks
+            // 64k blocks.
+            $blockSize = 64 * 1024;
             $changes = 0;
             while ($buffer = fread($in, $blockSize)) {
                 $filtered = iconv('UTF-8', 'UTF-8//IGNORE', $buffer);
                 $changes += strlen($buffer) - strlen($filtered);
                 fwrite($out, $filtered);
             }
-            $report .= basename($filename)." contains {$changes} invalid UTF-8 characters, which have been removed with "
-                    .ICONV_IMPL.' version '.ICONV_VERSION
-                    .' in PHP '.PHP_VERSION."\n";
+            $report .= basename($filename) . " contains {$changes} invalid UTF-8 characters, which have been removed with "
+                    . ICONV_IMPL . ' version ' . ICONV_VERSION
+                    . ' in PHP ' . PHP_VERSION . "\n";
 
-            $report .= basename($filteredFilename)." will be validated.\n";
+            $report .= basename($filteredFilename) . " will be validated.\n";
             $dom->load($filteredFilename, LIBXML_COMPACT | LIBXML_PARSEHUGE);
         }
 
@@ -96,8 +93,7 @@ class XmlValidator
     /**
      * {@inheritdoc}
      */
-    protected function processDeposit(Deposit $deposit)
-    {
+    protected function processDeposit(Deposit $deposit) {
         $extractedPath = $this->filePaths->getProcessingBagPath($deposit);
 
         $this->logger->info("Validating {$extractedPath} XML files.");
@@ -137,40 +133,36 @@ class XmlValidator
     /**
      * {@inheritdoc}
      */
-    public function nextState()
-    {
+    public function nextState() {
         return 'xml-validated';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function processingState()
-    {
+    public function processingState() {
         return 'bag-validated';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function failureLogMessage()
-    {
+    public function failureLogMessage() {
         return 'XML Validation failed.';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function successLogMessage()
-    {
+    public function successLogMessage() {
         return 'XML validation succeeded.';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function errorState()
-    {
+    public function errorState() {
         return 'xml-error';
     }
+
 }

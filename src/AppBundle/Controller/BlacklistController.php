@@ -18,8 +18,8 @@ use AppBundle\Form\BlacklistType;
  * @Security("has_role('ROLE_USER')")
  * @Route("/blacklist")
  */
-class BlacklistController extends Controller
-{
+class BlacklistController extends Controller {
+
     /**
      * Lists all Blacklist entities.
      *
@@ -28,13 +28,12 @@ class BlacklistController extends Controller
      *
      * @return array
      *   Array data for the template processor.
-     * 
+     *
      * @Route("/", name="blacklist_index")
      * @Method("GET")
      * @Template()
      */
-    public function indexAction(Request $request)
-    {
+    public function indexAction(Request $request) {
         $em = $this->getDoctrine()->getManager();
         $qb = $em->createQueryBuilder();
         $qb->select('e')->from(Blacklist::class, 'e')->orderBy('e.id', 'ASC');
@@ -46,14 +45,15 @@ class BlacklistController extends Controller
             'blacklists' => $blacklists,
         );
     }
+
     /**
      * Search for Blacklist entities.
      *
-     * To make this work, add a method like this one to the 
+     * To make this work, add a method like this one to the
      * AppBundle:Blacklist repository. Replace the fieldName with
      * something appropriate, and adjust the generated search.html.twig
      * template.
-     * 
+     *
      * <code><pre>
      *    public function searchQuery($q) {
      *        $qb = $this->createQueryBuilder('e');
@@ -66,26 +66,25 @@ class BlacklistController extends Controller
      *        return $qb->getQuery();
      *    }
      * </pre></code>
-     * 
+     *
      * @param Request $request
      *   Dependency injected HTTP request object.
-     * 
+     *
      * @Route("/search", name="blacklist_search")
      * @Method("GET")
      * @Template()
      */
-    public function searchAction(Request $request)
-    {
+    public function searchAction(Request $request) {
         $em = $this->getDoctrine()->getManager();
-	$repo = $em->getRepository('AppBundle:Blacklist');
-	$q = $request->query->get('q');
-	if($q) {
-	    $query = $repo->searchQuery($q);
+        $repo = $em->getRepository('AppBundle:Blacklist');
+        $q = $request->query->get('q');
+        if ($q) {
+            $query = $repo->searchQuery($q);
             $paginator = $this->get('knp_paginator');
             $blacklists = $paginator->paginate($query, $request->query->getInt('page', 1), 25);
-	} else {
+        } else {
             $blacklists = array();
-	}
+        }
 
         return array(
             'blacklists' => $blacklists,
@@ -101,14 +100,13 @@ class BlacklistController extends Controller
      *
      * @return array|RedirectResponse
      *   Array data for the template processor or a redirect to the Blacklist.
-     * 
+     *
      * @Security("has_role('ROLE_ADMIN')")
      * @Route("/new", name="blacklist_new")
      * @Method({"GET", "POST"})
      * @Template()
      */
-    public function newAction(Request $request)
-    {
+    public function newAction(Request $request) {
         $blacklist = new Blacklist();
         $form = $this->createForm(BlacklistType::class, $blacklist);
         $form->handleRequest($request);
@@ -136,13 +134,12 @@ class BlacklistController extends Controller
      *
      * @return array
      *   Array data for the template processor.
-     *      
+     *
      * @Route("/{id}", name="blacklist_show")
      * @Method("GET")
      * @Template()
      */
-    public function showAction(Blacklist $blacklist)
-    {
+    public function showAction(Blacklist $blacklist) {
 
         return array(
             'blacklist' => $blacklist,
@@ -152,22 +149,20 @@ class BlacklistController extends Controller
     /**
      * Displays a form to edit an existing Blacklist entity.
      *
-     * 
      * @param Request $request
      *   Dependency injected HTTP request object.
      * @param Blacklist $blacklist
      *   The Blacklist to edit.
-     * 
+     *
      * @return array|RedirectResponse
      *   Array data for the template processor or a redirect to the Blacklist.
-     * 
+     *
      * @Security("has_role('ROLE_ADMIN')")
      * @Route("/{id}/edit", name="blacklist_edit")
      * @Method({"GET", "POST"})
      * @Template()
      */
-    public function editAction(Request $request, Blacklist $blacklist)
-    {
+    public function editAction(Request $request, Blacklist $blacklist) {
         $editForm = $this->createForm(BlacklistType::class, $blacklist);
         $editForm->handleRequest($request);
 
@@ -187,21 +182,19 @@ class BlacklistController extends Controller
     /**
      * Deletes a Blacklist entity.
      *
-     *
      * @param Request $request
      *   Dependency injected HTTP request object.
      * @param Blacklist $blacklist
      *   The Blacklist to delete.
-     * 
+     *
      * @return array|RedirectResponse
      *   A redirect to the blacklist_index.
-     * 
+     *
      * @Security("has_role('ROLE_ADMIN')")
      * @Route("/{id}/delete", name="blacklist_delete")
      * @Method("GET")
      */
-    public function deleteAction(Request $request, Blacklist $blacklist)
-    {
+    public function deleteAction(Request $request, Blacklist $blacklist) {
         $em = $this->getDoctrine()->getManager();
         $em->remove($blacklist);
         $em->flush();
@@ -209,4 +202,5 @@ class BlacklistController extends Controller
 
         return $this->redirectToRoute('blacklist_index');
     }
+
 }

@@ -30,7 +30,8 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
- * Description of SwordController
+ * Description of SwordController.
+ *
  * @Route("/api/sword/2.0")
  */
 class SwordController extends Controller {
@@ -45,6 +46,9 @@ class SwordController extends Controller {
      */
     private $em;
     
+    /**
+     *
+     */
     public function __construct(BlackWhiteList $blackwhitelist, EntityManagerInterface $em) {
         $this->blackwhitelist = $blackwhitelist;
         $this->em = $em;
@@ -86,8 +90,8 @@ class SwordController extends Controller {
     }
     
     /**
-     * Check if a journal's uuid is whitelised or blacklisted. 
-     * 
+     * Check if a journal's uuid is whitelised or blacklisted.
+     *
      * The rules are:
      *
      * If the journal uuid is whitelisted, return true
@@ -98,8 +102,7 @@ class SwordController extends Controller {
      *
      * @return bool
      */
-    private function checkAccess($uuid)
-    {
+    private function checkAccess($uuid) {
         if ($this->blackwhitelist->isWhitelisted($uuid)) {
             return true;
         }
@@ -117,8 +120,7 @@ class SwordController extends Controller {
      *
      * @return string
      */
-    private function getNetworkMessage(Journal $journal)
-    {
+    private function getNetworkMessage(Journal $journal) {
         if ($journal->getOjsVersion() === null) {
             return $this->getParameter('pln.network_default');
         }
@@ -127,7 +129,7 @@ class SwordController extends Controller {
         }
 
         return $this->getParameter('pln.network_oldojs');
-    }    
+    }
     
     /**
      * Get the XML from an HTTP request.
@@ -168,10 +170,10 @@ class SwordController extends Controller {
      * @param Request $request
      *
      * @return array
+     *
      * @Template
      */
-    public function serviceDocumentAction(Request $request, JournalBuilder $builder)
-    {
+    public function serviceDocumentAction(Request $request, JournalBuilder $builder) {
         $obh = strtoupper($this->fetchHeader($request, 'On-Behalf-Of'));
         $journalUrl = $this->fetchHeader($request, 'Journal-Url');
 
@@ -188,20 +190,20 @@ class SwordController extends Controller {
         }
 
         $journal = $builder->fromRequest($obh, $journalUrl);
-        if( ! $journal->getTermsAccepted()) {
+        if (!$journal->getTermsAccepted()) {
             $this->accepting = false;
         }
         $this->em->flush();
         $termsRepo = $this->getDoctrine()->getRepository(TermOfUse::class);
         return array(
-            'onBehalfOf' => $obh,
-            'accepting' => $accepting ? 'Yes' : 'No',
-            'maxUpload' => $this->getParameter('pln.max_upload'),
-            'checksumType' => $this->getParameter('pln.checksum_type'),
-            'message' => $this->getNetworkMessage($journal),
-            'journal' => $journal,
-            'terms' => $termsRepo->getTerms(),
-            'termsUpdated' => $termsRepo->getLastUpdated(),
+        'onBehalfOf' => $obh,
+        'accepting' => $accepting ? 'Yes' : 'No',
+        'maxUpload' => $this->getParameter('pln.max_upload'),
+        'checksumType' => $this->getParameter('pln.checksum_type'),
+        'message' => $this->getNetworkMessage($journal),
+        'journal' => $journal,
+        'terms' => $termsRepo->getTerms(),
+        'termsUpdated' => $termsRepo->getLastUpdated(),
         );
     }
 
@@ -219,10 +221,9 @@ class SwordController extends Controller {
      *
      * @return Response
      */
-    public function createDepositAction(Request $request, Journal $journal, JournalBuilder $journalBuilder, DepositBuilder $depositBuilder)
-    {
+    public function createDepositAction(Request $request, Journal $journal, JournalBuilder $journalBuilder, DepositBuilder $depositBuilder) {
         $accepting = $this->checkAccess($journal->getUuid());
-        if( ! $journal->getTermsAccepted()) {
+        if (!$journal->getTermsAccepted()) {
             $this->accepting = false;
         }
 
@@ -231,7 +232,7 @@ class SwordController extends Controller {
         }
 
         $xml = $this->getXml($request);
-        // update the journal metadata
+        // Update the journal metadata.
         $journalBuilder->fromXml($xml, $journal->getUuid());
         $deposit = $depositBuilder->fromXml($journal, $xml);
         $this->em->flush();
@@ -239,8 +240,8 @@ class SwordController extends Controller {
         /* @var Response */
         $response = $this->statementAction($request, $journal, $deposit);
         $response->headers->set('Location', $this->generateUrl('sword_statement', array(
-            'journal_uuid' => $journal->getUuid(),
-            'deposit_uuid' => $deposit->getDepositUuid(),
+        'journal_uuid' => $journal->getUuid(),
+        'deposit_uuid' => $deposit->getDepositUuid(),
         ), UrlGeneratorInterface::ABSOLUTE_URL));
         $response->setStatusCode(Response::HTTP_CREATED);
 
@@ -266,17 +267,17 @@ class SwordController extends Controller {
      */
     public function statementAction(Request $request, Journal $journal, Deposit $deposit) {
         $accepting = $this->checkAccess($journal->getUuid());
-        if( !$accepting && !$this->isGranted('ROLE_USER')) {
-            throw new BadRequestHttpException('Not authorized to request statements.', null, 400);            
+        if (!$accepting && !$this->isGranted('ROLE_USER')) {
+            throw new BadRequestHttpException('Not authorized to request statements.', null, 400);
         }
-        if($journal !== $deposit->getJournal()) {
+        if ($journal !== $deposit->getJournal()) {
             throw new BadRequestHttpException('Deposit does not belong to journal.', null, 400);
         }
         $journal->setContacted(new DateTime());
         $journal->setStatus('healthy');
         $this->em->flush();
         $response = $this->render('AppBundle:sword:statement.xml.twig', array(
-            'deposit' => $deposit,
+        'deposit' => $deposit,
         ));
         $response->headers->set('Content-Type', 'text/xml');
         return $response;
@@ -304,7 +305,7 @@ class SwordController extends Controller {
         if (!$accepting) {
             throw new BadRequestHttpException('Not authorized to create deposits.', null, 400);
         }
-        if($journal !== $deposit->getJournal()) {
+        if ($journal !== $deposit->getJournal()) {
             throw new BadRequestHttpException('Deposit does not belong to journal.', null, 400);
         }
         $xml = $this->getXml($request);
@@ -314,12 +315,12 @@ class SwordController extends Controller {
         /* @var Response */
         $response = $this->statementAction($request, $journal, $deposit);
         $response->headers->set('Location', $this->generateUrl('sword_statement', array(
-            'journal_uuid' => $journal->getUuid(),
-            'deposit_uuid' => $deposit->getDepositUuid(),
+        'journal_uuid' => $journal->getUuid(),
+        'deposit_uuid' => $deposit->getDepositUuid(),
         ), UrlGeneratorInterface::ABSOLUTE_URL));
         $response->setStatusCode(Response::HTTP_CREATED);
 
-        return $response;        
+        return $response;
     }
     
     /**
@@ -339,7 +340,6 @@ class SwordController extends Controller {
      * @return BinaryFileResponse
      */
     public function originalDepositAction(Request $request, Journal $journal, Deposit $deposit) {
-        
     }
     
 }

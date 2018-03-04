@@ -21,7 +21,7 @@ class LoadDeposit extends Fixture implements DependentFixtureInterface {
     );
     
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     public function load(ObjectManager $em) {
         for ($i = 0; $i < 4; $i++) {
@@ -30,10 +30,10 @@ class LoadDeposit extends Fixture implements DependentFixtureInterface {
             $fixture->setLicense('Creative Commons');
             $fixture->setFileType('application/zip');
             $fixture->setDepositUuid(self::UUIDS[$i]);
-            $fixture->setReceived(new DateTime("2018-{$i}-{$i}T12:00:00"));            
+            $fixture->setReceived(new DateTime("2018-{$i}-{$i}T12:00:00"));
             $fixture->setAction('add');
             $fixture->setVolume(1);
-            $fixture->setIssue($i+1);
+            $fixture->setIssue($i + 1);
             $fixture->setPubDate(new DateTime("2016-{$i}-{$i}T12:00:00"));
             $fixture->setChecksumType('sha1');
             $fixture->setChecksumValue(sha1(self::UUIDS[$i]));

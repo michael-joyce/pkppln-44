@@ -18,7 +18,7 @@ use SimpleXMLElement;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
- * Description of DepositBuilder
+ * Description of DepositBuilder.
  */
 class DepositBuilder {
 
@@ -32,6 +32,9 @@ class DepositBuilder {
      */
     private $generator;
 
+    /**
+     *
+     */
     public function __construct(EntityManagerInterface $em, UrlGeneratorInterface $generator) {
         $this->em = $em;
         $this->generator = $generator;
@@ -43,7 +46,7 @@ class DepositBuilder {
      */
     protected function findDeposit($uuid) {
         $deposit = $this->em->getRepository(Deposit::class)->findOneBy(array(
-            'depositUuid' => strtoupper($uuid),
+        'depositUuid' => strtoupper($uuid),
         ));
         $action = 'edit';
         if (!$deposit) {

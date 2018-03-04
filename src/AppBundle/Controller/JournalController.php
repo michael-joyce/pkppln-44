@@ -18,8 +18,8 @@ use AppBundle\Form\JournalType;
  * @Security("has_role('ROLE_USER')")
  * @Route("/journal")
  */
-class JournalController extends Controller
-{
+class JournalController extends Controller {
+
     /**
      * Lists all Journal entities.
      *
@@ -28,13 +28,12 @@ class JournalController extends Controller
      *
      * @return array
      *   Array data for the template processor.
-     * 
+     *
      * @Route("/", name="journal_index")
      * @Method("GET")
      * @Template()
      */
-    public function indexAction(Request $request)
-    {
+    public function indexAction(Request $request) {
         $em = $this->getDoctrine()->getManager();
         $qb = $em->createQueryBuilder();
         $qb->select('e')->from(Journal::class, 'e')->orderBy('e.id', 'ASC');
@@ -46,14 +45,15 @@ class JournalController extends Controller
             'journals' => $journals,
         );
     }
+
     /**
      * Search for Journal entities.
      *
-     * To make this work, add a method like this one to the 
+     * To make this work, add a method like this one to the
      * AppBundle:Journal repository. Replace the fieldName with
      * something appropriate, and adjust the generated search.html.twig
      * template.
-     * 
+     *
      * <code><pre>
      *    public function searchQuery($q) {
      *        $qb = $this->createQueryBuilder('e');
@@ -66,26 +66,25 @@ class JournalController extends Controller
      *        return $qb->getQuery();
      *    }
      * </pre></code>
-     * 
+     *
      * @param Request $request
      *   Dependency injected HTTP request object.
-     * 
+     *
      * @Route("/search", name="journal_search")
      * @Method("GET")
      * @Template()
      */
-    public function searchAction(Request $request)
-    {
+    public function searchAction(Request $request) {
         $em = $this->getDoctrine()->getManager();
-	$repo = $em->getRepository('AppBundle:Journal');
-	$q = $request->query->get('q');
-	if($q) {
-	    $query = $repo->searchQuery($q);
+        $repo = $em->getRepository('AppBundle:Journal');
+        $q = $request->query->get('q');
+        if ($q) {
+            $query = $repo->searchQuery($q);
             $paginator = $this->get('knp_paginator');
             $journals = $paginator->paginate($query, $request->query->getInt('page', 1), 25);
-	} else {
+        } else {
             $journals = array();
-	}
+        }
 
         return array(
             'journals' => $journals,
@@ -101,13 +100,12 @@ class JournalController extends Controller
      *
      * @return array
      *   Array data for the template processor.
-     *      
+     *
      * @Route("/{id}", name="journal_show")
      * @Method("GET")
      * @Template()
      */
-    public function showAction(Journal $journal)
-    {
+    public function showAction(Journal $journal) {
 
         return array(
             'journal' => $journal,

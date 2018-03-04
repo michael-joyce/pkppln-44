@@ -36,7 +36,7 @@ class FilePaths {
      * Build the service.
      */
     public function __construct($root, $projectDir, FileSystem $fs = null) {
-        if($root && $root[0] !== '/') {
+        if ($root && $root[0] !== '/') {
             $this->root = $projectDir . '/' . $root;
         } else {
             $this->root = $root;
@@ -50,7 +50,7 @@ class FilePaths {
 
     /**
      * Get the root file system path.
-     * 
+     *
      * @return string
      *   Path to the root.
      */
@@ -58,6 +58,9 @@ class FilePaths {
         return $this->root;
     }
 
+    /**
+     *
+     */
     public function getRestoreDir(Journal $journal) {
         $path = implode('/', array(
             $this->getRootPath(),
@@ -71,9 +74,12 @@ class FilePaths {
         return $path;
     }
     
+    /**
+     *
+     */
     public function getRestoreFile(Deposit $deposit) {
         $path = implode('/', array(
-            $this->getRestoreDir($deposit->getJournal()), 
+            $this->getRestoreDir($deposit->getJournal()),
             $deposit->getDepositUuid() . '.zip',
         ));
         return $path;
@@ -88,9 +94,9 @@ class FilePaths {
      */
     public function getHarvestDir(Journal $journal) {
         $path = implode('/', array(
-            $this->getRootPath(),
-            'harvest',
-            $journal->getUuid(),
+        $this->getRootPath(),
+        'harvest',
+        $journal->getUuid(),
         ));
         if (!$this->fs->exists($path)) {
             $this->fs->mkdir($path);
@@ -104,12 +110,12 @@ class FilePaths {
      *
      * @param Deposit $deposit
      *
-     * @return type
+     * @return mixed
      */
     public function getHarvestFile(Deposit $deposit) {
         $path = implode('/', array(
-            $this->getHarvestDir($deposit->getJournal()),
-            $deposit->getDepositUuid() . '.zip',
+        $this->getHarvestDir($deposit->getJournal()),
+        $deposit->getDepositUuid() . '.zip',
         ));
         return $path;
     }
@@ -123,9 +129,9 @@ class FilePaths {
      */
     public function getProcessingDir(Journal $journal) {
         $path = implode('/', array(
-            $this->getRootPath(),
-            'processing',
-            $journal->getUuid(),
+        $this->getRootPath(),
+        'processing',
+        $journal->getUuid(),
         ));
         if (!$this->fs->exists($path)) {
             $this->logger->notice("Creating directory {$path}");
@@ -139,12 +145,12 @@ class FilePaths {
      *
      * @param Deposit $deposit
      *
-     * @return type
+     * @return mixed
      */
     public function getProcessingBagPath(Deposit $deposit) {
         $path = implode('/', array(
-            $this->getProcessingDir($deposit->getJournal()),
-            $deposit->getDepositUuid(),
+        $this->getProcessingDir($deposit->getJournal()),
+        $deposit->getDepositUuid(),
         ));
         if (!$this->fs->exists($path)) {
             $this->logger->notice("Creating directory {$path}");
@@ -162,9 +168,9 @@ class FilePaths {
      */
     public function getStagingDir(Journal $journal) {
         $path = implode('/', array(
-            $this->getRootPath(),
-            'staged',
-            $journal->getUuid(),
+        $this->getRootPath(),
+        'staged',
+        $journal->getUuid(),
         ));
         if (!$this->fs->exists($path)) {
             $this->logger->notice("Creating directory {$path}");
@@ -179,7 +185,7 @@ class FilePaths {
      *
      * @param Deposit $deposit
      *
-     * @return type
+     * @return mixed
      */
     public function getStagingBagPath(Deposit $deposit) {
         $path = $this->getStagingDir($deposit->getJournal());

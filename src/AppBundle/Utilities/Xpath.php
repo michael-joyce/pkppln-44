@@ -13,7 +13,7 @@ use Exception;
 use SimpleXMLElement;
 
 /**
- * Description of Xpath
+ * Description of Xpath.
  */
 class Xpath {
     
@@ -27,8 +27,7 @@ class Xpath {
      *
      * @throws Exception
      */
-    public static function getXmlValue(SimpleXMLElement $xml, $xpath, $default = null)
-    {
+    public static function getXmlValue(SimpleXMLElement $xml, $xpath, $default = null) {
         $data = $xml->xpath($xpath);
         if (count($data) === 1) {
             return trim((string) $data[0]);
@@ -39,7 +38,11 @@ class Xpath {
         throw new Exception("Too many elements for '{$xpath}'");
     }
     
+    /**
+     *
+     */
     public static function query(SimpleXMLElement $xml, $xpath) {
         return $xml->xpath($xpath);
     }
+
 }

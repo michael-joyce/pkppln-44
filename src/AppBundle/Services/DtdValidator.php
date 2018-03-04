@@ -59,7 +59,7 @@ class DtdValidator {
      * Validate a DOM document.
      *
      * @param DOMDocument $dom
-     * @param bool        $clearErrors
+     * @param bool $clearErrors
      */
     public function validate(DOMDocument $dom, $clearErrors = true) {
         if ($clearErrors) {

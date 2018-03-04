@@ -20,7 +20,7 @@ class LoadJournal extends Fixture {
     );
     
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}.
      */
     public function load(ObjectManager $em) {
         for ($i = 0; $i < 4; $i++) {
@@ -29,7 +29,7 @@ class LoadJournal extends Fixture {
             $fixture->setContacted(new DateTime("2018-{$i}-{$i}T12:00:00"));
             $fixture->setOjsVersion('2.4.8.' . $i);
             $fixture->setTitle('Title ' . $i);
-            $fixture->setIssn('1234-123'.$i);
+            $fixture->setIssn('1234-123' . $i);
             $fixture->setUrl('http://example.com/journal/' . $i);
             $fixture->setStatus('healthy');
             $fixture->setTermsAccepted(true);

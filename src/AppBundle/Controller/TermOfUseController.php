@@ -18,8 +18,8 @@ use AppBundle\Form\TermOfUseType;
  * @Security("has_role('ROLE_USER')")
  * @Route("/termofuse")
  */
-class TermOfUseController extends Controller
-{
+class TermOfUseController extends Controller {
+
     /**
      * Lists all TermOfUse entities.
      *
@@ -28,13 +28,12 @@ class TermOfUseController extends Controller
      *
      * @return array
      *   Array data for the template processor.
-     * 
+     *
      * @Route("/", name="termofuse_index")
      * @Method("GET")
      * @Template()
      */
-    public function indexAction(Request $request)
-    {
+    public function indexAction(Request $request) {
         $em = $this->getDoctrine()->getManager();
         $qb = $em->createQueryBuilder();
         $qb->select('e')->from(TermOfUse::class, 'e')->orderBy('e.id', 'ASC');
@@ -55,14 +54,13 @@ class TermOfUseController extends Controller
      *
      * @return array|RedirectResponse
      *   Array data for the template processor or a redirect to the TermOfUse.
-     * 
+     *
      * @Security("has_role('ROLE_ADMIN')")
      * @Route("/new", name="termofuse_new")
      * @Method({"GET", "POST"})
      * @Template()
      */
-    public function newAction(Request $request)
-    {
+    public function newAction(Request $request) {
         $termOfUse = new TermOfUse();
         $form = $this->createForm(TermOfUseType::class, $termOfUse);
         $form->handleRequest($request);
@@ -90,13 +88,12 @@ class TermOfUseController extends Controller
      *
      * @return array
      *   Array data for the template processor.
-     *      
+     *
      * @Route("/{id}", name="termofuse_show")
      * @Method("GET")
      * @Template()
      */
-    public function showAction(TermOfUse $termOfUse)
-    {
+    public function showAction(TermOfUse $termOfUse) {
 
         return array(
             'termOfUse' => $termOfUse,
@@ -106,22 +103,20 @@ class TermOfUseController extends Controller
     /**
      * Displays a form to edit an existing TermOfUse entity.
      *
-     * 
      * @param Request $request
      *   Dependency injected HTTP request object.
      * @param TermOfUse $termOfUse
      *   The TermOfUse to edit.
-     * 
+     *
      * @return array|RedirectResponse
      *   Array data for the template processor or a redirect to the TermOfUse.
-     * 
+     *
      * @Security("has_role('ROLE_ADMIN')")
      * @Route("/{id}/edit", name="termofuse_edit")
      * @Method({"GET", "POST"})
      * @Template()
      */
-    public function editAction(Request $request, TermOfUse $termOfUse)
-    {
+    public function editAction(Request $request, TermOfUse $termOfUse) {
         $editForm = $this->createForm(TermOfUseType::class, $termOfUse);
         $editForm->handleRequest($request);
 
@@ -145,16 +140,15 @@ class TermOfUseController extends Controller
      *   Dependency injected HTTP request object.
      * @param TermOfUse $termOfUse
      *   The TermOfUse to delete.
-     * 
+     *
      * @return array|RedirectResponse
      *   A redirect to the termofuse_index.
-     * 
+     *
      * @Security("has_role('ROLE_ADMIN')")
      * @Route("/{id}/delete", name="termofuse_delete")
      * @Method("GET")
      */
-    public function deleteAction(Request $request, TermOfUse $termOfUse)
-    {
+    public function deleteAction(Request $request, TermOfUse $termOfUse) {
         $em = $this->getDoctrine()->getManager();
         $em->remove($termOfUse);
         $em->flush();
@@ -162,4 +156,5 @@ class TermOfUseController extends Controller
 
         return $this->redirectToRoute('termofuse_index');
     }
+
 }

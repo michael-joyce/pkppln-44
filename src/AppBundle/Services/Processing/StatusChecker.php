@@ -31,8 +31,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @see SwordClient
  */
-class StatusChecker
-{
+class StatusChecker {
     /**
      * @var SwordClient
      */
@@ -46,16 +45,14 @@ class StatusChecker
     /**
      * {@inheritdoc}
      */
-    public function __construct($name = null)
-    {
+    public function __construct($name = null) {
         parent::__construct($name);
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function configure()
-    {
+    protected function configure() {
         $this->setName('pln:status');
         $this->setDescription('Check the status of deposits in LOCKSSOMatic.');
         parent::configure();
@@ -64,8 +61,7 @@ class StatusChecker
     /**
      * {@inheritdoc}
      */
-    public function setContainer(ContainerInterface $container = null)
-    {
+    public function setContainer(ContainerInterface $container = null) {
         parent::setContainer($container);
         $this->cleanup = $this->container->getParameter('remove_complete_deposits');
         $this->client = $container->get('sword_client');
@@ -75,8 +71,7 @@ class StatusChecker
     /**
      * Remove a directory and its contents recursively. Use with caution.
      */
-    private function delTree($path)
-    {
+    private function delTree($path) {
         $directoryIterator = new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS);
         $fileIterator = new RecursiveIteratorIterator($directoryIterator, RecursiveIteratorIterator::CHILD_FIRST);
         foreach ($fileIterator as $file) {
@@ -96,14 +91,13 @@ class StatusChecker
      *
      * @param Deposit $deposit
      *
-     * @return boolean|null
+     * @return bool|null
      */
-    protected function processDeposit(Deposit $deposit)
-    {
+    protected function processDeposit(Deposit $deposit) {
         $this->logger->notice("Checking deposit {$deposit->getDepositUuid()}");
         $statement = $this->client->statement($deposit);
         $status = (string) $statement->xpath('//atom:category[@scheme="http://purl.org/net/sword/terms/state"]/@term')[0];
-        $this->logger->notice('Deposit is '.$status);
+        $this->logger->notice('Deposit is ' . $status);
         $deposit->setPlnState($status);
         if ($status === 'agreement' && $this->cleanup) {
             $this->logger->notice("Deposit complete. Removing processing files for deposit {$deposit->getId()}.");
@@ -112,7 +106,7 @@ class StatusChecker
             unlink($this->filePaths->getStagingBagPath($deposit));
         }
 
-        if($status === 'agreement') {
+        if ($status === 'agreement') {
             return true;
         }
         return null;
@@ -121,40 +115,36 @@ class StatusChecker
     /**
      * {@inheritdoc}
      */
-    public function nextState()
-    {
+    public function nextState() {
         return 'complete';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function processingState()
-    {
+    public function processingState() {
         return 'deposited';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function failureLogMessage()
-    {
+    public function failureLogMessage() {
         return 'Deposit status failed.';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function successLogMessage()
-    {
+    public function successLogMessage() {
         return 'Deposit status succeeded.';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function errorState()
-    {
+    public function errorState() {
         return 'status-error';
     }
+
 }

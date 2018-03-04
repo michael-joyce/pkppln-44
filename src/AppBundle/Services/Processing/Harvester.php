@@ -60,7 +60,7 @@ class Harvester {
     private $fs;
 
     /**
-     * @var integer
+     * @var int
      */
     private $maxAttempts;
     
@@ -69,6 +69,9 @@ class Harvester {
      */
     private $filePaths;
 
+    /**
+     *
+     */
     public function __construct($maxHarvestAttempts, FilePaths $filePaths) {
         $this->maxAttempts = $maxHarvestAttempts;
         $this->filePaths = $filePaths;
@@ -87,7 +90,7 @@ class Harvester {
     
     /**
      * Set the file system client.
-     * 
+     *
      * @param Filesystem $fs
      */
     public function setFilesystem(Filesystem $fs) {
@@ -98,7 +101,7 @@ class Harvester {
      * Write a deposit's data to the filesystem at $path. Returns true on
      * success and false on failure.
      *
-     * @param string   $path
+     * @param string $path
      * @param Response $response
      *
      * @return bool
@@ -122,7 +125,7 @@ class Harvester {
      * @param string $url
      *
      * @return Response
-     * 
+     *
      * @throws Exception
      */
     public function fetchDeposit($url) {
@@ -137,7 +140,7 @@ class Harvester {
      * Send an HTTP HEAD request to get the deposit's host to get an estimate
      * of the download size.
      *
-     * @param type $deposit
+     * @param mixed $deposit
      *
      * @throws Exception
      */
@@ -147,7 +150,7 @@ class Harvester {
             throw new Exception("HTTP HEAD request cannot check file size: HTTP {$head->getStatusCode()} - {$head->getReasonPhrase()} - {$deposit->getUrl()}");
         }
         $values = $head->getHeader('Content-Length');
-        $reported = (int)$values[0];
+        $reported = (int) $values[0];
         if ($reported === 0) {
             throw new Exception("HTTP HEAD response does not include file size: HTTP {$head->getStatusCode()} - {$head->getReasonPhrase()} - {$deposit->getUrl()}");
         }

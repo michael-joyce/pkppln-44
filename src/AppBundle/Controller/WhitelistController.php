@@ -18,8 +18,8 @@ use AppBundle\Form\WhitelistType;
  * @Security("has_role('ROLE_USER')")
  * @Route("/whitelist")
  */
-class WhitelistController extends Controller
-{
+class WhitelistController extends Controller {
+
     /**
      * Lists all Whitelist entities.
      *
@@ -28,13 +28,12 @@ class WhitelistController extends Controller
      *
      * @return array
      *   Array data for the template processor.
-     * 
+     *
      * @Route("/", name="whitelist_index")
      * @Method("GET")
      * @Template()
      */
-    public function indexAction(Request $request)
-    {
+    public function indexAction(Request $request) {
         $em = $this->getDoctrine()->getManager();
         $qb = $em->createQueryBuilder();
         $qb->select('e')->from(Whitelist::class, 'e')->orderBy('e.id', 'ASC');
@@ -46,14 +45,15 @@ class WhitelistController extends Controller
             'whitelists' => $whitelists,
         );
     }
+
     /**
      * Search for Whitelist entities.
      *
-     * To make this work, add a method like this one to the 
+     * To make this work, add a method like this one to the
      * AppBundle:Whitelist repository. Replace the fieldName with
      * something appropriate, and adjust the generated search.html.twig
      * template.
-     * 
+     *
      * <code><pre>
      *    public function searchQuery($q) {
      *        $qb = $this->createQueryBuilder('e');
@@ -66,26 +66,25 @@ class WhitelistController extends Controller
      *        return $qb->getQuery();
      *    }
      * </pre></code>
-     * 
+     *
      * @param Request $request
      *   Dependency injected HTTP request object.
-     * 
+     *
      * @Route("/search", name="whitelist_search")
      * @Method("GET")
      * @Template()
      */
-    public function searchAction(Request $request)
-    {
+    public function searchAction(Request $request) {
         $em = $this->getDoctrine()->getManager();
-	$repo = $em->getRepository('AppBundle:Whitelist');
-	$q = $request->query->get('q');
-	if($q) {
-	    $query = $repo->searchQuery($q);
+        $repo = $em->getRepository('AppBundle:Whitelist');
+        $q = $request->query->get('q');
+        if ($q) {
+            $query = $repo->searchQuery($q);
             $paginator = $this->get('knp_paginator');
             $whitelists = $paginator->paginate($query, $request->query->getInt('page', 1), 25);
-	} else {
+        } else {
             $whitelists = array();
-	}
+        }
 
         return array(
             'whitelists' => $whitelists,
@@ -101,14 +100,13 @@ class WhitelistController extends Controller
      *
      * @return array|RedirectResponse
      *   Array data for the template processor or a redirect to the Whitelist.
-     * 
+     *
      * @Security("has_role('ROLE_ADMIN')")
      * @Route("/new", name="whitelist_new")
      * @Method({"GET", "POST"})
      * @Template()
      */
-    public function newAction(Request $request)
-    {
+    public function newAction(Request $request) {
         $whitelist = new Whitelist();
         $form = $this->createForm(WhitelistType::class, $whitelist);
         $form->handleRequest($request);
@@ -136,13 +134,12 @@ class WhitelistController extends Controller
      *
      * @return array
      *   Array data for the template processor.
-     *      
+     *
      * @Route("/{id}", name="whitelist_show")
      * @Method("GET")
      * @Template()
      */
-    public function showAction(Whitelist $whitelist)
-    {
+    public function showAction(Whitelist $whitelist) {
 
         return array(
             'whitelist' => $whitelist,
@@ -152,22 +149,20 @@ class WhitelistController extends Controller
     /**
      * Displays a form to edit an existing Whitelist entity.
      *
-     * 
      * @param Request $request
      *   Dependency injected HTTP request object.
      * @param Whitelist $whitelist
      *   The Whitelist to edit.
-     * 
+     *
      * @return array|RedirectResponse
      *   Array data for the template processor or a redirect to the Whitelist.
-     * 
+     *
      * @Security("has_role('ROLE_ADMIN')")
      * @Route("/{id}/edit", name="whitelist_edit")
      * @Method({"GET", "POST"})
      * @Template()
      */
-    public function editAction(Request $request, Whitelist $whitelist)
-    {
+    public function editAction(Request $request, Whitelist $whitelist) {
         $editForm = $this->createForm(WhitelistType::class, $whitelist);
         $editForm->handleRequest($request);
 
@@ -187,21 +182,19 @@ class WhitelistController extends Controller
     /**
      * Deletes a Whitelist entity.
      *
-     *
      * @param Request $request
      *   Dependency injected HTTP request object.
      * @param Whitelist $whitelist
      *   The Whitelist to delete.
-     * 
+     *
      * @return array|RedirectResponse
      *   A redirect to the whitelist_index.
-     * 
+     *
      * @Security("has_role('ROLE_ADMIN')")
      * @Route("/{id}/delete", name="whitelist_delete")
      * @Method("GET")
      */
-    public function deleteAction(Request $request, Whitelist $whitelist)
-    {
+    public function deleteAction(Request $request, Whitelist $whitelist) {
         $em = $this->getDoctrine()->getManager();
         $em->remove($whitelist);
         $em->flush();
@@ -209,4 +202,5 @@ class WhitelistController extends Controller
 
         return $this->redirectToRoute('whitelist_index');
     }
+
 }

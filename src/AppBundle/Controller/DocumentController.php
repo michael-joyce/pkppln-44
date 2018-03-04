@@ -18,8 +18,8 @@ use AppBundle\Form\DocumentType;
  * @Security("has_role('ROLE_USER')")
  * @Route("/document")
  */
-class DocumentController extends Controller
-{
+class DocumentController extends Controller {
+
     /**
      * Lists all Document entities.
      *
@@ -28,13 +28,12 @@ class DocumentController extends Controller
      *
      * @return array
      *   Array data for the template processor.
-     * 
+     *
      * @Route("/", name="document_index")
      * @Method("GET")
      * @Template()
      */
-    public function indexAction(Request $request)
-    {
+    public function indexAction(Request $request) {
         $em = $this->getDoctrine()->getManager();
         $qb = $em->createQueryBuilder();
         $qb->select('e')->from(Document::class, 'e')->orderBy('e.id', 'ASC');
@@ -46,14 +45,15 @@ class DocumentController extends Controller
             'documents' => $documents,
         );
     }
+
     /**
      * Search for Document entities.
      *
-     * To make this work, add a method like this one to the 
+     * To make this work, add a method like this one to the
      * AppBundle:Document repository. Replace the fieldName with
      * something appropriate, and adjust the generated search.html.twig
      * template.
-     * 
+     *
      * <code><pre>
      *    public function searchQuery($q) {
      *        $qb = $this->createQueryBuilder('e');
@@ -66,26 +66,25 @@ class DocumentController extends Controller
      *        return $qb->getQuery();
      *    }
      * </pre></code>
-     * 
+     *
      * @param Request $request
      *   Dependency injected HTTP request object.
-     * 
+     *
      * @Route("/search", name="document_search")
      * @Method("GET")
      * @Template()
      */
-    public function searchAction(Request $request)
-    {
+    public function searchAction(Request $request) {
         $em = $this->getDoctrine()->getManager();
-	$repo = $em->getRepository('AppBundle:Document');
-	$q = $request->query->get('q');
-	if($q) {
-	    $query = $repo->searchQuery($q);
+        $repo = $em->getRepository('AppBundle:Document');
+        $q = $request->query->get('q');
+        if ($q) {
+            $query = $repo->searchQuery($q);
             $paginator = $this->get('knp_paginator');
             $documents = $paginator->paginate($query, $request->query->getInt('page', 1), 25);
-	} else {
+        } else {
             $documents = array();
-	}
+        }
 
         return array(
             'documents' => $documents,
@@ -101,14 +100,13 @@ class DocumentController extends Controller
      *
      * @return array|RedirectResponse
      *   Array data for the template processor or a redirect to the Document.
-     * 
+     *
      * @Security("has_role('ROLE_ADMIN')")
      * @Route("/new", name="document_new")
      * @Method({"GET", "POST"})
      * @Template()
      */
-    public function newAction(Request $request)
-    {
+    public function newAction(Request $request) {
         $document = new Document();
         $form = $this->createForm(DocumentType::class, $document);
         $form->handleRequest($request);
@@ -136,13 +134,12 @@ class DocumentController extends Controller
      *
      * @return array
      *   Array data for the template processor.
-     *      
+     *
      * @Route("/{id}", name="document_show")
      * @Method("GET")
      * @Template()
      */
-    public function showAction(Document $document)
-    {
+    public function showAction(Document $document) {
 
         return array(
             'document' => $document,
@@ -152,22 +149,20 @@ class DocumentController extends Controller
     /**
      * Displays a form to edit an existing Document entity.
      *
-     * 
      * @param Request $request
      *   Dependency injected HTTP request object.
      * @param Document $document
      *   The Document to edit.
-     * 
+     *
      * @return array|RedirectResponse
      *   Array data for the template processor or a redirect to the Document.
-     * 
+     *
      * @Security("has_role('ROLE_ADMIN')")
      * @Route("/{id}/edit", name="document_edit")
      * @Method({"GET", "POST"})
      * @Template()
      */
-    public function editAction(Request $request, Document $document)
-    {
+    public function editAction(Request $request, Document $document) {
         $editForm = $this->createForm(DocumentType::class, $document);
         $editForm->handleRequest($request);
 
@@ -187,21 +182,19 @@ class DocumentController extends Controller
     /**
      * Deletes a Document entity.
      *
-     *
      * @param Request $request
      *   Dependency injected HTTP request object.
      * @param Document $document
      *   The Document to delete.
-     * 
+     *
      * @return array|RedirectResponse
      *   A redirect to the document_index.
-     * 
+     *
      * @Security("has_role('ROLE_ADMIN')")
      * @Route("/{id}/delete", name="document_delete")
      * @Method("GET")
      */
-    public function deleteAction(Request $request, Document $document)
-    {
+    public function deleteAction(Request $request, Document $document) {
         $em = $this->getDoctrine()->getManager();
         $em->remove($document);
         $em->flush();
@@ -209,4 +202,5 @@ class DocumentController extends Controller
 
         return $this->redirectToRoute('document_index');
     }
+
 }

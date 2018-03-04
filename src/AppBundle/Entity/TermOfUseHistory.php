@@ -6,13 +6,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Nines\UtilBundle\Entity\AbstractEntity;
 
 /**
- * TermOfUseHistory
+ * TermOfUseHistory.
  *
  * @ORM\Table(name="term_of_use_history")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\TermOfUseHistoryRepository")
  */
-class TermOfUseHistory extends AbstractEntity
-{
+class TermOfUseHistory extends AbstractEntity {
     /**
      * A term ID, similar to the OJS translation keys.
      *
@@ -45,103 +44,98 @@ class TermOfUseHistory extends AbstractEntity
      */
     private $user;
 
+    /**
+     *
+     */
     public function __toString() {
-        
     }
 
     /**
-     * Set termId
+     * Set termId.
      *
-     * @param integer $termId
+     * @param int $termId
      *
      * @return TermOfUseHistory
      */
-    public function setTermId($termId)
-    {
+    public function setTermId($termId) {
         $this->termId = $termId;
 
         return $this;
     }
 
     /**
-     * Get termId
+     * Get termId.
      *
-     * @return integer
+     * @return int
      */
-    public function getTermId()
-    {
+    public function getTermId() {
         return $this->termId;
     }
 
     /**
-     * Set action
+     * Set action.
      *
      * @param string $action
      *
      * @return TermOfUseHistory
      */
-    public function setAction($action)
-    {
+    public function setAction($action) {
         $this->action = $action;
 
         return $this;
     }
 
     /**
-     * Get action
+     * Get action.
      *
      * @return string
      */
-    public function getAction()
-    {
+    public function getAction() {
         return $this->action;
     }
 
     /**
-     * Set changeSet
+     * Set changeSet.
      *
      * @param array $changeSet
      *
      * @return TermOfUseHistory
      */
-    public function setChangeSet($changeSet)
-    {
+    public function setChangeSet($changeSet) {
         $this->changeSet = $changeSet;
 
         return $this;
     }
 
     /**
-     * Get changeSet
+     * Get changeSet.
      *
      * @return array
      */
-    public function getChangeSet()
-    {
+    public function getChangeSet() {
         return $this->changeSet;
     }
 
     /**
-     * Set user
+     * Set user.
      *
      * @param string $user
      *
      * @return TermOfUseHistory
      */
-    public function setUser($user)
-    {
+    public function setUser($user) {
         $this->user = $user;
 
         return $this;
     }
 
     /**
-     * Get user
+     * Get user.
      *
      * @return string
      */
-    public function getUser()
-    {
+    public function getUser() {
         return $this->user;
     }
+
 }

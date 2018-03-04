@@ -6,13 +6,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Nines\UtilBundle\Entity\AbstractEntity;
 
 /**
- * Document
+ * Document.
  *
  * @ORM\Table(name="document")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\DocumentRepository")
  */
-class Document extends AbstractEntity
-{
+class Document extends AbstractEntity {
     /**
      * Document title.
      *
@@ -45,103 +44,98 @@ class Document extends AbstractEntity
      */
     private $content;
     
+    /**
+     *
+     */
     public function __toString() {
-        
     }
 
     /**
-     * Set title
+     * Set title.
      *
      * @param string $title
      *
      * @return Document
      */
-    public function setTitle($title)
-    {
+    public function setTitle($title) {
         $this->title = $title;
 
         return $this;
     }
 
     /**
-     * Get title
+     * Get title.
      *
      * @return string
      */
-    public function getTitle()
-    {
+    public function getTitle() {
         return $this->title;
     }
 
     /**
-     * Set path
+     * Set path.
      *
      * @param string $path
      *
      * @return Document
      */
-    public function setPath($path)
-    {
+    public function setPath($path) {
         $this->path = $path;
 
         return $this;
     }
 
     /**
-     * Get path
+     * Get path.
      *
      * @return string
      */
-    public function getPath()
-    {
+    public function getPath() {
         return $this->path;
     }
 
     /**
-     * Set summary
+     * Set summary.
      *
      * @param string $summary
      *
      * @return Document
      */
-    public function setSummary($summary)
-    {
+    public function setSummary($summary) {
         $this->summary = $summary;
 
         return $this;
     }
 
     /**
-     * Get summary
+     * Get summary.
      *
      * @return string
      */
-    public function getSummary()
-    {
+    public function getSummary() {
         return $this->summary;
     }
 
     /**
-     * Set content
+     * Set content.
      *
      * @param string $content
      *
      * @return Document
      */
-    public function setContent($content)
-    {
+    public function setContent($content) {
         $this->content = $content;
 
         return $this;
     }
 
     /**
-     * Get content
+     * Get content.
      *
      * @return string
      */
-    public function getContent()
-    {
+    public function getContent() {
         return $this->content;
     }
+
 }

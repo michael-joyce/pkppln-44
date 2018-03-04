@@ -10,10 +10,10 @@ use Nines\UtilBundle\Entity\AbstractEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Journal
+ * Journal.
  *
  * @ORM\Table(name="journal", indexes={
- *  @ORM\Index(columns={"uuid", "title", "issn", "url", "email", "publisher_name", "publisher_url"}, flags={"fulltext"})
+ * @ORM\Index(columns={"uuid", "title", "issn", "url", "email", "publisher_name", "publisher_url"}, flags={"fulltext"})
  * })
  * @ORM\Entity(repositoryClass="AppBundle\Repository\JournalRepository")
  */
@@ -21,7 +21,7 @@ class Journal extends AbstractEntity {
 
     /**
      * List of states where a deposit has been sent to LOCKSSOMatic.
-     * 
+     *
      * @todo shouldn't this live in Deposit?
      */
     const SENTSTATES = array(
@@ -32,7 +32,7 @@ class Journal extends AbstractEntity {
 
     /**
      * The URL suffix for the ping gateway.
-     * 
+     *
      * This suffix is appened to the Journal's URL for to build the ping URL.
      */
     const GATEWAY_URL_SUFFIX = '/gateway/plugin/PLNGatewayPlugin';
@@ -147,6 +147,9 @@ class Journal extends AbstractEntity {
      */
     private $deposits;
 
+    /**
+     *
+     */
     public function __construct() {
         parent::__construct();
         $this->status = 'healthy';
@@ -154,12 +157,15 @@ class Journal extends AbstractEntity {
         $this->termsAccepted = false;
     }
     
+    /**
+     *
+     */
     public function __toString() {
         return $this->uuid;
     }
 
     /**
-     * Set uuid
+     * Set uuid.
      *
      * @param string $uuid
      *
@@ -172,7 +178,7 @@ class Journal extends AbstractEntity {
     }
 
     /**
-     * Get uuid
+     * Get uuid.
      *
      * @return string
      */
@@ -181,7 +187,7 @@ class Journal extends AbstractEntity {
     }
 
     /**
-     * Set contacted
+     * Set contacted.
      *
      * @param DateTime $contacted
      *
@@ -194,7 +200,7 @@ class Journal extends AbstractEntity {
     }
 
     /**
-     * Get contacted
+     * Get contacted.
      *
      * @return DateTime
      */
@@ -203,7 +209,7 @@ class Journal extends AbstractEntity {
     }
 
     /**
-     * Set ojsVersion
+     * Set ojsVersion.
      *
      * @param string $ojsVersion
      *
@@ -216,7 +222,7 @@ class Journal extends AbstractEntity {
     }
 
     /**
-     * Get ojsVersion
+     * Get ojsVersion.
      *
      * @return string
      */
@@ -225,7 +231,7 @@ class Journal extends AbstractEntity {
     }
 
     /**
-     * Set notified
+     * Set notified.
      *
      * @param DateTime $notified
      *
@@ -238,7 +244,7 @@ class Journal extends AbstractEntity {
     }
 
     /**
-     * Get notified
+     * Get notified.
      *
      * @return DateTime
      */
@@ -247,7 +253,7 @@ class Journal extends AbstractEntity {
     }
 
     /**
-     * Set title
+     * Set title.
      *
      * @param string $title
      *
@@ -260,7 +266,7 @@ class Journal extends AbstractEntity {
     }
 
     /**
-     * Get title
+     * Get title.
      *
      * @return string
      */
@@ -269,7 +275,7 @@ class Journal extends AbstractEntity {
     }
 
     /**
-     * Set issn
+     * Set issn.
      *
      * @param string $issn
      *
@@ -282,7 +288,7 @@ class Journal extends AbstractEntity {
     }
 
     /**
-     * Get issn
+     * Get issn.
      *
      * @return string
      */
@@ -291,7 +297,7 @@ class Journal extends AbstractEntity {
     }
 
     /**
-     * Set url
+     * Set url.
      *
      * @param string $url
      *
@@ -304,7 +310,7 @@ class Journal extends AbstractEntity {
     }
 
     /**
-     * Get url
+     * Get url.
      *
      * @return string
      */
@@ -312,12 +318,15 @@ class Journal extends AbstractEntity {
         return $this->url;
     }
 
+    /**
+     *
+     */
     public function getGatewayUrl() {
         return $this->url . self::GATEWAY_URL_SUFFIX;
     }
 
     /**
-     * Set status
+     * Set status.
      *
      * @param string $status
      *
@@ -330,7 +339,7 @@ class Journal extends AbstractEntity {
     }
 
     /**
-     * Get status
+     * Get status.
      *
      * @return string
      */
@@ -339,9 +348,9 @@ class Journal extends AbstractEntity {
     }
 
     /**
-     * Set termsAccepted
+     * Set termsAccepted.
      *
-     * @param boolean $termsAccepted
+     * @param bool $termsAccepted
      *
      * @return Journal
      */
@@ -352,16 +361,16 @@ class Journal extends AbstractEntity {
     }
 
     /**
-     * Get termsAccepted
+     * Get termsAccepted.
      *
-     * @return boolean
+     * @return bool
      */
     public function getTermsAccepted() {
         return $this->termsAccepted;
     }
 
     /**
-     * Set email
+     * Set email.
      *
      * @param string $email
      *
@@ -374,7 +383,7 @@ class Journal extends AbstractEntity {
     }
 
     /**
-     * Get email
+     * Get email.
      *
      * @return string
      */
@@ -383,7 +392,7 @@ class Journal extends AbstractEntity {
     }
 
     /**
-     * Set publisherName
+     * Set publisherName.
      *
      * @param string $publisherName
      *
@@ -396,7 +405,7 @@ class Journal extends AbstractEntity {
     }
 
     /**
-     * Get publisherName
+     * Get publisherName.
      *
      * @return string
      */
@@ -405,7 +414,7 @@ class Journal extends AbstractEntity {
     }
 
     /**
-     * Set publisherUrl
+     * Set publisherUrl.
      *
      * @param string $publisherUrl
      *
@@ -418,7 +427,7 @@ class Journal extends AbstractEntity {
     }
 
     /**
-     * Get publisherUrl
+     * Get publisherUrl.
      *
      * @return string
      */
@@ -427,7 +436,7 @@ class Journal extends AbstractEntity {
     }
 
     /**
-     * Add deposit
+     * Add deposit.
      *
      * @param Deposit $deposit
      *
@@ -440,7 +449,7 @@ class Journal extends AbstractEntity {
     }
 
     /**
-     * Remove deposit
+     * Remove deposit.
      *
      * @param Deposit $deposit
      */
@@ -449,7 +458,7 @@ class Journal extends AbstractEntity {
     }
 
     /**
-     * Get deposits
+     * Get deposits.
      *
      * @return Collection
      */

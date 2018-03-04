@@ -15,7 +15,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use SimpleXMLElement;
 
 /**
- * Description of JournalBuilder
+ * Description of JournalBuilder.
  */
 class JournalBuilder {
 
@@ -24,13 +24,16 @@ class JournalBuilder {
      */
     private $em;
 
+    /**
+     *
+     */
     public function __construct(EntityManagerInterface $em) {
         $this->em = $em;
     }
 
     /**
      * Build and persist a journal from XML.
-     * 
+     *
      * Does not flush the journal to the database.
      *
      * @param SimpleXMLElement $xml
@@ -40,18 +43,20 @@ class JournalBuilder {
      */
     public function fromXml(SimpleXMLElement $xml, $uuid) {
         $journal = $this->em->getRepository('AppBundle:Journal')->findOneBy(array(
-            'uuid' => strtoupper($uuid),
+        'uuid' => strtoupper($uuid),
         ));
         if ($journal === null) {
             $journal = new Journal();
         }
         $journal->setUuid($uuid);
         $journal->setTitle(Xpath::getXmlValue($xml, '//atom:title'));
-        $journal->setUrl(html_entity_decode(Xpath::getXmlValue($xml, '//pkp:journal_url'))); // &amp; -> &
+        // &amp; -> &.
+        $journal->setUrl(html_entity_decode(Xpath::getXmlValue($xml, '//pkp:journal_url')));
         $journal->setEmail(Xpath::getXmlValue($xml, '//atom:email'));
         $journal->setIssn(Xpath::getXmlValue($xml, '//pkp:issn'));
         $journal->setPublisherName(Xpath::getXmlValue($xml, '//pkp:publisherName'));
-        $journal->setPublisherUrl(html_entity_decode(Xpath::getXmlValue($xml, '//pkp:publisherUrl'))); // &amp; -> &
+        // &amp; -> &.
+        $journal->setPublisherUrl(html_entity_decode(Xpath::getXmlValue($xml, '//pkp:publisherUrl')));
         $journal->setContacted(new \DateTime());
         $this->em->persist($journal);
 
@@ -59,8 +64,8 @@ class JournalBuilder {
     }
     
     /**
-     * The journal with UUID $uuid has contacted the PLN. 
-     * 
+     * The journal with UUID $uuid has contacted the PLN.
+     *
      * @param string $uuid
      * @param string $url
      *
@@ -68,7 +73,7 @@ class JournalBuilder {
      */
     public function fromRequest($uuid, $url) {
         $journal = $this->em->getRepository('AppBundle:Journal')->findOneBy(array(
-            'uuid' => strtoupper($uuid),
+        'uuid' => strtoupper($uuid),
         ));
         if ($journal === null) {
             $journal = new Journal();

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace AppBundle\EventListener;
 
 use AppBundle\Entity\TermOfUse;
@@ -12,13 +11,15 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 /**
  * Doctrine event listener to record term history.
  */
-class TermsOfUseListener
-{
+class TermsOfUseListener {
     /**
      * @var TokenStorageInterface
      */
     private $tokenStorage;
 
+    /**
+     *
+     */
     public function __construct(TokenStorageInterface $tokenStorage) {
         $this->tokenStorage = $tokenStorage;
     }
@@ -27,33 +28,34 @@ class TermsOfUseListener
      * Get an array describing the changes.
      *
      * @param UnitOfWork $unitOfWork
-     * @param TermOfUse  $entity
-     * @param string     $action
+     * @param TermOfUse $entity
+     * @param string $action
      *
      * @return array
      */
-    protected function getChangeSet(UnitOfWork $unitOfWork, TermOfUse $entity, $action)
-    {
+    protected function getChangeSet(UnitOfWork $unitOfWork, TermOfUse $entity, $action) {
         switch ($action) {
             case 'create':
                 return array(
-                    'id' => array(null, $entity->getId()),
-                    'weight' => array(null, $entity->getWeight()),
-                    'keyCode' => array(null, $entity->getKeyCode()),
-                    'content' => array(null, $entity->getContent()),
-                    'created' => array(null, $entity->getCreated()),
-                    'updated' => array(null, $entity->getUpdated()),
+                'id' => array(null, $entity->getId()),
+                'weight' => array(null, $entity->getWeight()),
+                'keyCode' => array(null, $entity->getKeyCode()),
+                'content' => array(null, $entity->getContent()),
+                'created' => array(null, $entity->getCreated()),
+                'updated' => array(null, $entity->getUpdated()),
                 );
+
             case 'update':
                 return $unitOfWork->getEntityChangeSet($entity);
+
             case 'delete':
                 return array(
-                    'id' => array($entity->getId(), null),
-                    'weight' => array($entity->getWeight(), null),
-                    'keyCode' => array($entity->getKeyCode(), null),
-                    'content' => array($entity->getContent(), null),
-                    'created' => array($entity->getCreated(), null),
-                    'updated' => array($entity->getUpdated(), null),
+                'id' => array($entity->getId(), null),
+                'weight' => array($entity->getWeight(), null),
+                'keyCode' => array($entity->getKeyCode(), null),
+                'content' => array($entity->getContent(), null),
+                'created' => array($entity->getCreated(), null),
+                'updated' => array($entity->getUpdated(), null),
                 );
         }
     }
@@ -62,10 +64,9 @@ class TermsOfUseListener
      * Save a history event for a term of use.
      *
      * @param LifecycleEventArgs $args
-     * @param string             $action
+     * @param string $action
      */
-    protected function saveHistory(LifecycleEventArgs $args, $action)
-    {
+    protected function saveHistory(LifecycleEventArgs $args, $action) {
         $entity = $args->getEntity();
         if (!$entity instanceof TermOfUse) {
             return;
@@ -86,7 +87,8 @@ class TermsOfUseListener
             $history->setUser('console');
         }
         $em->persist($history);
-        $em->flush($history); // these are post-whatever events, after a flush.
+        // These are post-whatever events, after a flush.
+        $em->flush($history);
     }
 
     /**
@@ -94,8 +96,7 @@ class TermsOfUseListener
      *
      * @param LifecycleEventArgs $args
      */
-    public function postPersist(LifecycleEventArgs $args)
-    {
+    public function postPersist(LifecycleEventArgs $args) {
         $this->saveHistory($args, 'create');
     }
 
@@ -104,8 +105,7 @@ class TermsOfUseListener
      *
      * @param LifecycleEventArgs $args
      */
-    public function postUpdate(LifecycleEventArgs $args)
-    {
+    public function postUpdate(LifecycleEventArgs $args) {
         $this->saveHistory($args, 'update');
     }
 
@@ -114,8 +114,8 @@ class TermsOfUseListener
      *
      * @param LifecycleEventArgs $args
      */
-    public function preRemove(LifecycleEventArgs $args)
-    {
+    public function preRemove(LifecycleEventArgs $args) {
         $this->saveHistory($args, 'delete');
     }
+
 }

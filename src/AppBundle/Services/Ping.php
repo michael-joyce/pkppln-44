@@ -18,7 +18,7 @@ use Exception;
 use GuzzleHttp\Client;
 
 /**
- * Description of Ping
+ * Description of Ping.
  */
 class Ping {
 
@@ -50,6 +50,9 @@ class Ping {
      */
     private $client;
 
+    /**
+     *
+     */
     public function __construct($minOjsVersion, EntityManagerInterface $em, BlackWhiteList $list) {
         $this->minOjsVersion = $minOjsVersion;
         $this->em = $em;
@@ -57,16 +60,22 @@ class Ping {
         $this->client = new Client();
     }
 
+    /**
+     *
+     */
     public function setClient(Client $client) {
         $this->client = $client;
     }
 
+    /**
+     *
+     */
     public function process(Journal $journal, PingResult $result) {
-        if($result->getHttpStatus() !== 200) {
+        if ($result->getHttpStatus() !== 200) {
             $journal->setStatus('ping-error');
             return;
         }
-        if( ! $result->getOjsRelease()) {
+        if (!$result->getOjsRelease()) {
             $journal->setStatus('ping-error');
             return;
         }
@@ -75,10 +84,10 @@ class Ping {
         $journal->setOjsVersion($result->getOjsRelease());
         $journal->setTermsAccepted($result->areTermsAccepted() === 'yes');
         $journal->setStatus('healthy');
-        if(version_compare($result->getOjsRelease(), $this->minOjsVersion, '<')) {
+        if (version_compare($result->getOjsRelease(), $this->minOjsVersion, '<')) {
             return;
         }
-        if($this->list->isListed($journal->getUuid())) {
+        if ($this->list->isListed($journal->getUuid())) {
             return;
         }
         $whitelist = new Whitelist();
@@ -88,7 +97,7 @@ class Ping {
     }
     
     /**
-     * 
+     *
      * @param Journal $journal
      * @return PingResult
      */

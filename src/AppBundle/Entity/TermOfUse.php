@@ -6,13 +6,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Nines\UtilBundle\Entity\AbstractEntity;
 
 /**
- * TermOfUse
+ * TermOfUse.
  *
  * @ORM\Table(name="term_of_use")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\TermOfUseRepository")
  */
-class TermOfUse extends AbstractEntity
-{
+class TermOfUse extends AbstractEntity {
     /**
      * The "weight" of the term. Heavier terms are sorted lower.
      *
@@ -41,79 +40,76 @@ class TermOfUse extends AbstractEntity
      */
     private $content;
     
+    /**
+     *
+     */
     public function __toString() {
-        
     }
 
     /**
-     * Set weight
+     * Set weight.
      *
-     * @param integer $weight
+     * @param int $weight
      *
      * @return TermOfUse
      */
-    public function setWeight($weight)
-    {
+    public function setWeight($weight) {
         $this->weight = $weight;
 
         return $this;
     }
 
     /**
-     * Get weight
+     * Get weight.
      *
-     * @return integer
+     * @return int
      */
-    public function getWeight()
-    {
+    public function getWeight() {
         return $this->weight;
     }
 
     /**
-     * Set keyCode
+     * Set keyCode.
      *
      * @param string $keyCode
      *
      * @return TermOfUse
      */
-    public function setKeyCode($keyCode)
-    {
+    public function setKeyCode($keyCode) {
         $this->keyCode = $keyCode;
 
         return $this;
     }
 
     /**
-     * Get keyCode
+     * Get keyCode.
      *
      * @return string
      */
-    public function getKeyCode()
-    {
+    public function getKeyCode() {
         return $this->keyCode;
     }
 
     /**
-     * Set content
+     * Set content.
      *
      * @param string $content
      *
      * @return TermOfUse
      */
-    public function setContent($content)
-    {
+    public function setContent($content) {
         $this->content = $content;
 
         return $this;
     }
 
     /**
-     * Get content
+     * Get content.
      *
      * @return string
      */
-    public function getContent()
-    {
+    public function getContent() {
         return $this->content;
     }
+
 }

@@ -15,7 +15,7 @@ use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * Description of BlackWhiteList
+ * Description of BlackWhiteList.
  */
 class BlackWhiteList {
 
@@ -63,6 +63,9 @@ class BlackWhiteList {
         return $this->getEntry($repo, $uuid);
     }
     
+    /**
+     *
+     */
     public function isListed($uuid) {
         return $this->isWhitelisted($uuid) || $this->isBlacklisted($uuid);
     }
