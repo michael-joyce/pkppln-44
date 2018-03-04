@@ -294,11 +294,14 @@ class Deposit extends AbstractEntity {
      *
      * @param type $key
      * @param type $value
+     * 
+     * @return Deposit
      */
     public function addLicense($key, $value) {
         if(trim($value)) {
             $this->license[$key] = trim($value);
         }
+        return $this;
     }
 
     /**
@@ -472,7 +475,7 @@ class Deposit extends AbstractEntity {
      * @return Deposit
      */
     public function setChecksumType($checksumType) {
-        $this->checksumType = $checksumType;
+        $this->checksumType = strtolower($checksumType);
 
         return $this;
     }
