@@ -21,18 +21,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Description of AbstractProcessingCmd
  */
-abstract class AbstractProcessingCmd extends ContainerAwareCommand{
+abstract class AbstractProcessingCmd extends ContainerAwareCommand {
 
     /**
      * @var EntityManagerInterface
      */
     private $em;
-    
+
     public function __construct(EntityManagerInterface $em) {
         parent::__construct();
         $this->em = $em;
     }
-    
+
     /**
      * Set the command-line options for the processing commands.
      */
@@ -99,7 +99,7 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand{
      *
      * @return Deposit[]
      */
-    final public function getDeposits($retry = false, $depositIds = array(), $limit = null) {
+    public function getDeposits($retry = false, $depositIds = array(), $limit = null) {
         $repo = $this->em->getRepository(Deposit::class);
         $state = $this->processingState();
         if ($retry) {
@@ -116,6 +116,36 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand{
         return $repo->findBy($query, $orderBy, $limit);
     }
 
+    public function runDeposit(Deposit $deposit, $dryRun = false) {
+        try {
+            $result = $this->processDeposit($deposit);
+        } catch (Exception $e) {
+            $deposit->setState($this->errorState());
+            $deposit->addToProcessingLog($this->failureLogMessage());
+            $deposit->addErrorLog(get_class($e) . $e->getMessage());
+            $this->em->flush($deposit);
+            return;
+        }
+
+        if ($dryRun) {
+            return;
+        }
+
+        if (is_string($result)) {
+            $deposit->setState($result);
+            $deposit->addToProcessingLog("Holding deposit.");
+        } elseif ($result === true) {
+            $deposit->setState($this->nextState());
+            $deposit->addToProcessingLog($this->successLogMessage());
+        } elseif ($result === false) {
+            $deposit->setState($this->errorState());
+            $deposit->addToProcessingLog($this->failureLogMessage());
+        } elseif ($result === null) {
+            // dunno, do nothing I guess.
+        }
+        $this->em->flush($deposit);
+    }
+
     /**
      * Execute the command. Get all the deposits needing to be harvested. Each
      * deposit will be passed to the commands processDeposit() function.
@@ -127,40 +157,13 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand{
         $this->preExecute();
         $deposits = $this->getDeposits(
                 $input->getOption('retry'), 
-                $input->getArgument('deposit-id'),
+                $input->getArgument('deposit-id'), 
                 $input->getOption('limit')
         );
 
         $this->preprocessDeposits($deposits);
-        $result = null;
         foreach ($deposits as $deposit) {
-            try {
-                $result = $this->processDeposit($deposit);
-            } catch (Exception $e) {
-                $deposit->setState($this->errorState());
-                $deposit->addToProcessingLog($this->failureLogMessage());
-                $deposit->addErrorLog(get_class($e) . $e->getMessage());
-                $this->em->flush($deposit);
-                continue;
-            }
-
-            if ($input->getOption('dry-run')) {
-                continue;
-            }
-
-            if (is_string($result)) {
-                $deposit->setState($result);
-                $deposit->addToProcessingLog("Holding deposit.");
-            } elseif ($result === true) {
-                $deposit->setState($this->nextState());
-                $deposit->addToProcessingLog($this->successLogMessage());
-            } elseif ($result === false) {
-                $deposit->setState($this->errorState());
-                $deposit->addToProcessingLog($this->failureLogMessage());
-            } elseif ($result === null) {
-                // dunno, do nothing I guess.
-            }
-            $this->em->flush($deposit);
+            $this->runDeposit($deposit, $input->getOption('dry-run'));
         }
     }
 
