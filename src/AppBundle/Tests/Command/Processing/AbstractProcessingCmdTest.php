@@ -129,4 +129,59 @@ class AbstractProcessingCmdTest extends BaseTestCase {
         $this->assertEquals('dummy-state', $deposit->getState());
         $this->assertStringEndsWith('', trim($deposit->getProcessingLog()));
     }
+    
+    public function testGetDeposits() {
+        $deposit = $this->em->find(Deposit::class, 1);
+        $deposit->setState('dummy-state');
+        $this->em->flush();
+        
+        $cmd = new DummyCommand($this->em, "held");
+        $deposits = $cmd->getDeposits();
+        $this->assertEquals(1, count($deposits));
+        $this->assertEquals($deposit, $deposits[0]);
+    }
+    
+    public function testGetDepositsRetry() {
+        $deposit = $this->em->find(Deposit::class, 1);
+        $deposit->setState('dummy-error');
+        $this->em->flush();
+        
+        $cmd = new DummyCommand($this->em, "held");
+        $deposits = $cmd->getDeposits(true);
+        $this->assertEquals(1, count($deposits));
+        $this->assertEquals($deposit, $deposits[0]);
+    }
+    
+    public function testGetDepositsId() {
+        $deposit = $this->em->find(Deposit::class, 1);
+        $deposit->setState('dummy-state');
+        $this->em->flush();
+        
+        $cmd = new DummyCommand($this->em, "held");
+        $deposits = $cmd->getDeposits(false, 1);
+        $this->assertEquals(1, count($deposits));
+        $this->assertEquals($deposit, $deposits[0]);
+    }
+    
+    public function testGetDepositsRetryId() {
+        $deposit = $this->em->find(Deposit::class, 1);
+        $deposit->setState('dummy-error');
+        $this->em->flush();
+        
+        $cmd = new DummyCommand($this->em, "held");
+        $deposits = $cmd->getDeposits(true, 1);
+        $this->assertEquals(1, count($deposits));
+        $this->assertEquals($deposit, $deposits[0]);
+    }
+    
+    public function testGetDepositsLimit() {
+        foreach($this->em->getRepository(Deposit::class)->findAll() as $deposit) {
+            $deposit->setState('dummy-state');
+        }
+        $this->em->flush();
+        
+        $cmd = new DummyCommand($this->em, "held");
+        $deposits = $cmd->getDeposits(false, array(), 2);
+        $this->assertEquals(2, count($deposits));
+    }
 }

@@ -96,6 +96,7 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
     /**
      * @param bool  $retry      retry failed deposits
      * @param int[] $depositIds zero or more deposit Ids to filter
+     * @param int $limit maximum number of deposits to return.
      *
      * @return Deposit[]
      */
@@ -112,7 +113,6 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
         $orderBy = array(
             'id' => 'ASC',
         );
-
         return $repo->findBy($query, $orderBy, $limit);
     }
 
