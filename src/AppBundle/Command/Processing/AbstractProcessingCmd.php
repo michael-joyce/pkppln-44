@@ -116,10 +116,11 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
         return $repo->findBy($query, $orderBy, $limit);
     }
 
-    public function runDeposit(Deposit $deposit, $dryRun = false) {
+    public function runDeposit(Deposit $deposit, OutputInterface $output, $dryRun = false) {
         try {
             $result = $this->processDeposit($deposit);
         } catch (Exception $e) {
+            $output->writeln($e->getMessage());
             $deposit->setState($this->errorState());
             $deposit->addToProcessingLog($this->failureLogMessage());
             $deposit->addErrorLog(get_class($e) . $e->getMessage());
@@ -163,7 +164,7 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
 
         $this->preprocessDeposits($deposits);
         foreach ($deposits as $deposit) {
-            $this->runDeposit($deposit, $input->getOption('dry-run'));
+            $this->runDeposit($deposit, $output, $input->getOption('dry-run'));
         }
     }
 

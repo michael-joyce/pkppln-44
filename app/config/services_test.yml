@@ -31,3 +31,7 @@ services:
     AppBundle\Services\Processing\Harvester:
         arguments: 
             $maxHarvestAttempts: '%pln.max_harvest_attepmts%'
+
+    AppBundle\Services\Processing\VirusScanner:
+        arguments:
+            $socketPath: '%pln.clamd_socket%'

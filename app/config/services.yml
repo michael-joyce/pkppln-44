@@ -68,7 +68,6 @@ services:
         arguments: 
             $maxHarvestAttempts: '%pln.max_harvest_attepmts%'
             
-    # add more services, or override services that need manual wiring
-    # AppBundle\Service\ExampleService:
-    #     arguments:
-    #         $someArgument: 'some_value'
+    AppBundle\Services\Processing\VirusScanner:
+        arguments:
+            $socketPath: '%pln.clamd_socket%'

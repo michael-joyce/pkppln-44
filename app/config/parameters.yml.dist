@@ -46,3 +46,6 @@ parameters:
 
     # Stop trying to harvest after pln.maxHarvestAttempts failures.
     pln.max_harvest_attepmts: 5
+
+    # Path to the ClamAV socket
+    pln.clamd_socket: /tmp/clamd.socket

@@ -1,17 +1,52 @@
 <?php
 
-/*
- *  This file is licensed under the MIT License version 3 or
- *  later. See the LICENSE file for details.
- *
- *  Copyright 2018 Michael Joyce <ubermichael@gmail.com>.
- */
-
 namespace AppBundle\Command;
 
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
+
 /**
- * Description of RunAllCommand
+ * Run all the processing commands in order.
  */
-class RunAllCommand {
-    //put your code here
+class RunAllCommand extends ContainerAwareCommand
+{
+    const COMMAND_LIST = array(
+            'pln:harvest',
+            'pln:validate:payload',
+            'pln:validate:bag',
+            'pln:validate:xml',
+//            'pln:scan',
+//            'pln:reserialize',
+//            'pln:deposit',
+//            'pln:status',
+        );
+    
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure()
+    {
+        $this->setName('pln:run-all');
+        $this->setDescription('Run all processing commands.');
+        $this->addOption('force','f',InputOption::VALUE_NONE,'Force the processing state to be updated');
+        $this->addOption('limit','l',InputOption::VALUE_OPTIONAL,'Only process $limit deposits.');
+        parent::configure();
+    }
+
+    /**
+     * Execute the runall command, which executes all the commands.
+     *
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        foreach (self::COMMAND_LIST as $cmd) {
+            $output->writeln("Running {$cmd}");
+            $command = $this->getApplication()->find($cmd);
+            $command->run($input, $output);
+        }
+    }
 }

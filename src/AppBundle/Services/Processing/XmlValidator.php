@@ -2,12 +2,14 @@
 
 namespace AppBundle\Services\Processing;
 
+require_once 'vendor/scholarslab/bagit/lib/bagit.php';
 
-use Exception;
 use AppBundle\Entity\Deposit;
 use AppBundle\Services\DtdValidator;
+use AppBundle\Services\FilePaths;
 use BagIt;
 use DOMDocument;
+use Exception;
 
 /**
  * Validate the OJS XML export.
@@ -18,24 +20,43 @@ class XmlValidator {
      */
     const PKP_PUBLIC_ID = '-//PKP//OJS Articles and Issues XML//EN';
 
+    const BLOCKSIZE = 64 * 1023;
+    
     /**
-     * {@inheritdoc}
+     * @var FilePaths
      */
-    protected function configure() {
-        $this->setName('pln:validate-xml');
-        $this->setDescription('Validate OJS XML export files.');
-        parent::configure();
+    private $filePaths;
+    
+    /**
+     * @var DtdValidator
+     */
+    private $validator;
+    
+    public function __construct(FilePaths $filePaths, DtdValidator $validator) {
+        $this->filePaths = $filePaths;
+        $this->validator = $validator;
     }
-
+    
     /**
-     * Log errors generated during the validation.
+     * Filter out any invalid UTF-8 data in $from and write the result to $to.
+     * 
+     * @param string $from
+     * @param string $to
+     * @return int 
+     *   The number of invalid bytes filtered out.
      */
-    private function logErrors(DtdValidator $validator) {
-        foreach ($validator->getErrors() as $error) {
-            $this->logger->warning(implode(':', array($error['file'], $error['line'], $error['message'])));
+    public function filter($from, $to) {
+        $fromHandle = fopen($from, 'rb');
+        $toHandle = fopen($to, 'wb');
+        $changes = 0;
+        while($buffer = fread($fromHandle, self::BLOCKSIZE)) {
+            $filtered = iconv('UTF-8', 'UTF-8//IGNORE', $buffer);
+            $changes += (strlen($buffer) - strlen($filtered));
+            fwrite($toHandle);
         }
+        return $changes;
     }
-
+    
     /**
      * Load the XML document into a DOM and return it. Errors are appended to
      * the $report parameter.
@@ -49,119 +70,55 @@ class XmlValidator {
      *
      * @return DOMDocument
      *
-     * @param Deposit $deposit
      * @param string $filename
      * @param string $report
      */
-    private function loadXml(Deposit $deposit, $filename, &$report) {
+    public function loadXml($filename, &$report) {
         $dom = new DOMDocument();
         try {
             $dom->load($filename, LIBXML_COMPACT | LIBXML_PARSEHUGE);
         } catch (Exception $ex) {
             if (strpos($ex->getMessage(), 'Input is not proper UTF-8') === false) {
-                $deposit->addErrorLog('XML file ' . basename($filename) . ' is not parseable: ' . $ex->getMessage());
-                $report .= $ex->getMessage();
-                $report .= "\nCannot validate XML.\n";
-
-                return;
+                throw $ex;
             }
             // The XML files can be arbitrarily large, so stream them, filter
             // the stream, and write to disk. The result may not fit in memory.
             $filteredFilename = "{$filename}-filtered.xml";
-            $in = fopen($filename, 'rb');
-            $out = fopen($filteredFilename, 'wb');
-            // 64k blocks.
-            $blockSize = 64 * 1024;
-            $changes = 0;
-            while ($buffer = fread($in, $blockSize)) {
-                $filtered = iconv('UTF-8', 'UTF-8//IGNORE', $buffer);
-                $changes += strlen($buffer) - strlen($filtered);
-                fwrite($out, $filtered);
-            }
-            $report .= basename($filename) . " contains {$changes} invalid UTF-8 characters, which have been removed with "
-                    . ICONV_IMPL . ' version ' . ICONV_VERSION
-                    . ' in PHP ' . PHP_VERSION . "\n";
-
+            $changes = $this->filter($filename, $filteredFilename);
+            $report .= basename($filename) . " contains {$changes} invalid UTF-8 characters, which have been removed.";
             $report .= basename($filteredFilename) . " will be validated.\n";
             $dom->load($filteredFilename, LIBXML_COMPACT | LIBXML_PARSEHUGE);
         }
-
         return $dom;
+    }
+    
+    public function reportErrors($errors, &$report) {
+        foreach($errors as $error) {
+            $report .= "On line {$error['line']}: {$error['message']}\n";
+        }
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function processDeposit(Deposit $deposit) {
-        $extractedPath = $this->filePaths->getProcessingBagPath($deposit);
-
-        $this->logger->info("Validating {$extractedPath} XML files.");
+    public function processDeposit(Deposit $deposit) {
+        $extractedPath = $this->filePaths->getHarvestFile($deposit);
         $bag = new BagIt($extractedPath);
-        $valid = true;
         $report = '';
-
+        
         foreach ($bag->getBagContents() as $filename) {
             if (substr($filename, -4) !== '.xml') {
                 continue;
             }
-            $basename = basename($filename);
-            $dom = $this->loadXml($deposit, $filename, $report);
-            if ($dom === null) {
-                $valid = false;
-                continue;
-            }
-            /* @var DtdValidator */
-            $validator = $this->container->get('dtdvalidator');
-            $validator->validate($dom);
-            if ($validator->hasErrors()) {
-                $deposit->addErrorLog("{$basename} - XML Validation failed.");
-                $this->logErrors($validator);
-                $report .= "{$basename} validation failed.\n";
-                foreach ($validator->getErrors() as $error) {
-                    $report .= "On line {$error['line']}: {$error['message']}\n";
-                }
-            } else {
-                $report .= "{$basename} validation succeeded.\n";
-            }
+            $dom = $this->loadXml($filename, $report);
+            $this->validator->validate($dom, $report);
+            $this->reportErrors($this->validator->getErrors(), $report);
         }
-        $deposit->addToProcessingLog($report);
-
-        return $valid;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function nextState() {
-        return 'xml-validated';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function processingState() {
-        return 'bag-validated';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function failureLogMessage() {
-        return 'XML Validation failed.';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function successLogMessage() {
-        return 'XML validation succeeded.';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function errorState() {
-        return 'xml-error';
+        if(trim($report)) {
+            $deposit->addToProcessingLog($report);
+            return false;
+        }
+        return true;
     }
 
 }

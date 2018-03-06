@@ -2,47 +2,56 @@
 
 namespace AppBundle\Command\Processing;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
+use AppBundle\Entity\Deposit;
+use AppBundle\Services\Processing\VirusScanner;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * PlnScanCommand command.
  */
-class ScanCommand extends ContainerAwareCommand
-{
+class ScanCommand extends AbstractProcessingCmd {
+
     /**
-     * Configure the command.
+     * @var VirusScanner
      */
-    protected function configure()
-    {
-        $this
-            ->setName('pln:scan')
-            ->setDescription('...')
-            ->addArgument('argument', InputArgument::OPTIONAL, 'Argument description')
-            ->addOption('option', null, InputOption::VALUE_NONE, 'Option description')
-        ;
+    private $scanner;
+
+    public function __construct(EntityManagerInterface $em, VirusScanner $scanner) {
+        parent::__construct($em);
+        $this->scanner = $scanner;
     }
 
     /**
-     * Execute the command.
-     *
-     * @param InputInterface $input
-     *   Command input, as defined in the configure() method.
-     * @param OutputInterface $output
-     *   Output destination.
+     * Configure the command.
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $argument = $input->getArgument('argument');
+    protected function configure() {
+        $this->setName('pln:scan');
+        $this->setDescription('Scan deposit packages for viruses.');
+        parent::configure();
+    }
 
-        if ($input->getOption('option')) {
-            // ...
-        }
+    protected function processDeposit(Deposit $deposit) {
+        $this->scanner->processDeposit($deposit);
+    }
 
-        $output->writeln('Command result.');
+    public function errorState() {
+        return 'virus-error';
+    }
+
+    public function failureLogMessage() {
+        return 'Virus check failed.';
+    }
+
+    public function nextState() {
+        return 'virus-checked';
+    }
+
+    public function processingState() {
+        return 'xml-validated';
+    }
+
+    public function successLogMessage() {
+        return 'Virus check passed. No infections found.';
     }
 
 }

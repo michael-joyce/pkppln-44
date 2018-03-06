@@ -2,47 +2,73 @@
 
 namespace AppBundle\Command\Processing;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
+use AppBundle\Entity\Deposit;
+use AppBundle\Services\Processing\XmlValidator;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * PlnValidateXmlCommand command.
  */
-class ValidateXmlCommand extends ContainerAwareCommand
-{
+class ValidateXmlCommand extends AbstractProcessingCmd {
+
     /**
-     * Configure the command.
+     * @var XmlValidator
      */
-    protected function configure()
-    {
-        $this
-            ->setName('pln:validate:xml')
-            ->setDescription('...')
-            ->addArgument('argument', InputArgument::OPTIONAL, 'Argument description')
-            ->addOption('option', null, InputOption::VALUE_NONE, 'Option description')
-        ;
+    private $validator;
+
+    public function __construct(EntityManagerInterface $em, XmlValidator $validator) {
+        parent::__construct($em);
+        $this->validator = $validator;
     }
 
     /**
-     * Execute the command.
-     *
-     * @param InputInterface $input
-     *   Command input, as defined in the configure() method.
-     * @param OutputInterface $output
-     *   Output destination.
+     * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $argument = $input->getArgument('argument');
+    protected function configure() {
+        $this->setName('pln:validate:xml');
+        $this->setDescription('Validate OJS XML export files.');
+        parent::configure();
+    }
 
-        if ($input->getOption('option')) {
-            // ...
-        }
+    protected function processDeposit(Deposit $deposit) {
+        $this->validator->processDeposit($deposit);
+    }
 
-        $output->writeln('Command result.');
+    /**
+     * {@inheritdoc}
+     */
+    public function nextState() {
+        return 'xml-validated';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function processingState() {
+        return 'bag-validated';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function failureLogMessage() {
+        return 'XML Validation failed.';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function successLogMessage() {
+        return 'XML validation succeeded.';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function errorState() {
+        return 'xml-error';
     }
 
 }

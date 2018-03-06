@@ -7,9 +7,6 @@
             "AppBundle\\": "src/AppBundle",
             "Nines\\": "src/Nines"
         },
-        "psr-0": {
-            "BagIt": "vendor/scholarslab/bagit/lib/"        
-        },
         "classmap": [
             "app/AppKernel.php",
             "app/AppCache.php"
@@ -45,7 +42,8 @@
         "symfony/templating": "^3.4",
         "tetranz/select2entity-bundle": "^2.9",
         "twig/extensions": "^1.5",
-        "twig/twig": "^1.0||^2.0"
+        "twig/twig": "^1.0||^2.0",
+        "xenolope/quahog": "^2.1"
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.0",
