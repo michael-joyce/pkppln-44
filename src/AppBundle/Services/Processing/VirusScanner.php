@@ -122,8 +122,8 @@ class VirusScanner {
         }
         $archiveResult = $this->scanArchiveFiles($phar, $client);
         $embeddedResult = $this->scanEmbededFiles($phar, $client);
-        dump(array_merge($baseResult, $archiveResult, $embeddedResult));
-        return null;
+        $deposit->addToProcessingLog(implode("\n", array_merge($baseResult, $archiveResult, $embeddedResult)));
+        return true;
     }
 
 }
