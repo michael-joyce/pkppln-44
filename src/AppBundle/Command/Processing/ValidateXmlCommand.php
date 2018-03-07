@@ -33,7 +33,7 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
     }
 
     protected function processDeposit(Deposit $deposit) {
-        $this->validator->processDeposit($deposit);
+        return $this->validator->processDeposit($deposit);
     }
 
     /**

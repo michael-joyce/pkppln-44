@@ -9,7 +9,8 @@
         },
         "classmap": [
             "app/AppKernel.php",
-            "app/AppCache.php"
+            "app/AppCache.php",
+            "vendor/scholarslab/bagit/lib/bagit.php"
         ]
     },
     "autoload-dev": {
@@ -55,12 +56,6 @@
         "squizlabs/php_codesniffer": "^2.9.1 <3.0",
         "symfony/phpunit-bridge": "^4.0"
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/scholarslab/BagItPHP"
-        }
-    ],
     "scripts": {
         "symfony-scripts": [
             "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",

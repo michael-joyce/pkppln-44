@@ -31,7 +31,7 @@ class ScanCommand extends AbstractProcessingCmd {
     }
 
     protected function processDeposit(Deposit $deposit) {
-        $this->scanner->processDeposit($deposit);
+        return $this->scanner->processDeposit($deposit);
     }
 
     public function errorState() {
