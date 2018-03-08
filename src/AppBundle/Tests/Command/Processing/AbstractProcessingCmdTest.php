@@ -8,6 +8,7 @@ use AppBundle\DataFixtures\ORM\LoadJournal;
 use AppBundle\Entity\Deposit;
 use Doctrine\ORM\EntityManagerInterface;
 use Nines\UtilBundle\Tests\Util\BaseTestCase;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class DummyCommand extends AbstractProcessingCmd {
     
@@ -51,6 +52,11 @@ class DummyCommand extends AbstractProcessingCmd {
  */
 class AbstractProcessingCmdTest extends BaseTestCase {
 
+    /**
+     * @var OutputInterface
+     */
+    private $output;
+    
     public function getFixtures() {
         return array(
             LoadJournal::class,
@@ -58,11 +64,17 @@ class AbstractProcessingCmdTest extends BaseTestCase {
         );
     }
     
+    protected function setUp() {
+        parent::setUp();
+        $this->output = $this->createMock(OutputInterface::class);
+        $this->output->method('writeln')->willReturn(null);
+    }
+    
     public function testSuccessfulRun() {
         $deposit = $this->em->find(Deposit::class, 1);
         $deposit->setState('dummy-state');
         $cmd = new DummyCommand($this->em, true);
-        $cmd->runDeposit($deposit);
+        $cmd->runDeposit($deposit, $this->output);
         $this->assertEquals('next-state', $deposit->getState());
         $this->assertStringEndsWith('success', trim($deposit->getProcessingLog()));
     }
@@ -71,7 +83,7 @@ class AbstractProcessingCmdTest extends BaseTestCase {
         $deposit = $this->em->find(Deposit::class, 1);
         $deposit->setState('dummy-state');
         $cmd = new DummyCommand($this->em, false);
-        $cmd->runDeposit($deposit);
+        $cmd->runDeposit($deposit, $this->output);
         $this->assertEquals('dummy-error', $deposit->getState());
         $this->assertStringEndsWith('dummy log message', trim($deposit->getProcessingLog()));
     }
@@ -80,7 +92,7 @@ class AbstractProcessingCmdTest extends BaseTestCase {
         $deposit = $this->em->find(Deposit::class, 1);
         $deposit->setState('dummy-state');
         $cmd = new DummyCommand($this->em, null);
-        $cmd->runDeposit($deposit);
+        $cmd->runDeposit($deposit, $this->output);
         $this->assertEquals('dummy-state', $deposit->getState());
         $this->assertEquals('', trim($deposit->getProcessingLog()));
     }
@@ -89,7 +101,7 @@ class AbstractProcessingCmdTest extends BaseTestCase {
         $deposit = $this->em->find(Deposit::class, 1);
         $deposit->setState('dummy-state');
         $cmd = new DummyCommand($this->em, "held");
-        $cmd->runDeposit($deposit);
+        $cmd->runDeposit($deposit, $this->output);
         $this->assertEquals('held', $deposit->getState());
         $this->assertStringEndsWith('Holding deposit.', trim($deposit->getProcessingLog()));
     }
@@ -98,7 +110,7 @@ class AbstractProcessingCmdTest extends BaseTestCase {
         $deposit = $this->em->find(Deposit::class, 1);
         $deposit->setState('dummy-state');
         $cmd = new DummyCommand($this->em, true);
-        $cmd->runDeposit($deposit, true);
+        $cmd->runDeposit($deposit, $this->output, true);
         $this->assertEquals('dummy-state', $deposit->getState());
         $this->assertStringEndsWith('', trim($deposit->getProcessingLog()));
     }
@@ -107,7 +119,7 @@ class AbstractProcessingCmdTest extends BaseTestCase {
         $deposit = $this->em->find(Deposit::class, 1);
         $deposit->setState('dummy-state');
         $cmd = new DummyCommand($this->em, false);
-        $cmd->runDeposit($deposit, true);
+        $cmd->runDeposit($deposit, $this->output, true);
         $this->assertEquals('dummy-state', $deposit->getState());
         $this->assertStringEndsWith('', trim($deposit->getProcessingLog()));
     }
@@ -116,7 +128,7 @@ class AbstractProcessingCmdTest extends BaseTestCase {
         $deposit = $this->em->find(Deposit::class, 1);
         $deposit->setState('dummy-state');
         $cmd = new DummyCommand($this->em, null);
-        $cmd->runDeposit($deposit, true);
+        $cmd->runDeposit($deposit, $this->output, true);
         $this->assertEquals('dummy-state', $deposit->getState());
         $this->assertEquals('', trim($deposit->getProcessingLog()));
     }
@@ -125,7 +137,7 @@ class AbstractProcessingCmdTest extends BaseTestCase {
         $deposit = $this->em->find(Deposit::class, 1);
         $deposit->setState('dummy-state');
         $cmd = new DummyCommand($this->em, "held");
-        $cmd->runDeposit($deposit, true);
+        $cmd->runDeposit($deposit, $this->output, true);
         $this->assertEquals('dummy-state', $deposit->getState());
         $this->assertStringEndsWith('', trim($deposit->getProcessingLog()));
     }
