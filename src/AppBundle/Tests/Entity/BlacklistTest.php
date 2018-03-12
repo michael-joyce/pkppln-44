@@ -33,4 +33,9 @@ class BlacklistTest extends BaseTestCase {
         $this->assertEquals('ABC123', $this->blacklist->getUuid());
     }
     
+    public function testToString() {
+        $this->blacklist->setUuid('abc123');
+        $this->assertEquals('ABC123', (string)$this->blacklist);
+    }
+    
 }

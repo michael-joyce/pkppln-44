@@ -10,6 +10,7 @@
 namespace AppBundle\Tests\Entity;
 
 use AppBundle\Entity\Journal;
+use DateTime;
 use Nines\UtilBundle\Tests\Util\BaseTestCase;
 
 /**
@@ -31,6 +32,11 @@ class JournalTest extends BaseTestCase {
     public function testSetUuid() {
         $this->journal->setUuid('abc123');
         $this->assertEquals('ABC123', $this->journal->getUuid());
+    }
+    
+    public function testSetNotified() {
+        $this->journal->setNotified(new DateTime());
+        $this->assertInstanceOf(DateTime::class, $this->journal->getNotified());
     }
     
 }

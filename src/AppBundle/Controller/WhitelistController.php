@@ -49,24 +49,6 @@ class WhitelistController extends Controller {
     /**
      * Search for Whitelist entities.
      *
-     * To make this work, add a method like this one to the
-     * AppBundle:Whitelist repository. Replace the fieldName with
-     * something appropriate, and adjust the generated search.html.twig
-     * template.
-     *
-     * <code><pre>
-     *    public function searchQuery($q) {
-     *        $qb = $this->createQueryBuilder('e');
-     *        // Simple search against a field
-     *        $qb->where("e.fieldName like '%$q%'");
-     *        // Full text matching with Beberlei's Doctrine Extensions for MySQL
-     *        // https://github.com/beberlei/DoctrineExtensions/
-     *        // $qb->addSelect("MATCH_AGAINST (e.name, :q 'IN BOOLEAN MODE') as score");
-     *        // $qb->add('where', "MATCH_AGAINST (e.name, :q 'IN BOOLEAN MODE') > 0.5");
-     *        return $qb->getQuery();
-     *    }
-     * </pre></code>
-     *
      * @param Request $request
      *   Dependency injected HTTP request object.
      *
@@ -78,12 +60,12 @@ class WhitelistController extends Controller {
         $em = $this->getDoctrine()->getManager();
         $repo = $em->getRepository('AppBundle:Whitelist');
         $q = $request->query->get('q');
+        $paginator = $this->get('knp_paginator');
         if ($q) {
             $query = $repo->searchQuery($q);
-            $paginator = $this->get('knp_paginator');
             $whitelists = $paginator->paginate($query, $request->query->getInt('page', 1), 25);
         } else {
-            $whitelists = array();
+            $whitelists = $paginator->paginate(array(), $request->query->getInt('page', 1), 25);
         }
 
         return array(

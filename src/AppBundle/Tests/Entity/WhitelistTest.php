@@ -33,4 +33,9 @@ class WhitelistTest extends BaseTestCase {
         $this->assertEquals('ABC123', $this->whitelist->getUuid());
     }
     
+    public function testToString() {
+        $this->whitelist->setUuid('abc123');
+        $this->assertEquals('ABC123', (string)$this->whitelist);
+    }
+    
 }

@@ -79,19 +79,17 @@ class TermOfUseControllerTest extends BaseTestCase
         $formCrawler = $client->request('GET', '/termofuse/1/edit');
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
         
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );        
         $form = $formCrawler->selectButton('Update')->form([
-            // DO STUFF HERE.
-            // 'termofuses[FIELDNAME]' => 'FIELDVALUE',
+            'term_of_use[weight]' => '1',
+            'term_of_use[keyCode]' => 'test.code',
+            'term_of_use[content]' => 'This is a test term.',
         ]);
         
         $client->submit($form);
         $this->assertTrue($client->getResponse()->isRedirect('/termofuse/1'));
         $responseCrawler = $client->followRedirect();
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
-        // $this->assertEquals(1, $responseCrawler->filter('td:contains("FIELDVALUE")')->count());
+        $this->assertEquals(1, $responseCrawler->filter('td:contains("test.code")')->count());
     }
     
     public function testAnonNew() {
@@ -112,19 +110,17 @@ class TermOfUseControllerTest extends BaseTestCase
         $formCrawler = $client->request('GET', '/termofuse/new');
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
         
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );        
         $form = $formCrawler->selectButton('Create')->form([
-            // DO STUFF HERE.
-            // 'termofuses[FIELDNAME]' => 'FIELDVALUE',
+            'term_of_use[weight]' => '1',
+            'term_of_use[keyCode]' => 'test.code',
+            'term_of_use[content]' => 'This is a test term.',
         ]);
         
         $client->submit($form);
         $this->assertTrue($client->getResponse()->isRedirect());
         $responseCrawler = $client->followRedirect();
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
-        // $this->assertEquals(1, $responseCrawler->filter('td:contains("FIELDVALUE")')->count());
+        $this->assertEquals(1, $responseCrawler->filter('td:contains("test.code")')->count());
     }
     
     public function testAnonDelete() {

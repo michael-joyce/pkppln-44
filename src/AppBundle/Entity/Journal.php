@@ -237,7 +237,7 @@ class Journal extends AbstractEntity {
      *
      * @return Journal
      */
-    public function setNotified($notified) {
+    public function setNotified(DateTime $notified) {
         $this->notified = $notified;
 
         return $this;

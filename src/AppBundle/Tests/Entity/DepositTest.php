@@ -33,6 +33,11 @@ class DepositTest extends BaseTestCase {
         $this->assertEquals('ABC123', $this->deposit->getDepositUuid());
     }
     
+    public function testToString() {
+        $this->deposit->setDepositUuid('abc123');
+        $this->assertEquals('ABC123', (string)$this->deposit);
+    }
+    
     public function testSetChecksumType() {
         $this->deposit->setChecksumType('ABC123');
         $this->assertEquals('abc123', $this->deposit->getChecksumType());
@@ -41,6 +46,11 @@ class DepositTest extends BaseTestCase {
     public function testSetChecksumValue() {
         $this->deposit->setChecksumValue('abc123');
         $this->assertEquals('ABC123', $this->deposit->getChecksumValue());
+    }
+    
+    public function testAddErrorLog() {
+        $this->deposit->addErrorLog("foo");
+        $this->assertEquals(['foo'], $this->deposit->getErrorLog());
     }
     
 }

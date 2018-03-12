@@ -48,6 +48,7 @@ class TermOfUseHistory extends AbstractEntity {
      *
      */
     public function __toString() {
+        return $this->action;
     }
 
     /**
