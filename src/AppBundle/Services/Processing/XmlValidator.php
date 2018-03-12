@@ -11,6 +11,8 @@ use Exception;
 
 /**
  * Validate the OJS XML export.
+ * 
+ * @todo Rewrite this to use XmlParser.
  */
 class XmlValidator {
     /**
@@ -30,6 +32,14 @@ class XmlValidator {
      */
     private $validator;
     
+    /**
+     * Build the validator.
+     * 
+     * @param FilePaths $filePaths
+     *   Dependency-injected file path service.
+     * @param DtdValidator $validator
+     *   Dependency-injected validator.
+     */
     public function __construct(FilePaths $filePaths, DtdValidator $validator) {
         $this->filePaths = $filePaths;
         $this->validator = $validator;
@@ -56,8 +66,9 @@ class XmlValidator {
     }
     
     /**
-     * Load the XML document into a DOM and return it. Errors are appended to
-     * the $report parameter.
+     * Load the XML document into a DOM and return it. 
+     * 
+     * Errors are appended to the $report parameter.
      *
      * For reasons beyond anyone's apparent control, the export may contain
      * invalid UTF-8 characters. If the file cannot be parsed as XML, the
