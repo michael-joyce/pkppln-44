@@ -19,7 +19,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Description of AbstractProcessingCmd.
+ * Parent class for all processing commands.
  */
 abstract class AbstractProcessingCmd extends ContainerAwareCommand {
 
@@ -29,6 +29,10 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
     private $em;
 
     /**
+     * Build the command.
+     * 
+     * @param EntityManagerInterface $em
+     *   Dependency injected entity manager.
      *
      */
     public function __construct(EntityManagerInterface $em) {
@@ -37,7 +41,7 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
     }
 
     /**
-     * Set the command-line options for the processing commands.
+     * {@inheritdoc}
      */
     protected function configure() {
         $this->addOption('retry', 'r', InputOption::VALUE_NONE, 'Retry failed deposits');
@@ -123,7 +127,16 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
     }
 
     /**
-     *
+     * Run and process one deposit.
+     * 
+     * @param Deposit $deposit
+     *   Deposit to process.
+     * @param OutputInterface $output
+     *   Output for writing messages.
+     * @param boolean $dryRun
+     *   If true, then this is a dry run and 
+     *   results are not flushed to the database.
+     * @return void
      */
     public function runDeposit(Deposit $deposit, OutputInterface $output, $dryRun = false) {
         try {
@@ -157,11 +170,7 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
     }
 
     /**
-     * Execute the command. Get all the deposits needing to be harvested. Each
-     * deposit will be passed to the commands processDeposit() function.
-     *
-     * @param InputInterface $input
-     * @param OutputInterface $output
+     * {@inheritdoc}
      */
     final protected function execute(InputInterface $input, OutputInterface $output) {
         $this->preExecute();

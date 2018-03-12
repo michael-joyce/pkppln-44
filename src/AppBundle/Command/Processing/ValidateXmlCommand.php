@@ -5,11 +5,9 @@ namespace AppBundle\Command\Processing;
 use AppBundle\Entity\Deposit;
 use AppBundle\Services\Processing\XmlValidator;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * PlnValidateXmlCommand command.
+ * Validate XML in a deposit.
  */
 class ValidateXmlCommand extends AbstractProcessingCmd {
 
@@ -19,7 +17,12 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
     private $validator;
 
     /**
-     *
+     * Build the command.
+     * 
+     * @param EntityManagerInterface $em
+     *   Dependency injected entity manager.
+     * @param XmlValidator $validator
+     *   Dependency injected validator service.
      */
     public function __construct(EntityManagerInterface $em, XmlValidator $validator) {
         parent::__construct($em);
@@ -36,7 +39,7 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
     }
 
     /**
-     *
+     * {@inheritdoc}
      */
     protected function processDeposit(Deposit $deposit) {
         return $this->validator->processDeposit($deposit);

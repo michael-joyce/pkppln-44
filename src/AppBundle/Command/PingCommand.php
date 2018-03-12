@@ -27,7 +27,12 @@ class PingCommand extends ContainerAwareCommand {
     private $em;
 
     /**
-     *
+     * Build the command.
+     * 
+     * @param EntityManagerInterface $em
+     *   Dependency injected entity manager.
+     * @param Ping $ping
+     *   Dependency injected ping service.
      */
     public function __construct(EntityManagerInterface $em, Ping $ping) {
         parent::__construct();
@@ -36,7 +41,7 @@ class PingCommand extends ContainerAwareCommand {
     }
 
     /**
-     * Configure the command.
+     * {@inheritdoc}
      */
     protected function configure() {
         $this->setName('pln:ping-whitelist');
@@ -47,7 +52,10 @@ class PingCommand extends ContainerAwareCommand {
     }
     
     /**
-     *
+     * Find the journals that need to be binged.
+     * 
+     * @param boolean $all
+     *   If true, all journals will be returned.
      */
     public function findJournals($all) {
         $repo = $this->em->getRepository(Journal::class);
@@ -58,12 +66,7 @@ class PingCommand extends ContainerAwareCommand {
     }
 
     /**
-     * Execute the command.
-     *
-     * @param InputInterface $input
-     *   Command input, as defined in the configure() method.
-     * @param OutputInterface $output
-     *   Output destination.
+     * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output) {
         $all = $input->getOption('all');

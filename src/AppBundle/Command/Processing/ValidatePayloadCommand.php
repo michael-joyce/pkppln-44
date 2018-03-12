@@ -7,7 +7,7 @@ use AppBundle\Services\Processing\PayloadValidator;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * PlnValidatePayloadCommand command.
+ * Validate the payload checksum.
  */
 class ValidatePayloadCommand extends AbstractProcessingCmd {
 
@@ -17,7 +17,12 @@ class ValidatePayloadCommand extends AbstractProcessingCmd {
     private $payloadValidator;
 
     /**
-     *
+     * Build the command.
+     * 
+     * @param EntityManagerInterface $em
+     *   Dependency injected entity manager.
+     * @param PayloadValidator $payloadValidator
+     *   Dependency injected payload validator.
      */
     public function __construct(EntityManagerInterface $em, PayloadValidator $payloadValidator) {
         parent::__construct($em);
@@ -34,7 +39,7 @@ class ValidatePayloadCommand extends AbstractProcessingCmd {
     }
 
     /**
-     *
+     * {@inheritdoc}
      */
     protected function processDeposit(Deposit $deposit) {
         return $this->payloadValidator->processDeposit($deposit);

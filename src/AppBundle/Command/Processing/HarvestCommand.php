@@ -7,7 +7,7 @@ use AppBundle\Services\Processing\Harvester;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * PlnHarvestCommand command.
+ * Harvest a deposit from a journal.
  */
 class HarvestCommand extends AbstractProcessingCmd {
 
@@ -17,7 +17,12 @@ class HarvestCommand extends AbstractProcessingCmd {
     private $harvester;
 
     /**
+     * Build the command.
+     * 
+     * @param EntityManagerInterface $em
+     *   Dependency injected entity manager.
      * @param Harvester $harvester
+     *   Dependency injected harvester service.
      */
     public function __construct(EntityManagerInterface $em, Harvester $harvester) {
         parent::__construct($em);
@@ -34,7 +39,7 @@ class HarvestCommand extends AbstractProcessingCmd {
     }
 
     /**
-     *
+     * {@inheritdoc}
      */
     protected function processDeposit(Deposit $deposit) {
         return $this->harvester->processDeposit($deposit);

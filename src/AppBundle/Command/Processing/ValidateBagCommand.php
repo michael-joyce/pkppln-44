@@ -7,16 +7,22 @@ use AppBundle\Services\Processing\BagValidator;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * PlnValidateBagCommand command.
+ * Validate a bag metadata and checksums.
  */
 class ValidateBagCommand extends AbstractProcessingCmd {
+    
     /**
      * @var BagValidator
      */
     private $bagValidator;
     
     /**
-     *
+     * Build the command.
+     * 
+     * @param EntityManagerInterface $em
+     *   Dependency injected entity manager.
+     * @param BagValidator $bagValidator
+     *   Dependency injected bag validator.
      */
     public function __construct(EntityManagerInterface $em, BagValidator $bagValidator) {
         parent::__construct($em);
@@ -33,7 +39,7 @@ class ValidateBagCommand extends AbstractProcessingCmd {
     }
 
     /**
-     *
+     * {@inheritdoc}
      */
     protected function processDeposit(Deposit $deposit) {
         return $this->bagValidator->processDeposit($deposit);

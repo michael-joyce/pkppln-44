@@ -16,10 +16,10 @@ class RunAllCommand extends ContainerAwareCommand {
             'pln:validate:payload',
             'pln:validate:bag',
             'pln:validate:xml',
-    // 'pln:scan',
-    //            'pln:reserialize',
-    //            'pln:deposit',
-    //            'pln:status',.
+            'pln:scan',
+            //'pln:reserialize',
+            //'pln:deposit',
+            //'pln:status',
     );
     
     /**
@@ -34,10 +34,7 @@ class RunAllCommand extends ContainerAwareCommand {
     }
 
     /**
-     * Execute the runall command, which executes all the commands.
-     *
-     * @param InputInterface $input
-     * @param OutputInterface $output
+     * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output) {
         foreach (self::COMMAND_LIST as $cmd) {

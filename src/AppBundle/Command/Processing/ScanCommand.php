@@ -7,7 +7,7 @@ use AppBundle\Services\Processing\VirusScanner;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * PlnScanCommand command.
+ * Scan a deposit for viruses.
  */
 class ScanCommand extends AbstractProcessingCmd {
 
@@ -17,7 +17,12 @@ class ScanCommand extends AbstractProcessingCmd {
     private $scanner;
 
     /**
-     *
+     * Build the command.
+     * 
+     * @param EntityManagerInterface $em
+     *   Dependency injected entity manager.
+     * @param VirusScanner $scanner
+     *   Dependency injected virus scanner service.
      */
     public function __construct(EntityManagerInterface $em, VirusScanner $scanner) {
         parent::__construct($em);
@@ -25,7 +30,7 @@ class ScanCommand extends AbstractProcessingCmd {
     }
 
     /**
-     * Configure the command.
+     * {@inheritdoc}
      */
     protected function configure() {
         $this->setName('pln:scan');
@@ -34,42 +39,42 @@ class ScanCommand extends AbstractProcessingCmd {
     }
 
     /**
-     *
+     * {@inheritdoc}
      */
     protected function processDeposit(Deposit $deposit) {
         return $this->scanner->processDeposit($deposit);
     }
 
     /**
-     *
+     * {@inheritdoc}
      */
     public function errorState() {
         return 'virus-error';
     }
 
     /**
-     *
+     * {@inheritdoc}
      */
     public function failureLogMessage() {
         return 'Virus check failed.';
     }
 
     /**
-     *
+     * {@inheritdoc}
      */
     public function nextState() {
         return 'virus-checked';
     }
 
     /**
-     *
+     * {@inheritdoc}
      */
     public function processingState() {
         return 'xml-validated';
     }
 
     /**
-     *
+     * {@inheritdoc}
      */
     public function successLogMessage() {
         return 'Virus check passed. No infections found.';
