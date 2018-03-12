@@ -1,133 +1,43 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Deposit{% endblock %}
+{% block title %}Deposit List{% endblock %}
 
-{% block pageheader %} 
-    <h1>Deposit Details</h1>
+{% block pageheader %}
+    <h1>Deposit List</h1>
+    <p class="count">
+        Displaying {{ deposits|length }} deposits of {{ deposits.getTotalItemCount }} total.
+    </p>
 {% endblock %} 
 
 {% block body %}
-    <div class="btn-toolbar">
-        <div class="btn-group pull-right">
-            <a href="{{ path('deposit_index', {'journalId': journal.id}) }}" class="btn btn-default">
-                <span class="glyphicon glyphicon-arrow-left"></span> Back
-            </a>
-        </div>
-    </div>
+
+    {% include 'AppBundle:partial:search-form.html.twig' with {
+        'path': path('deposit_search', {'journalId': journal.id})
+    } %}
+
     <table class="table table-bordered table-condensed table-hover table-striped">
-        <tbody>
-            <tr>
-                <th>Journal Version</th>
-                <td>{{ deposit.journalVersion }}</td>
-            </tr>
-            <tr>
-                <th>License</th>
-                <td>{% if deposit.license %}{{ deposit.license|join(', ') }}{% endif %}</td>
-            </tr>
-            <tr>
-                <th>File Type</th>
-                <td>{{ deposit.fileType }}</td>
-            </tr>
+        <thead>
             <tr>
                 <th>Deposit Uuid</th>
-                <td>{{ deposit.depositUuid }}</td>
-            </tr>
-            <tr>
                 <th>Received</th>
-                <td>{% if deposit.received %}{{ deposit.received|date }}{% endif %}</td>
             </tr>
-            <tr>
-                <th>Action</th>
-                <td>{{ deposit.action }}</td>
-            </tr>
-            <tr>
-                <th>Volume</th>
-                <td>{{ deposit.volume }}</td>
-            </tr>
-            <tr>
-                <th>Issue</th>
-                <td>{{ deposit.issue }}</td>
-            </tr>
-            <tr>
-                <th>Pub Date</th>
-                <td>{% if deposit.pubDate %}{{ deposit.pubDate|date('Y-m-d') }}{% endif %}</td>
-            </tr>
-            <tr>
-                <th>Checksum Type</th>
-                <td>{{ deposit.checksumType }}</td>
-            </tr>
-            <tr>
-                <th>Checksum Value</th>
-                <td>{{ deposit.checksumValue }}</td>
-            </tr>
-            <tr>
-                <th>Url</th>
-                <td>{{ deposit.url }}</td>
-            </tr>
-            <tr>
-                <th>Size</th>
-                <td>{{ deposit.size }}</td>
-            </tr>
-            <tr>
-                <th>State</th>
-                <td>{{ deposit.state }}</td>
-            </tr>
-            <tr>
-                <th>Error Log</th>
-                <td>{% if deposit.errorLog %}{{ deposit.errorLog|join(', ') }}{% endif %}</td>
-            </tr>
-            <tr>
-                <th>Pln State</th>
-                <td>{{ deposit.plnState }}</td>
-            </tr>
-            <tr>
-                <th>Package Size</th>
-                <td>{{ deposit.packageSize }}</td>
-            </tr>
-            <tr>
-                <th>Package Path</th>
-                <td>{{ deposit.packagePath }}</td>
-            </tr>
-            <tr>
-                <th>Package Checksum Type</th>
-                <td>{{ deposit.packageChecksumType }}</td>
-            </tr>
-            <tr>
-                <th>Package Checksum Value</th>
-                <td>{{ deposit.packageChecksumValue }}</td>
-            </tr>
-            <tr>
-                <th>Deposit Date</th>
-                <td>{% if deposit.depositDate %}{{ deposit.depositDate|date('Y-m-d') }}{% endif %}</td>
-            </tr>
-            <tr>
-                <th>Deposit Receipt</th>
-                <td>{{ deposit.depositReceipt }}</td>
-            </tr>
-            <tr>
-                <th>Processing Log</th>
-                <td>{{ deposit.processingLog }}</td>
-            </tr>
-            <tr>
-                <th>Harvest Attempts</th>
-                <td>{{ deposit.harvestAttempts }}</td>
-            </tr>
-            <tr>
-                <th>Created</th>
-                <td>{% if deposit.created %}{{ deposit.created|date }}{% endif %}</td>
-            </tr>
-            <tr>
-                <th>Updated</th>
-                <td>{% if deposit.updated %}{{ deposit.updated|date }}{% endif %}</td>
-            </tr>        
-            <tr>
-                <th>Journal</th>
-                <td>
-                    <a href="{{ path('journal_show', { 'id': deposit.journal.id}) }}">
-                        {{ deposit.journal }}
-                    </a>
-                </td>
-            </tr>        
+        </thead>
+        <tbody>
+            {% for deposit in deposits %}
+                <tr>
+                    <td>
+                        <a href="{{ path('deposit_show', { 'id': deposit.id, 'journalId': journal.id }) }}">
+                            {{ deposit.depositUuid }}
+                        </a>
+                    </td>
+                    <td>{% if deposit.received %}{{ deposit.received|date('Y-m-d H:i:s') }}{% endif %}</td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
+
+    <div class="navigation">
+        {{ knp_pagination_render(deposits) }}
+    </div>
+
 {% endblock %}

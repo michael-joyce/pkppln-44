@@ -49,6 +49,40 @@ class DepositController extends Controller {
     }
 
     /**
+     * Search for Deposit entities. 
+     * 
+     * This action lives in the default controller because the deposit controller
+     * works with deposits from a single journal. This search works across all
+     * deposits.
+     *
+     * @param Request $request
+     *   Dependency injected HTTP request object.
+     *
+     * @Route("/search", name="deposit_search")
+     * @Method("GET")
+     * @Security("has_role('ROLE_USER')")
+     * @Template()
+     */
+    public function searchAction(Request $request, Journal $journal) {
+        $em = $this->getDoctrine()->getManager();
+        $repo = $em->getRepository(Deposit::class);
+        $q = $request->query->get('q');
+        $paginator = $this->get('knp_paginator');
+        if ($q) {
+            $query = $repo->searchQuery($q, $journal);
+            $deposits = $paginator->paginate($query, $request->query->getInt('page', 1), 25);
+        } else {
+            $deposits = $paginator->paginate(array(), $request->query->getInt('page', 1), 25);
+        }
+
+        return array(
+            'journal' => $journal,
+            'deposits' => $deposits,
+            'q' => $q,
+        );
+    }
+    
+    /**
      * Finds and displays a Deposit entity.
      *
      * @param Deposit $deposit
