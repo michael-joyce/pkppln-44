@@ -11,7 +11,7 @@ use Exception;
 
 /**
  * Validate the OJS XML export.
- * 
+ *
  * @todo Rewrite this to use XmlParser.
  */
 class XmlValidator {
@@ -34,7 +34,7 @@ class XmlValidator {
     
     /**
      * Build the validator.
-     * 
+     *
      * @param FilePaths $filePaths
      *   Dependency-injected file path service.
      * @param DtdValidator $validator
@@ -47,17 +47,18 @@ class XmlValidator {
     
     /**
      * Filter out any invalid UTF-8 data in $from and write the result to $to.
-     * 
+     *
      * @param string $from
      * @param string $to
-     * @return int 
+     *
+     * @return int
      *   The number of invalid bytes filtered out.
      */
     public function filter($from, $to) {
         $fromHandle = fopen($from, 'rb');
         $toHandle = fopen($to, 'wb');
         $changes = 0;
-        while($buffer = fread($fromHandle, self::BLOCKSIZE)) {
+        while ($buffer = fread($fromHandle, self::BLOCKSIZE)) {
             $filtered = iconv('UTF-8', 'UTF-8//IGNORE', $buffer);
             $changes += (strlen($buffer) - strlen($filtered));
             fwrite($toHandle);
@@ -66,8 +67,8 @@ class XmlValidator {
     }
     
     /**
-     * Load the XML document into a DOM and return it. 
-     * 
+     * Load the XML document into a DOM and return it.
+     *
      * Errors are appended to the $report parameter.
      *
      * For reasons beyond anyone's apparent control, the export may contain
@@ -101,8 +102,11 @@ class XmlValidator {
         return $dom;
     }
     
+    /**
+     *
+     */
     public function reportErrors($errors, &$report) {
-        foreach($errors as $error) {
+        foreach ($errors as $error) {
             $report .= "On line {$error['line']}: {$error['message']}\n";
         }
     }
@@ -123,7 +127,7 @@ class XmlValidator {
             $this->validator->validate($dom, $report);
             $this->reportErrors($this->validator->getErrors(), $report);
         }
-        if(trim($report)) {
+        if (trim($report)) {
             $deposit->addToProcessingLog($report);
             return false;
         }

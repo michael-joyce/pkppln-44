@@ -112,7 +112,7 @@ class Harvester {
         if (!$body) {
             throw new Exception('Response body was empty.');
         }
-        if($this->fs->exists($path)) {
+        if ($this->fs->exists($path)) {
             $this->fs->remove($path);
         }
         // 64k chunks.

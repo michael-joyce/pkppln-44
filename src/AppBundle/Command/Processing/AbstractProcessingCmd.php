@@ -19,7 +19,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Description of AbstractProcessingCmd
+ * Description of AbstractProcessingCmd.
  */
 abstract class AbstractProcessingCmd extends ContainerAwareCommand {
 
@@ -28,6 +28,9 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
      */
     private $em;
 
+    /**
+     *
+     */
     public function __construct(EntityManagerInterface $em) {
         parent::__construct();
         $this->em = $em;
@@ -49,7 +52,7 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
      * @param Deposit[] $deposits
      */
     protected function preprocessDeposits($deposits = array()) {
-        // do nothing by default.
+        // Do nothing by default.
     }
 
     /**
@@ -90,13 +93,16 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
      * Code to run before executing the command.
      */
     protected function preExecute() {
-        // do nothing, let subclasses override if needed.
+        // Do nothing, let subclasses override if needed.
     }
 
     /**
-     * @param bool  $retry      retry failed deposits
-     * @param int[] $depositIds zero or more deposit Ids to filter
-     * @param int $limit maximum number of deposits to return.
+     * @param bool $retry
+     *   retry failed deposits.
+     * @param int[] $depositIds
+     *   zero or more deposit Ids to filter.
+     * @param int $limit
+     *   maximum number of deposits to return.
      *
      * @return Deposit[]
      */
@@ -111,11 +117,14 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
             $query['id'] = $depositIds;
         }
         $orderBy = array(
-            'id' => 'ASC',
+        'id' => 'ASC',
         );
         return $repo->findBy($query, $orderBy, $limit);
     }
 
+    /**
+     *
+     */
     public function runDeposit(Deposit $deposit, OutputInterface $output, $dryRun = false) {
         try {
             $result = $this->processDeposit($deposit);
@@ -151,15 +160,15 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
      * Execute the command. Get all the deposits needing to be harvested. Each
      * deposit will be passed to the commands processDeposit() function.
      *
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      */
     final protected function execute(InputInterface $input, OutputInterface $output) {
         $this->preExecute();
         $deposits = $this->getDeposits(
-                $input->getOption('retry'), 
-                $input->getArgument('deposit-id'), 
-                $input->getOption('limit')
+            $input->getOption('retry'),
+            $input->getArgument('deposit-id'),
+            $input->getOption('limit')
         );
 
         $this->preprocessDeposits($deposits);

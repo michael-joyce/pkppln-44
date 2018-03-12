@@ -10,8 +10,8 @@
 namespace AppBundle\Command;
 
 /**
- * Description of ResetDepositCommand
+ * Description of ResetDepositCommand.
  */
 class ResetDepositCommand {
-    //put your code here
+    // Put your code here.
 }

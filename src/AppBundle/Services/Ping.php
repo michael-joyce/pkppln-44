@@ -69,10 +69,10 @@ class Ping {
 
     /**
      * Process a ping response.
-     * 
+     *
      * @param Journal $journal
      * @param PingResult $result
-     * 
+     *
      * @return void
      */
     public function process(Journal $journal, PingResult $result) {

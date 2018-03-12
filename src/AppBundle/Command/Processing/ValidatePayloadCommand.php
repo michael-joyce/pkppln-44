@@ -16,6 +16,9 @@ class ValidatePayloadCommand extends AbstractProcessingCmd {
      */
     private $payloadValidator;
 
+    /**
+     *
+     */
     public function __construct(EntityManagerInterface $em, PayloadValidator $payloadValidator) {
         parent::__construct($em);
         $this->payloadValidator = $payloadValidator;
@@ -30,6 +33,9 @@ class ValidatePayloadCommand extends AbstractProcessingCmd {
         parent::configure();
     }
 
+    /**
+     *
+     */
     protected function processDeposit(Deposit $deposit) {
         return $this->payloadValidator->processDeposit($deposit);
     }

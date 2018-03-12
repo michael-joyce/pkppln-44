@@ -33,6 +33,9 @@ class HarvestCommand extends AbstractProcessingCmd {
         parent::configure();
     }
 
+    /**
+     *
+     */
     protected function processDeposit(Deposit $deposit) {
         return $this->harvester->processDeposit($deposit);
     }

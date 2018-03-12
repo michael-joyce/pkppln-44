@@ -17,7 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class PingCommand extends ContainerAwareCommand {
 
     /**
-     * @var Ping $ping
+     * @var Ping
      */
     private $ping;
     
@@ -26,12 +26,14 @@ class PingCommand extends ContainerAwareCommand {
      */
     private $em;
 
+    /**
+     *
+     */
     public function __construct(EntityManagerInterface $em, Ping $ping) {
         parent::__construct();
         $this->ping = $ping;
         $this->em = $em;
     }
-
 
     /**
      * Configure the command.
@@ -44,9 +46,12 @@ class PingCommand extends ContainerAwareCommand {
         $this->addOption('all', 'a', InputOption::VALUE_NONE, 'Ping all journals, including whitelisted/blacklisted.');
     }
     
+    /**
+     *
+     */
     public function findJournals($all) {
         $repo = $this->em->getRepository(Journal::class);
-        if($all) {
+        if ($all) {
             return $repo->findAll();
         }
         return $repo->getJournalsToPing();
@@ -63,7 +68,7 @@ class PingCommand extends ContainerAwareCommand {
     protected function execute(InputInterface $input, OutputInterface $output) {
         $all = $input->getOption('all');
         $journals = $this->findJournals($all);
-        foreach($journals as $journal) {
+        foreach ($journals as $journal) {
             $output->writeln($journal->getUuid());
             $result = $this->ping->ping($journal);
             $this->em->flush();

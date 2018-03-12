@@ -24,7 +24,7 @@ class BagValidator {
     private $fs;
 
     /**
-     * 
+     *
      * @param FilePaths $fp
      * @param Filesystem $fs
      */

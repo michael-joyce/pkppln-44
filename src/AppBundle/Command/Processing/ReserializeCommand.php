@@ -11,19 +11,17 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * PlnReserializeCommand command.
  */
-class ReserializeCommand extends ContainerAwareCommand
-{
+class ReserializeCommand extends ContainerAwareCommand {
+
     /**
      * Configure the command.
      */
-    protected function configure()
-    {
+    protected function configure() {
         $this
             ->setName('pln:reserialize')
-            ->setDescription('...')
+          ->setDescription('...')
             ->addArgument('argument', InputArgument::OPTIONAL, 'Argument description')
-            ->addOption('option', null, InputOption::VALUE_NONE, 'Option description')
-        ;
+          ->addOption('option', null, InputOption::VALUE_NONE, 'Option description');
     }
 
     /**
@@ -34,8 +32,7 @@ class ReserializeCommand extends ContainerAwareCommand
      * @param OutputInterface $output
      *   Output destination.
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
+    protected function execute(InputInterface $input, OutputInterface $output) {
         $argument = $input->getArgument('argument');
 
         if ($input->getOption('option')) {

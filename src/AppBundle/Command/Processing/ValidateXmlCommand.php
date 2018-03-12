@@ -18,6 +18,9 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
      */
     private $validator;
 
+    /**
+     *
+     */
     public function __construct(EntityManagerInterface $em, XmlValidator $validator) {
         parent::__construct($em);
         $this->validator = $validator;
@@ -32,6 +35,9 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
         parent::configure();
     }
 
+    /**
+     *
+     */
     protected function processDeposit(Deposit $deposit) {
         return $this->validator->processDeposit($deposit);
     }

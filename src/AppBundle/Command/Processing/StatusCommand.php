@@ -11,19 +11,17 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * PlnStatusCommand command.
  */
-class StatusCommand extends ContainerAwareCommand
-{
+class StatusCommand extends ContainerAwareCommand {
+
     /**
      * Configure the command.
      */
-    protected function configure()
-    {
+    protected function configure() {
         $this
             ->setName('pln:status')
-            ->setDescription('...')
+          ->setDescription('...')
             ->addArgument('argument', InputArgument::OPTIONAL, 'Argument description')
-            ->addOption('option', null, InputOption::VALUE_NONE, 'Option description')
-        ;
+          ->addOption('option', null, InputOption::VALUE_NONE, 'Option description');
     }
 
     /**
@@ -34,8 +32,7 @@ class StatusCommand extends ContainerAwareCommand
      * @param OutputInterface $output
      *   Output destination.
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
+    protected function execute(InputInterface $input, OutputInterface $output) {
         $argument = $input->getArgument('argument');
 
         if ($input->getOption('option')) {

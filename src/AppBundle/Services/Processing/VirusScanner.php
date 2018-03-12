@@ -29,7 +29,7 @@ class VirusScanner {
     private $fs;
 
     /**
-     * @var string 
+     * @var string
      */
     private $socketPath;
 
@@ -38,6 +38,9 @@ class VirusScanner {
      */
     private $factory;
 
+    /**
+     *
+     */
     public function __construct($socketPath, FilePaths $filePaths) {
         $this->filePaths = $filePaths;
         $this->socketPath = $socketPath;
@@ -45,10 +48,16 @@ class VirusScanner {
         $this->factory = new Factory();
     }
 
+    /**
+     *
+     */
     public function setFactory(Factory $factory) {
         $this->factory = $factory;
     }
 
+    /**
+     *
+     */
     protected function getClient() {
         $socket = $this->factory->createClient('unix://' . $this->socketPath);
         $client = new Client($socket);
@@ -56,12 +65,17 @@ class VirusScanner {
         return $client;
     }
     
+    /**
+     *
+     */
     public function scanEmbed(DOMElement $embed, DOMXpath $xp, Client $client) {
         $fh = tmpfile();
-        $chunkSize = 1024*64; // 64kb chunks
+        // 64kb chunks.
+        $chunkSize = 1024 * 64;
         $length = $xp->evaluate('string-length(./text())', $embed);
-        $offset = 1; //xpath starts at 1
-        while($offset < $length) {
+        // Xpath starts at 1.
+        $offset = 1;
+        while ($offset < $length) {
             $end = $offset + $chunkSize;
             $chunk = $xp->evaluate("substring(./text(), {$offset}, {$chunkSize})", $embed);
             fwrite($fh, base64_decode($chunk));
@@ -70,35 +84,41 @@ class VirusScanner {
         return $client->scanResourceStream($fh);
     }
     
+    /**
+     *
+     */
     public function scanEmbededFiles(PharData $phar, Client $client) {
         $results = array();
-        foreach(new RecursiveIteratorIterator($phar) as $file) {
-            if(substr($file->getFilename(), -4) !== '.xml') {
+        foreach (new RecursiveIteratorIterator($phar) as $file) {
+            if (substr($file->getFilename(), -4) !== '.xml') {
                 continue;
             }
             $parser = new XmlParser();
             $dom = $parser->fromFile($file->getPathname());
             $xp = new DOMXPath($dom);
-            foreach($xp->query('//embed') as $embed) {
+            foreach ($xp->query('//embed') as $embed) {
                 $filename = $embed->attributes->getNamedItem('filename')->nodeValue;
                 $r = $this->scanEmbed($embed, $xp, $client);
-                if($r['status'] === 'OK') {
+                if ($r['status'] === 'OK') {
                     $results[$filename] = 'OK';
                 } else {
                     $results[$filename] = $r['status'] . ': ' . $r['reason'];
                 }
-            }            
+            }
         }
         
         return $results;
     }
     
+    /**
+     *
+     */
     public function scanArchiveFiles(PharData $phar, Client $client) {
         $results = array();
-        foreach(new RecursiveIteratorIterator($phar) as $file) {
+        foreach (new RecursiveIteratorIterator($phar) as $file) {
             $fh = fopen($file->getPathname(), 'rb');
             $r = $client->scanResourceStream($fh);
-            if($r['status'] === 'OK') {
+            if ($r['status'] === 'OK') {
                 $results[$file->getFileName()] = 'OK';
             } else {
                 $results[$file->getFileName()] = $r['status'] . ': ' . $r['reason'];
@@ -108,14 +128,17 @@ class VirusScanner {
         return $results;
     }
 
+    /**
+     *
+     */
     public function processDeposit(Deposit $deposit) {
         $client = $this->getClient();
         $harvestedPath = $this->filePaths->getHarvestFile($deposit);
         $phar = new PharData($harvestedPath);
         
-        $baseResult = array();        
+        $baseResult = array();
         $r = $client->scanFile($harvestedPath);
-        if($r['status'] === 'OK') {
+        if ($r['status'] === 'OK') {
             $baseResult[basename($harvestedPath)] = 'OK';
         } else {
             $baseResult[basename($harvestedPath)] = $r['status'] . ': ' . $r['reason'];
