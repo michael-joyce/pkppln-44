@@ -2,15 +2,14 @@
 
 namespace AppBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use AppBundle\Entity\Blacklist;
+use AppBundle\Form\BlacklistType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use AppBundle\Entity\Blacklist;
-use AppBundle\Form\BlacklistType;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Blacklist controller.
@@ -58,7 +57,7 @@ class BlacklistController extends Controller {
      */
     public function searchAction(Request $request) {
         $em = $this->getDoctrine()->getManager();
-        $repo = $em->getRepository('AppBundle:Blacklist');
+        $repo = $em->getRepository(Blacklist::class);
         $q = $request->query->get('q');
         $paginator = $this->get('knp_paginator');
         if ($q) {

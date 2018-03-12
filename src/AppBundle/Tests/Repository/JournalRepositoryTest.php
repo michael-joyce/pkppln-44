@@ -65,4 +65,24 @@ class JournalRepositoryTest extends BaseTestCase {
         $this->assertEquals(3, count($this->repo->getJournalsToPing()));
     }
 
+    /**
+     * @dataProvider searchQueryData
+     */
+    public function testSearchQuery() {
+        $query = $this->repo->searchQuery('CDC4');
+        $result = $query->execute();
+        $this->assertEquals(1, count($result));
+    }
+    
+    public function searchQueryData() {
+        return array(
+            [1, 'CDC4'],
+            [1, 'Title 1'],
+            [1, '1234-1234'],
+            [4, 'example.com'],
+            [4, 'email@'],
+            [4, 'PublisherName'],
+            [1, 'publisher/1'],
+        );
+    }
 }

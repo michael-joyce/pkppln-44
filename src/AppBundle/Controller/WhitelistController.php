@@ -58,7 +58,7 @@ class WhitelistController extends Controller {
      */
     public function searchAction(Request $request) {
         $em = $this->getDoctrine()->getManager();
-        $repo = $em->getRepository('AppBundle:Whitelist');
+        $repo = $em->getRepository(Whitelist::class);
         $q = $request->query->get('q');
         $paginator = $this->get('knp_paginator');
         if ($q) {

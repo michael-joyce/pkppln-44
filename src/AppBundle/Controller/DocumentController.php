@@ -2,15 +2,14 @@
 
 namespace AppBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use AppBundle\Entity\Document;
+use AppBundle\Form\DocumentType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use AppBundle\Entity\Document;
-use AppBundle\Form\DocumentType;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Document controller.
@@ -76,7 +75,7 @@ class DocumentController extends Controller {
      */
     public function searchAction(Request $request) {
         $em = $this->getDoctrine()->getManager();
-        $repo = $em->getRepository('AppBundle:Document');
+        $repo = $em->getRepository(Document::class);
         $q = $request->query->get('q');
         if ($q) {
             $query = $repo->searchQuery($q);

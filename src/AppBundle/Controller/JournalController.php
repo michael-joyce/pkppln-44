@@ -2,15 +2,13 @@
 
 namespace AppBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use AppBundle\Entity\Journal;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use AppBundle\Entity\Journal;
-use AppBundle\Form\JournalType;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Journal controller.
@@ -49,24 +47,6 @@ class JournalController extends Controller {
     /**
      * Search for Journal entities.
      *
-     * To make this work, add a method like this one to the
-     * AppBundle:Journal repository. Replace the fieldName with
-     * something appropriate, and adjust the generated search.html.twig
-     * template.
-     *
-     * <code><pre>
-     *    public function searchQuery($q) {
-     *        $qb = $this->createQueryBuilder('e');
-     *        // Simple search against a field
-     *        $qb->where("e.fieldName like '%$q%'");
-     *        // Full text matching with Beberlei's Doctrine Extensions for MySQL
-     *        // https://github.com/beberlei/DoctrineExtensions/
-     *        // $qb->addSelect("MATCH_AGAINST (e.name, :q 'IN BOOLEAN MODE') as score");
-     *        // $qb->add('where', "MATCH_AGAINST (e.name, :q 'IN BOOLEAN MODE') > 0.5");
-     *        return $qb->getQuery();
-     *    }
-     * </pre></code>
-     *
      * @param Request $request
      *   Dependency injected HTTP request object.
      *
@@ -76,14 +56,14 @@ class JournalController extends Controller {
      */
     public function searchAction(Request $request) {
         $em = $this->getDoctrine()->getManager();
-        $repo = $em->getRepository('AppBundle:Journal');
+        $repo = $em->getRepository(Journal::class);
         $q = $request->query->get('q');
+        $paginator = $this->get('knp_paginator');
         if ($q) {
             $query = $repo->searchQuery($q);
-            $paginator = $this->get('knp_paginator');
             $journals = $paginator->paginate($query, $request->query->getInt('page', 1), 25);
         } else {
-            $journals = array();
+            $journals = $paginator->paginate(array(), $request->query->getInt('page', 1), 25);
         }
 
         return array(

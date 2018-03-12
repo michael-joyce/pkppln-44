@@ -35,4 +35,17 @@ class JournalRepository extends EntityRepository {
         return $qb->getQuery()->execute();
     }
     
+
+    /**
+     * @param string $q
+     * @return Query
+     */
+    public function searchQuery($q) {
+        $qb = $this->createQueryBuilder('j');
+        $qb->where('CONCAT(j.uuid, j.title, j.issn, j.url, j.email, j.publisherName, j.publisherUrl) LIKE :q');
+        $qb->setParameter('q', '%' . $q . '%');
+        $query = $qb->getQuery();
+        return $query;
+    }    
+    
 }
