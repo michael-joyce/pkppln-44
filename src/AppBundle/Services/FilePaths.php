@@ -134,7 +134,6 @@ class FilePaths {
         $journal->getUuid(),
         ));
         if (!$this->fs->exists($path)) {
-            $this->logger->notice("Creating directory {$path}");
             $this->fs->mkdir($path);
         }
         return $path;
@@ -153,7 +152,6 @@ class FilePaths {
         $deposit->getDepositUuid(),
         ));
         if (!$this->fs->exists($path)) {
-            $this->logger->notice("Creating directory {$path}");
             $this->fs->mkdir($path);
         }
         return $path;
@@ -173,7 +171,6 @@ class FilePaths {
         $journal->getUuid(),
         ));
         if (!$this->fs->exists($path)) {
-            $this->logger->notice("Creating directory {$path}");
             $this->fs->mkdir($path);
         }
 

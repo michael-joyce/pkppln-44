@@ -46,52 +46,6 @@ class DocumentController extends Controller {
     }
 
     /**
-     * Search for Document entities.
-     *
-     * To make this work, add a method like this one to the
-     * AppBundle:Document repository. Replace the fieldName with
-     * something appropriate, and adjust the generated search.html.twig
-     * template.
-     *
-     * <code><pre>
-     *    public function searchQuery($q) {
-     *        $qb = $this->createQueryBuilder('e');
-     *        // Simple search against a field
-     *        $qb->where("e.fieldName like '%$q%'");
-     *        // Full text matching with Beberlei's Doctrine Extensions for MySQL
-     *        // https://github.com/beberlei/DoctrineExtensions/
-     *        // $qb->addSelect("MATCH_AGAINST (e.name, :q 'IN BOOLEAN MODE') as score");
-     *        // $qb->add('where', "MATCH_AGAINST (e.name, :q 'IN BOOLEAN MODE') > 0.5");
-     *        return $qb->getQuery();
-     *    }
-     * </pre></code>
-     *
-     * @param Request $request
-     *   Dependency injected HTTP request object.
-     *
-     * @Route("/search", name="document_search")
-     * @Method("GET")
-     * @Template()
-     */
-    public function searchAction(Request $request) {
-        $em = $this->getDoctrine()->getManager();
-        $repo = $em->getRepository(Document::class);
-        $q = $request->query->get('q');
-        if ($q) {
-            $query = $repo->searchQuery($q);
-            $paginator = $this->get('knp_paginator');
-            $documents = $paginator->paginate($query, $request->query->getInt('page', 1), 25);
-        } else {
-            $documents = array();
-        }
-
-        return array(
-            'documents' => $documents,
-            'q' => $q,
-        );
-    }
-
-    /**
      * Creates a new Document entity.
      *
      * @param Request $request

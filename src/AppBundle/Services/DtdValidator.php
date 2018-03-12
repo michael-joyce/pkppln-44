@@ -39,20 +39,20 @@ class DtdValidator {
      */
     public function validationError($n, $message, $file, $line, $context) {
         $lxml = libxml_get_last_error();
+        $error = array(
+            'message' => $message,
+            'file' => $file,
+            'line' => $line,
+        );
 
         if ($lxml) {
-            $this->errors[] = array(
+            $error = array(
                 'message' => $lxml->message,
                 'file' => $lxml->file,
                 'line' => $lxml->line,
             );
-        } else {
-            $this->errors[] = array(
-                'message' => $message,
-                'file' => $file,
-                'line' => $line,
-            );
         }
+        $this->errors[] = $error;
     }
 
     /**

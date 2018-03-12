@@ -34,6 +34,7 @@ class DtdValidatorTest extends BaseTestCase {
         $dom = new DOMDocument();
         $dom->loadXML($this->getValidXml());
         $this->validator->validate($dom, true);
+        $this->assertFalse($this->validator->hasErrors());
         $this->assertEquals(0, $this->validator->countErrors());
     }
 
@@ -41,9 +42,10 @@ class DtdValidatorTest extends BaseTestCase {
         $dom = new DOMDocument();
         $dom->loadXML($this->getinvalidXml());
         $this->validator->validate($dom, true);
+        $this->assertTrue($this->validator->hasErrors());
         $this->assertEquals(1, $this->validator->countErrors());
     }
-
+    
     private function getValidXml() {
         $str = <<<ENDSTR
 <?xml version="1.0" standalone="yes"?>
