@@ -55,14 +55,14 @@ class DepositControllerTest extends BaseTestCase {
 
     public function testAnonSearch() {
         $client = $this->makeClient();
-        $formCrawler = $client->request('GET', '/journal/1/deposit/search');
+        $formCrawler = $client->request('GET', '/journal/2/deposit/search');
         $this->assertEquals(302, $client->getResponse()->getStatusCode());
         $this->assertTrue($client->getResponse()->isRedirect());
     }
 
     public function testUserSearch() {
         $client = $this->makeClient(LoadUser::USER);
-        $formCrawler = $client->request('GET', '/journal/1/deposit/search');
+        $formCrawler = $client->request('GET', '/journal/2/deposit/search');
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
         $form = $formCrawler->selectButton('Search')->form([
             'q' => 'A584',
@@ -74,7 +74,7 @@ class DepositControllerTest extends BaseTestCase {
 
     public function testAdminSearch() {
         $client = $this->makeClient(LoadUser::ADMIN);
-        $formCrawler = $client->request('GET', '/journal/1/deposit/search');
+        $formCrawler = $client->request('GET', '/journal/2/deposit/search');
         $this->assertEquals(200, $client->getResponse()->getStatusCode());
         $form = $formCrawler->selectButton('Search')->form([
             'q' => 'A584',
