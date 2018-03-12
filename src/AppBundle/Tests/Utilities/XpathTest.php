@@ -10,6 +10,7 @@
 namespace AppBundle\Tests\Utilities;
 
 use AppBundle\Utilities\Xpath;
+use Exception;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -31,6 +32,14 @@ class XpathTest extends TestCase {
             ['1', '//a', 3],
             ['3', '//c', 3],
         ];
+    }
+
+    /**
+     * @expectedException Exception
+     */
+    public function testGetXmlValueException() {
+        $xml = $this->getXml();
+        Xpath::getXmlValue($xml, '/root/node()');
     }
 
     public function testQuery() {

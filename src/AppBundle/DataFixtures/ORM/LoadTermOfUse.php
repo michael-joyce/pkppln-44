@@ -17,7 +17,7 @@ class LoadTermOfUse extends Fixture {
     public function load(ObjectManager $em) {
         for ($i = 0; $i < 4; $i++) {
             $fixture = new TermOfUse();
-            $fixture->setWeight($i);
+            $fixture->setWeight(4-$i);
             $fixture->setKeyCode('term-' . $i);
             $fixture->setContent('Content ' . $i);
 

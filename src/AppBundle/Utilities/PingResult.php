@@ -34,9 +34,9 @@ class PingResult {
     private $xml;
     
     /**
-     * Error from the HTTP request.
+     * Error from parsing the XML response.
      *
-     * @var string|null
+     * @var array|string[]
      */
     private $error;
     
@@ -48,21 +48,16 @@ class PingResult {
      */
     public function __construct(ResponseInterface $response) {
         $this->response = $response;
-        $this->error = null;
+        $this->error = array();
         $this->xml = null;
-        try {
-            $oldErrors = libxml_use_internal_errors(true);
-            $this->xml = simplexml_load_string($response->getBody());
-            if ($this->xml === false) {
-                $this->error = '';
-                foreach (libxml_get_errors() as $error) {
-                    $this->error = "{$error->line}:{$error->column}:{$error->code}:{$error->message}";
-                }
+        $oldErrors = libxml_use_internal_errors(true);
+        $this->xml = simplexml_load_string($response->getBody());
+        if ($this->xml === false) {
+            foreach (libxml_get_errors() as $error) {
+                $this->error[] = "{$error->line}:{$error->column}:{$error->code}:{$error->message}";
             }
-            libxml_use_internal_errors($oldErrors);
-        } catch (Exception $ex) {
-            $this->error = get_class($ex) . ":" . $ex->getMessage();
         }
+        libxml_use_internal_errors($oldErrors);
     }
     
     /**
@@ -82,17 +77,17 @@ class PingResult {
      *   True if there was an error.
      */
     public function hasError() {
-        return $this->error !== null;
+        return count($this->error) > 0;
     }
     
     /**
-     * Get the HTTP response error.
+     * Get the XML processing error.
      *
      * @return string
      *   The formatted error string.
      */
     public function getError() {
-        return $this->error;
+        return implode("\n", $this->error);
     }
 
     /**

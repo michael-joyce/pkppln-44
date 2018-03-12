@@ -21,7 +21,7 @@ class TermOfUseRepository extends EntityRepository {
      *   The terms of use.
      */
     public function getTerms() {
-        return $this->findAll(array(), array(
+        return $this->findBy(array(), array(
             'weight' => 'ASC',
         ));
     }

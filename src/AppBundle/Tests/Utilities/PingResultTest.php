@@ -35,6 +35,13 @@ class PingResultTest extends TestCase {
     public function testInstance() {
         $this->assertInstanceOf(PingResult::class, $this->result);        
     }
+
+    public function testConstructorException() {
+        $mock = $this->createMock(ResponseInterface::class);
+        $mock->method('getBody')->willReturn('<n>&foo;</n>');
+        $this->result = new PingResult($mock);
+        $this->assertTrue($this->result->hasError());
+    }
     
     public function testHttpStatus() {
         $this->assertEquals(200, $this->result->getHttpStatus());
@@ -42,7 +49,7 @@ class PingResultTest extends TestCase {
     
     public function testError() {
         $this->assertFalse($this->result->hasError());
-        $this->assertNull($this->result->getError());
+        $this->assertEmpty($this->result->getError());
     }
     
     public function testGetBody() {

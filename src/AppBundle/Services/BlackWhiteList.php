@@ -64,10 +64,10 @@ class BlackWhiteList {
     }
     
     /**
-     *
+     * Check if a journal is whitelisted or blacklisted.
      */
     public function isListed($uuid) {
         return $this->isWhitelisted($uuid) || $this->isBlacklisted($uuid);
     }
-
+    
 }

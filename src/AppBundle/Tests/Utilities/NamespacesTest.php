@@ -32,6 +32,9 @@ class NamespacesTest extends TestCase {
             ['lom', 'http://lockssomatic.info/SWORD2'],
             ['rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#'],
             ['app', 'http://www.w3.org/2007/app'],
+            ['foo', null],
+            ['', null],
+            [null, null],
         ];
     }
     
@@ -45,7 +48,7 @@ class NamespacesTest extends TestCase {
         $this->assertEquals(5, (string)$xml->xpath('//rdf:e[1]/text()')[0]);
         $this->assertEquals(6, (string)$xml->xpath('//app:f[1]/text()')[0]);
     }
-    
+
     public function getXml() {
         return <<<"ENDXML"
         <root>
