@@ -29,7 +29,7 @@ class XmlParser {
 
     /**
      * List of errors in parsing.
-     * 
+     *
      * @var array
      */
     private $errors;
@@ -43,8 +43,8 @@ class XmlParser {
 
     /**
      * Check if the parse generated errors.
-     * 
-     * @return boolean
+     *
+     * @return bool
      *   True if the parse generated errors.
      */
     public function hasErrors() {
@@ -53,13 +53,13 @@ class XmlParser {
 
     /**
      * Filter out any invalid UTF-8 data in $from and write the result to $to.
-     * 
+     *
      * @param string $from
      *   Path to the source file.
      * @param string $to
      *   Path to the destination file.
-     * 
-     * @return int 
+     *
+     * @return int
      *   The number of invalid bytes filtered out.
      */
     public function filter($from, $to) {
@@ -75,8 +75,8 @@ class XmlParser {
     }
 
     /**
-     * Load the XML document into a DOM and return it. 
-     * 
+     * Load the XML document into a DOM and return it.
+     *
      * Errors are appended to the $report parameter.
      *
      * For reasons beyond anyone's apparent control, the export may contain
@@ -88,7 +88,7 @@ class XmlParser {
      *
      * @param string $filename
      *   Path to the source file.
-     * 
+     *
      * @return DOMDocument
      *   Parsed XML document in a DOM.
      */
@@ -100,7 +100,7 @@ class XmlParser {
             return $dom;
         }
         $error = libxml_get_last_error();
-        if(strpos($error->message, 'Input is not proper UTF-8') === false) {
+        if (strpos($error->message, 'Input is not proper UTF-8') === false) {
             throw new Exception("{$error->message} at {$error->file}:{$error->line}:{$error->column}.");
         }
         $filteredFilename = tempnam(sys_get_temp_dir(), 'pkppln-');
@@ -108,7 +108,7 @@ class XmlParser {
         $this->errors[] = basename($filename) . " contains {$changes} invalid "
         . "UTF-8 characters, which have been removed.";
         $filteredResult = $dom->load($filteredFilename, self::LIBXML_OPTS);
-        if( $filteredResult === true) {
+        if ($filteredResult === true) {
             return $dom;
         }
         $filteredError = libxml_get_last_error();
