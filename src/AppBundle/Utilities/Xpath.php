@@ -13,7 +13,7 @@ use Exception;
 use SimpleXMLElement;
 
 /**
- * Description of Xpath.
+ * Wrapper around some XPath functions.
  */
 class Xpath {
     
