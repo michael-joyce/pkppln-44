@@ -16,6 +16,7 @@ use AppBundle\Services\Processing\PayloadValidator;
 use Exception;
 use Nines\UtilBundle\Tests\Util\BaseTestCase;
 use org\bovigo\vfs\vfsStream;
+use org\bovigo\vfs\vfsStreamDirectory;
 
 /**
  * Description of PayloadValidatorTest
@@ -27,6 +28,9 @@ class PayloadValidatorTest extends BaseTestCase {
      */
     private $validator;
     
+    /**
+     * @var vfsStreamDirectory
+     */
     private $root;
     
     protected function setUp() {

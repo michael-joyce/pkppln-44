@@ -10,7 +10,6 @@ use DOMXPath;
 use PharData;
 use RecursiveIteratorIterator;
 use Socket\Raw\Factory;
-use Symfony\Component\Filesystem\Filesystem;
 use Xenolope\Quahog\Client;
 
 /**
@@ -24,11 +23,6 @@ class VirusScanner {
     private $filePaths;
 
     /**
-     * @var Filesystem
-     */
-    private $fs;
-
-    /**
      * @var string
      */
     private $socketPath;
@@ -39,26 +33,28 @@ class VirusScanner {
     private $factory;
 
     /**
-     *
+     * Construct the virus scanner.
+     * 
+     * @param string $socketPath
+     * @param FilePaths $filePaths
      */
     public function __construct($socketPath, FilePaths $filePaths) {
         $this->filePaths = $filePaths;
         $this->socketPath = $socketPath;
-        $this->fs = new FileSystem();
         $this->factory = new Factory();
     }
 
     /**
-     *
+     * Set the socket factory.
      */
     public function setFactory(Factory $factory) {
         $this->factory = $factory;
     }
 
     /**
-     *
+     * @return Client
      */
-    protected function getClient() {
+    public function getClient() {
         $socket = $this->factory->createClient('unix://' . $this->socketPath);
         $client = new Client($socket);
         $client->startSession();
@@ -66,7 +62,12 @@ class VirusScanner {
     }
     
     /**
-     *
+     * Scan an embedded file.
+     * 
+     * @param DOMElement $embed
+     * @param DOMXpath $xp
+     * @param Client $client
+     * @return string
      */
     public function scanEmbed(DOMElement $embed, DOMXpath $xp, Client $client) {
         $fh = tmpfile();
@@ -85,7 +86,11 @@ class VirusScanner {
     }
     
     /**
-     *
+     * Find all the embedded files in the XML and scan them.
+     * 
+     * @param PharData $phar
+     * @param Client $client
+     * @return string
      */
     public function scanEmbededFiles(PharData $phar, Client $client) {
         $results = array();
@@ -111,7 +116,11 @@ class VirusScanner {
     }
     
     /**
-     *
+     * Scan an archive.
+     * 
+     * @param PharData $phar
+     * @param Client $client
+     * @return string
      */
     public function scanArchiveFiles(PharData $phar, Client $client) {
         $results = array();
@@ -129,10 +138,16 @@ class VirusScanner {
     }
 
     /**
-     *
+     * Process one deposit.
+     * 
+     * @param Deposit $deposit
+     * @param Client $client
+     * @return boolean
      */
-    public function processDeposit(Deposit $deposit) {
-        $client = $this->getClient();
+    public function processDeposit(Deposit $deposit, Client $client = null) {
+        if($client === null) {
+            $client = $this->getClient();
+        }
         $harvestedPath = $this->filePaths->getHarvestFile($deposit);
         $phar = new PharData($harvestedPath);
         

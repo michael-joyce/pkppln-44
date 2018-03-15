@@ -4,9 +4,8 @@ namespace AppBundle\Services\Processing;
 
 use AppBundle\Entity\Deposit;
 use AppBundle\Services\FilePaths;
-use BagIt;
+use AppBundle\Utilities\BagReader;
 use Exception;
-use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Validate a bag, according to the bagit spec.
@@ -17,20 +16,23 @@ class BagValidator {
      * @var FilePaths
      */
     private $filePaths;
-
+    
     /**
-     * @var FileSystem
+     * @var BagReader
      */
-    private $fs;
+    private $bagReader;
 
     /**
      *
      * @param FilePaths $fp
      * @param Filesystem $fs
      */
-    public function __construct(FilePaths $fp, Filesystem $fs) {
+    public function __construct(FilePaths $fp) {
         $this->filePaths = $fp;
-        $this->fs = $fs;
+    }
+    
+    public function setBagReader(BagReader $bagReader) {
+        $this->bagReader = $bagReader;
     }
 
     /**
@@ -38,16 +40,12 @@ class BagValidator {
      */
     public function processDeposit(Deposit $deposit) {
         $harvestedPath = $this->filePaths->getHarvestFile($deposit);
+        $bag = $this->bagReader->readBag($harvestedPath);
+        
+        $errors = $bag->validate();
 
-        if (!$this->fs->exists($harvestedPath)) {
-            throw new Exception("Deposit file {$harvestedPath} does not exist");
-        }
-
-        $bag = new BagIt($harvestedPath);
-        $bag->validate();
-
-        if (count($bag->getBagErrors()) > 0) {
-            foreach ($bag->getBagErrors() as $error) {
+        if (count($errors) > 0) {
+            foreach ($errors as $error) {
                 $deposit->addErrorLog("Bagit validation error for {$error[0]} - {$error[1]}");
             }
             throw new Exception("BagIt validation failed for {$deposit->getDepositUuid()}");

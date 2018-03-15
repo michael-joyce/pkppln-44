@@ -31,7 +31,7 @@ class PayloadValidator {
     }
     
     /**
-     *
+     * Hash a file.
      */
     public function hashFile($algorithm, $filepath) {
         $handle = fopen($filepath, "r");

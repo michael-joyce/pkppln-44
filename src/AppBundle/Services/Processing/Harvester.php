@@ -76,7 +76,7 @@ class Harvester {
     public function __construct($maxHarvestAttempts, FilePaths $filePaths) {
         $this->maxAttempts = $maxHarvestAttempts;
         $this->filePaths = $filePaths;
-        $this->fs = new FileSystem();
+        $this->fs = new Filesystem();
         $this->client = new Client();
     }
 
