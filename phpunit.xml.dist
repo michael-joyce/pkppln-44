@@ -22,7 +22,7 @@
     </php>
 
     <testsuites>
-        <testsuite name="LOCKSSOmatic">
+        <testsuite name="PKP PLN">
             <directory>src/AppBundle/Tests</directory>
         </testsuite>
     </testsuites>

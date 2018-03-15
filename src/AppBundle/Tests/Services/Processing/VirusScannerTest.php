@@ -18,7 +18,7 @@ use Xenolope\Quahog\Client;
 /**
  * Description of PayloadValidatorTest
  */
-class PayloadValidatorTest extends BaseTestCase {
+class VirusScannerTest extends BaseTestCase {
     
     /**
      * @var VirusScanner
