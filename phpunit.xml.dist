@@ -27,6 +27,13 @@
         </testsuite>
     </testsuites>
 
+    <groups>
+        <!-- Virus scanner tests require a working clamav install. -->
+        <exclude>
+            <group>virusscanner</group>
+        </exclude>
+    </groups>
+
     <filter>
         <whitelist>
             <directory>src/AppBundle</directory>

@@ -10,12 +10,15 @@ use DOMXPath;
 use PharData;
 use RecursiveIteratorIterator;
 use Socket\Raw\Factory;
+use Symfony\Component\Filesystem\Filesystem;
 use Xenolope\Quahog\Client;
 
 /**
  * Virus scanning service, via ClamAV.
  */
 class VirusScanner {
+    
+    const DEFAULT_BUFFER_SIZE = 64 * 1024;
 
     /**
      * @var FilePaths
@@ -31,6 +34,16 @@ class VirusScanner {
      * @var Factory
      */
     private $factory;
+    
+    /**
+     * @var Filesystem
+     */
+    private $fs;
+
+    /**
+     * @var int
+     */
+    private $bufferSize;
 
     /**
      * Construct the virus scanner.
@@ -42,6 +55,8 @@ class VirusScanner {
         $this->filePaths = $filePaths;
         $this->socketPath = $socketPath;
         $this->factory = new Factory();
+        $this->fs = new Filesystem();
+        $this->bufferSize = self::DEFAULT_BUFFER_SIZE;
     }
 
     /**
@@ -60,6 +75,10 @@ class VirusScanner {
         $client->startSession();
         return $client;
     }
+
+    public function setBufferSize($size) {
+        $this->size = $size;
+    }
     
     /**
      * Scan an embedded file.
@@ -70,19 +89,38 @@ class VirusScanner {
      * @return string
      */
     public function scanEmbed(DOMElement $embed, DOMXpath $xp, Client $client) {
-        $fh = tmpfile();
-        // 64kb chunks.
-        $chunkSize = 1024 * 64;
         $length = $xp->evaluate('string-length(./text())', $embed);
         // Xpath starts at 1.
         $offset = 1;
+        $handle = fopen('php://temp', 'w+');
         while ($offset < $length) {
-            $end = $offset + $chunkSize;
-            $chunk = $xp->evaluate("substring(./text(), {$offset}, {$chunkSize})", $embed);
-            fwrite($fh, base64_decode($chunk));
+            $end = $offset + $this->bufferSize;
+            $chunk = $xp->evaluate("substring(./text(), {$offset}, {$this->bufferSize})", $embed);            
+            $data = base64_decode($chunk);
+            fwrite($handle, $data);
             $offset = $end;
         }
-        return $client->scanResourceStream($fh);
+        rewind($handle);
+        return $client->scanResourceStream($handle);
+    }
+    
+    public function scanXmlFile($pathname, Client $client, XmlParser $parser = null) {
+        if( ! $parser) {
+            $parser = new XmlParser();
+        }
+        $dom = $parser->fromFile($pathname);
+        $xp = new DOMXPath($dom);
+        foreach ($xp->query('//embed') as $embed) {
+            $filename = $embed->attributes->getNamedItem('filename')->nodeValue;
+            $r = $this->scanEmbed($embed, $xp, $client);
+            if ($r['status'] === 'OK') {
+                $results[] = $filename . ' OK';
+            } else {
+                $results[] = $filename . ' ' . $r['status'] . ': ' . $r['reason'];
+            }
+        }
+        return $results;
+        
     }
     
     /**
@@ -94,22 +132,12 @@ class VirusScanner {
      */
     public function scanEmbededFiles(PharData $phar, Client $client) {
         $results = array();
+        $parser = new XmlParser();
         foreach (new RecursiveIteratorIterator($phar) as $file) {
             if (substr($file->getFilename(), -4) !== '.xml') {
                 continue;
             }
-            $parser = new XmlParser();
-            $dom = $parser->fromFile($file->getPathname());
-            $xp = new DOMXPath($dom);
-            foreach ($xp->query('//embed') as $embed) {
-                $filename = $embed->attributes->getNamedItem('filename')->nodeValue;
-                $r = $this->scanEmbed($embed, $xp, $client);
-                if ($r['status'] === 'OK') {
-                    $results[$filename] = 'OK';
-                } else {
-                    $results[$filename] = $r['status'] . ': ' . $r['reason'];
-                }
-            }
+            $results[] = $this->scanXmlFile($file->getPathname, $client, $parser);
         }
         
         return $results;
@@ -128,9 +156,9 @@ class VirusScanner {
             $fh = fopen($file->getPathname(), 'rb');
             $r = $client->scanResourceStream($fh);
             if ($r['status'] === 'OK') {
-                $results[$file->getFileName()] = 'OK';
+                $results[] = $file->getFileName() . ' ' . 'OK';
             } else {
-                $results[$file->getFileName()] = $r['status'] . ': ' . $r['reason'];
+                $results[$file->getFileName()] = $file->getFileName() . ' ' . $r['status'] . ': ' . $r['reason'];
             }
         }
         
@@ -154,9 +182,9 @@ class VirusScanner {
         $baseResult = array();
         $r = $client->scanFile($harvestedPath);
         if ($r['status'] === 'OK') {
-            $baseResult[basename($harvestedPath)] = 'OK';
+            $baseResult[] = basename($harvestedPath) . ' OK';
         } else {
-            $baseResult[basename($harvestedPath)] = $r['status'] . ': ' . $r['reason'];
+            $baseResult[] = basename($harvestedPath) . ' ' . $r['status'] . ': ' . $r['reason'];
         }
         $archiveResult = $this->scanArchiveFiles($phar, $client);
         $embeddedResult = $this->scanEmbededFiles($phar, $client);

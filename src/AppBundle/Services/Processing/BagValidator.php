@@ -25,9 +25,9 @@ class BagValidator {
     /**
      *
      * @param FilePaths $fp
-     * @param Filesystem $fs
      */
-    public function __construct(FilePaths $fp) {
+    public function __construct(FilePaths $fp, BagReader $bagReader) {
+        $this->bagReader = $bagReader;
         $this->filePaths = $fp;
     }
     

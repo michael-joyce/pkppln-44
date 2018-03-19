@@ -5,7 +5,7 @@ namespace AppBundle\Services\Processing;
 use AppBundle\Entity\Deposit;
 use AppBundle\Services\DtdValidator;
 use AppBundle\Services\FilePaths;
-use BagIt;
+use AppBundle\Utilities\BagReader;
 use DOMDocument;
 use Exception;
 
@@ -40,11 +40,16 @@ class XmlValidator {
      * @param DtdValidator $validator
      *   Dependency-injected validator.
      */
-    public function __construct(FilePaths $filePaths, DtdValidator $validator) {
+    public function __construct(FilePaths $filePaths, DtdValidator $validator, BagReader $bagReader) {
         $this->filePaths = $filePaths;
         $this->validator = $validator;
+        $this->bagReader = $bagReader;
     }
     
+    public function setBagReader(BagReader $bagReader) {
+        $this->bagReader = $bagReader;
+    }
+
     /**
      * Filter out any invalid UTF-8 data in $from and write the result to $to.
      *
@@ -115,8 +120,8 @@ class XmlValidator {
      * {@inheritdoc}
      */
     public function processDeposit(Deposit $deposit) {
-        $extractedPath = $this->filePaths->getHarvestFile($deposit);
-        $bag = new BagIt($extractedPath);
+        $harvestedPath = $this->filePaths->getHarvestFile($deposit);
+        $bag = $bag = $this->bagReader->readBag($harvestedPath);
         $report = '';
         
         foreach ($bag->getBagContents() as $filename) {
