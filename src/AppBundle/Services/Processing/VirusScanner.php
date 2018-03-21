@@ -18,56 +18,69 @@ use Xenolope\Quahog\Client;
  */
 class VirusScanner {
     
-    const DEFAULT_BUFFER_SIZE = 64 * 1024;
-
     /**
+     * File path service.
+     *
      * @var FilePaths
      */
     private $filePaths;
 
     /**
+     * Path to the ClamAV socket.
+     *
      * @var string
      */
     private $socketPath;
 
     /**
+     * Socket factory, for use with the Quahog ClamAV interface.
+     *
      * @var Factory
      */
     private $factory;
     
     /**
+     * Filesystem client.
+     *
      * @var Filesystem
      */
     private $fs;
 
     /**
-     * @var int
-     */
-    private $bufferSize;
-
-    /**
      * Construct the virus scanner.
-     * 
+     *
      * @param string $socketPath
+     *   Path to the clamd socket.
      * @param FilePaths $filePaths
+     *   FilePath service.
      */
     public function __construct($socketPath, FilePaths $filePaths) {
         $this->filePaths = $filePaths;
         $this->socketPath = $socketPath;
         $this->factory = new Factory();
         $this->fs = new Filesystem();
-        $this->bufferSize = self::DEFAULT_BUFFER_SIZE;
     }
 
     /**
      * Set the socket factory.
+     *
+     * @param Factory $factory
+     *   Override the default socket factory.
      */
     public function setFactory(Factory $factory) {
         $this->factory = $factory;
     }
 
     /**
+     * Get the Quahog client.
+     *
+     * The client can't be instantiated in the constructor. If the socket path
+     * isn't configured or if the socket isn't set up yet the entire app will
+     * fail. Symfony tries it instantiate all services for each request, and if
+     * one constructor throws an exception everything gets cranky.
+     *
      * @return Client
+     *   Fully configured client.
      */
     public function getClient() {
         $socket = $this->factory->createClient('unix://' . $this->socketPath);
@@ -76,17 +89,18 @@ class VirusScanner {
         return $client;
     }
 
-    public function setBufferSize($size) {
-        $this->size = $size;
-    }
-    
     /**
      * Scan an embedded file.
-     * 
+     *
      * @param DOMElement $embed
+     *   DOM Element with the embedded content.
      * @param DOMXpath $xp
+     *   XPath context with pointing to the embedded element.
      * @param Client $client
-     * @return string
+     *   Configured virus scanning client.
+     *
+     * @return array
+     *   Scan details.
      */
     public function scanEmbed(DOMElement $embed, DOMXpath $xp, Client $client) {
         $length = $xp->evaluate('string-length(./text())', $embed);
@@ -95,7 +109,7 @@ class VirusScanner {
         $handle = fopen('php://temp', 'w+');
         while ($offset < $length) {
             $end = $offset + $this->bufferSize;
-            $chunk = $xp->evaluate("substring(./text(), {$offset}, {$this->bufferSize})", $embed);            
+            $chunk = $xp->evaluate("substring(./text(), {$offset}, {$this->bufferSize})", $embed);
             $data = base64_decode($chunk);
             fwrite($handle, $data);
             $offset = $end;
@@ -104,8 +118,21 @@ class VirusScanner {
         return $client->scanResourceStream($handle);
     }
     
+    /**
+     * Scan an XML file and it's embedded content.
+     *
+     * @param string $pathname
+     *   Path to the file to scan.
+     * @param Client $client
+     *   Configured virus client.
+     * @param XmlParser $parser
+     *   Parser to get the XML out of $pathname.
+     *
+     * @return array
+     *   Virus scanning details.
+     */
     public function scanXmlFile($pathname, Client $client, XmlParser $parser = null) {
-        if( ! $parser) {
+        if (!$parser) {
             $parser = new XmlParser();
         }
         $dom = $parser->fromFile($pathname);
@@ -120,15 +147,18 @@ class VirusScanner {
             }
         }
         return $results;
-        
     }
     
     /**
      * Find all the embedded files in the XML and scan them.
-     * 
+     *
      * @param PharData $phar
+     *   Parsed bag data.
      * @param Client $client
-     * @return string
+     *   Virus scannign client.
+     *
+     * @return array
+     *   Scan details.
      */
     public function scanEmbededFiles(PharData $phar, Client $client) {
         $results = array();
@@ -145,10 +175,14 @@ class VirusScanner {
     
     /**
      * Scan an archive.
-     * 
+     *
      * @param PharData $phar
+     *   Parsed compressed bag.
      * @param Client $client
-     * @return string
+     *   Virus scanning client.
+     *
+     * @return array
+     *   Scan details.
      */
     public function scanArchiveFiles(PharData $phar, Client $client) {
         $results = array();
@@ -156,9 +190,9 @@ class VirusScanner {
             $fh = fopen($file->getPathname(), 'rb');
             $r = $client->scanResourceStream($fh);
             if ($r['status'] === 'OK') {
-                $results[] = $file->getFileName() . ' ' . 'OK';
+                $results[] = "{$file->getFileName()} OK";
             } else {
-                $results[$file->getFileName()] = $file->getFileName() . ' ' . $r['status'] . ': ' . $r['reason'];
+                $results[] = "{$file->getFileName()} {$r['status']}: {$r['reason']}";
             }
         }
         
@@ -167,28 +201,37 @@ class VirusScanner {
 
     /**
      * Process one deposit.
-     * 
+     *
      * @param Deposit $deposit
+     *   Deposit to scan and parse.
      * @param Client $client
-     * @return boolean
+     *   Optional virus client.
+     *
+     * @return bool
+     *   True if the scan succeeded, regardless of viruses present in the deposit.
      */
     public function processDeposit(Deposit $deposit, Client $client = null) {
-        if($client === null) {
+        if ($client === null) {
             $client = $this->getClient();
         }
         $harvestedPath = $this->filePaths->getHarvestFile($deposit);
+        $basename = basename($harvestedPath);
         $phar = new PharData($harvestedPath);
         
         $baseResult = array();
         $r = $client->scanFile($harvestedPath);
         if ($r['status'] === 'OK') {
-            $baseResult[] = basename($harvestedPath) . ' OK';
+            $baseResult[] = "{$basename} OK";
         } else {
-            $baseResult[] = basename($harvestedPath) . ' ' . $r['status'] . ': ' . $r['reason'];
+            $baseResult[] = "{$basename} {$r['status']}: {$r['reason']}";
         }
         $archiveResult = $this->scanArchiveFiles($phar, $client);
         $embeddedResult = $this->scanEmbededFiles($phar, $client);
-        $deposit->addToProcessingLog(implode("\n", array_merge($baseResult, $archiveResult, $embeddedResult)));
+        $deposit->addToProcessingLog(implode("\n", array_merge(
+            $baseResult,
+            $archiveResult,
+            $embeddedResult
+        )));
         return true;
     }
 

@@ -28,8 +28,10 @@ use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * Harvest a deposit from a journal. Attempts to check file sizes via HTTP HEAD
- * before downloading, and checks that there will be sufficient disk space.
+ * Harvest a deposit from a journal.
+ *
+ * Attempts to check file sizes via HTTP HEAD before downloading, and checks
+ * that there will be sufficient disk space.
  */
 class Harvester {
 
@@ -43,35 +45,55 @@ class Harvester {
         ),
         'decode_content' => false,
     );
+    
+    /**
+     * Write files in 64kb chunks.
+     */
+    const BUFFER_SIZE = 64 * 1024;
 
     /**
-     * File sizes reported via HTTP HEAD must this close to to the file size
-     * as reported in the deposit. Threshold = 0.02 is 2%.
+     * File size difference threshold.
+     *
+     * Deposit files with sizes that differ from the reported size in the SWORD
+     * deposit will be considered fails.
      */
     const FILE_SIZE_THRESHOLD = 0.08;
 
     /**
+     * HTTP Client.
+     *
      * @var Client
      */
     private $client;
 
     /**
+     * Filesystem interface.
+     *
      * @var Filesystem
      */
     private $fs;
 
     /**
+     * Maximum number of harvest attempts before giving up.
+     *
      * @var int
      */
     private $maxAttempts;
 
     /**
+     * File path service.
+     *
      * @var FilePaths
      */
     private $filePaths;
 
     /**
+     * Construct the harvester.
      *
+     * @param int $maxHarvestAttempts
+     *   Maximum number of harvest attempts.
+     * @param FilePaths $filePaths
+     *   Dependency injected file path service.
      */
     public function __construct($maxHarvestAttempts, FilePaths $filePaths) {
         $this->maxAttempts = $maxHarvestAttempts;
@@ -81,31 +103,37 @@ class Harvester {
     }
 
     /**
-     * Set the HTTP client, usually based on Guzzle.
+     * Override the HTTP client, usually based on Guzzle.
      *
      * @param Client $client
+     *   HTTP Client.
      */
     public function setClient(Client $client) {
         $this->client = $client;
     }
 
     /**
-     * Set the file system client.
+     * Override the file system client.
      *
      * @param Filesystem $fs
+     *   File system interface.
      */
     public function setFilesystem(Filesystem $fs) {
         $this->fs = $fs;
     }
 
     /**
-     * Write a deposit's data to the filesystem at $path. Returns true on
-     * success and false on failure.
+     * Write a deposit's data to the filesystem at $path.
+     *
+     * Returns true on success and false on failure.
      *
      * @param string $path
-     * @param Response $response
+     *   Path to the file to write.
+     * @param ResponseInterface $response
+     *   HTTP Response.
      *
      * @return bool
+     *   True on success and false on failure.
      */
     public function writeDeposit($path, ResponseInterface $response) {
         $body = $response->getBody();
@@ -115,63 +143,76 @@ class Harvester {
         if ($this->fs->exists($path)) {
             $this->fs->remove($path);
         }
-        // 64k chunks.
-        while ($bytes = $body->read(64 * 1024)) {
+        // 64k chunks. Can't read/write the entire thing at once.
+        while ($bytes = $body->read(self::BUFFER_SIZE)) {
             $this->fs->appendToFile($path, $bytes);
         }
         return true;
     }
 
     /**
-     * Fetch a deposit URL with Guzzle. Returns the data on success or false
-     * on failure.
+     * Fetch a deposit URL with Guzzle.
      *
      * @param string $url
+     *   URL to fetch.
      *
      * @return Response
+     *   HTTP response from the remote host.
      *
      * @throws Exception
+     *   If the HTTP status code isn't 200, throw an error.
      */
     public function fetchDeposit($url) {
         $response = $this->client->get($url, self::CONF);
         if ($response->getStatusCode() !== 200) {
-            throw new Exception("Harvest download error - {$url} - HTTP {$response->getHttpStatus()} - {$url} - {$response->getError()}");
+            throw new Exception("Harvest download error "
+                    . "- {$url} - HTTP {$response->getHttpStatus()} "
+                    . "- {$response->getError()}");
         }
         return $response;
     }
 
     /**
-     * Send an HTTP HEAD request to get the deposit's host to get an estimate
-     * of the download size.
+     * Do an HTTP HEAD to get the deposit download size.
      *
-     * @param mixed $deposit
+     * @param Deposit $deposit
+     *   Deposit to check.
      *
      * @throws Exception
+     *   If the HEAD request status code isn't 200, throw an exception.
      */
     public function checkSize(Deposit $deposit) {
         $response = $this->client->head($deposit->getUrl(), self::CONF);
         if ($response->getStatusCode() != 200 || !$response->hasHeader('Content-Length')) {
-            throw new Exception("HTTP HEAD request cannot check file size: HTTP {$response->getStatusCode()} - {$response->getReasonPhrase()} - {$deposit->getUrl()}");
+            throw new Exception("HTTP HEAD request cannot check file size: "
+                    . "HTTP {$response->getStatusCode()} - {$response->getReasonPhrase()} "
+                    . "- {$deposit->getUrl()}");
         }
         $values = $response->getHeader('Content-Length');
         $reported = (int) $values[0];
         if ($reported === 0) {
-            throw new Exception("HTTP HEAD response does not include file size: HTTP {$response->getStatusCode()} - {$response->getReasonPhrase()} - {$deposit->getUrl()}");
+            throw new Exception("HTTP HEAD response does not include file size: "
+                    . "HTTP {$response->getStatusCode()} - {$response->getReasonPhrase()} "
+                    . "- {$deposit->getUrl()}");
         }
         $expected = $deposit->getSize() * 1000;
         $difference = abs($reported - $expected) / (($reported + $expected) / 2.0);
         if ($difference > self::FILE_SIZE_THRESHOLD) {
-            throw new Exception("Expected file size {$expected} is not close to reported size {$reported}");
+            throw new Exception("Expected file size {$expected} is not close to "
+            . "reported size {$reported}");
         }
     }
 
     /**
-     * Process one deposit. Fetch the data and write it to the file system.
-     * Updates the deposit status.
+     * Process one deposit.
+     *
+     * Fetch the data and write it to the file system.
      *
      * @param Deposit $deposit
+     *   The deposit to process.
      *
      * @return bool
+     *   True if the deposit was downloaded.
      */
     public function processDeposit(Deposit $deposit) {
         if ($deposit->getHarvestAttempts() > $this->maxAttempts) {

@@ -14,32 +14,38 @@ use Exception;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * Description of BagReader
+ * Wrapper around BagIt.
  */
 class BagReader {
 
     /**
-     * 
+     * Build the reader.
      */
     public function __construct() {
         $this->fs = new Filesystem();
     }
 
     /**
-     * Set the file system client.
+     * Override the default Filesystem component.
      *
      * @param Filesystem $fs
+     *   Filesystem client.
      */
     public function setFilesystem(Filesystem $fs) {
         $this->fs = $fs;
     }
-    
+
     /**
+     * Read a bag from the file system.
+     *
      * @param string $path
-     * 
+     *   Path to the bag.
+     *
      * @return BagIt
-     * 
+     *   Parsed, unvalidated, bag.
+     *
      * @throws Exception
+     *   Exception thrown if the bag doesn't exist.
      */
     public function readBag($path) {
         if (!$this->fs->exists($path)) {

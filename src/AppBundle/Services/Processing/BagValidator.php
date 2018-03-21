@@ -31,6 +31,9 @@ class BagValidator {
         $this->filePaths = $fp;
     }
     
+    /**
+     *
+     */
     public function setBagReader(BagReader $bagReader) {
         $this->bagReader = $bagReader;
     }
