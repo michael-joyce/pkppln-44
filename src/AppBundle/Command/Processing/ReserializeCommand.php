@@ -2,44 +2,79 @@
 
 namespace AppBundle\Command\Processing;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
+use AppBundle\Entity\Deposit;
+use AppBundle\Services\Processing\BagReserializer;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * PlnReserializeCommand command.
  */
-class ReserializeCommand extends ContainerAwareCommand {
+class ReserializeCommand extends AbstractProcessingCmd {
+
 
     /**
-     * Configure the command.
+     * @var BagReserializer
+     */
+    private $bagReserializer;
+
+    /**
+     * Build the command.
+     * 
+     * @param EntityManagerInterface $em
+     *   Dependency injected entity manager.
+     */
+    public function __construct(EntityManagerInterface $em, BagReserializer $bagReserializer) {
+        parent::__construct($em);
+        $this->bagReserializer = $bagReserializer;
+    }
+    
+    
+    /**
+     * {@inheritdoc}
      */
     protected function configure() {
-        $this
-            ->setName('pln:reserialize')
-          ->setDescription('...')
-            ->addArgument('argument', InputArgument::OPTIONAL, 'Argument description')
-          ->addOption('option', null, InputOption::VALUE_NONE, 'Option description');
+        $this->setName('pln:reserialize');
+        $this->setDescription('Reserialize the deposit bag.');
+        parent::configure();
+    }
+
+    protected function processDeposit(Deposit $deposit) {
+        return $this->bagReserializer->processDeposit($deposit);
     }
 
     /**
-     * Execute the command.
-     *
-     * @param InputInterface $input
-     *   Command input, as defined in the configure() method.
-     * @param OutputInterface $output
-     *   Output destination.
+     * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output) {
-        $argument = $input->getArgument('argument');
+    public function failureLogMessage() {
+        return 'Bag Reserialize failed.';
+    }
 
-        if ($input->getOption('option')) {
-            // ...
-        }
+    /**
+     * {@inheritdoc}
+     */
+    public function nextState() {
+        return 'reserialized';
+    }
 
-        $output->writeln('Command result.');
+    /**
+     * {@inheritdoc}
+     */
+    public function processingState() {
+        return 'virus-checked';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function successLogMessage() {
+        return 'Bag Reserialize succeeded.';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function errorState() {
+        return 'reserialize-error';
     }
 
 }

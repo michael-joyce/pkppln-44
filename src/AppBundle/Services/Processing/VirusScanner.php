@@ -84,7 +84,7 @@ class VirusScanner {
      */
     public function getClient() {
         $socket = $this->factory->createClient('unix://' . $this->socketPath);
-        $client = new Client($socket);
+        $client = new Client($socket, 30, PHP_NORMAL_READ);
         $client->startSession();
         return $client;
     }
@@ -137,6 +137,7 @@ class VirusScanner {
         }
         $dom = $parser->fromFile($pathname);
         $xp = new DOMXPath($dom);
+        $results = array();
         foreach ($xp->query('//embed') as $embed) {
             $filename = $embed->attributes->getNamedItem('filename')->nodeValue;
             $r = $this->scanEmbed($embed, $xp, $client);
@@ -167,7 +168,7 @@ class VirusScanner {
             if (substr($file->getFilename(), -4) !== '.xml') {
                 continue;
             }
-            $results[] = $this->scanXmlFile($file->getPathname, $client, $parser);
+            $results = array_merge($this->scanXmlFile($file->getPathname(), $client, $parser), $results);
         }
         
         return $results;
@@ -210,8 +211,8 @@ class VirusScanner {
      * @return bool
      *   True if the scan succeeded, regardless of viruses present in the deposit.
      */
-    public function processDeposit(Deposit $deposit, Client $client = null) {
-        if ($client === null) {
+    public function processDeposit(Deposit $deposit, Client $client = null) {        
+        if($client === null) {
             $client = $this->getClient();
         }
         $harvestedPath = $this->filePaths->getHarvestFile($deposit);

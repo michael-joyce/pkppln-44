@@ -185,14 +185,6 @@ class Deposit extends AbstractEntity {
     private $packageSize;
 
     /**
-     * Path to the processed package file.
-     *
-     * @var string
-     * @ORM\Column(type="string", nullable=true)
-     */
-    private $packagePath;
-
-    /**
      * Processed package checksum type.
      *
      * @var string
@@ -601,9 +593,12 @@ class Deposit extends AbstractEntity {
     /**
      * Get errorLog.
      *
-     * @return array
+     * @return array|string
      */
-    public function getErrorLog() {
+    public function getErrorLog($delim = null) {
+        if($delim) {
+            return implode($delim, $this->errorLog);
+        }
         return $this->errorLog;
     }
     
@@ -656,30 +651,6 @@ class Deposit extends AbstractEntity {
      */
     public function getPackageSize() {
         return $this->packageSize;
-    }
-
-    /**
-     * Set packagePath.
-     *
-     * @param string $packagePath
-     *
-     * @todo is package path used anywhere? FilePaths should take care of this.
-     *
-     * @return Deposit
-     */
-    public function setPackagePath($packagePath) {
-        $this->packagePath = $packagePath;
-
-        return $this;
-    }
-
-    /**
-     * Get packagePath.
-     *
-     * @return string
-     */
-    public function getPackagePath() {
-        return $this->packagePath;
     }
 
     /**

@@ -3,12 +3,19 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Deposit;
+use AppBundle\Entity\Journal;
+use AppBundle\Services\FilePaths;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Default controller.
@@ -56,6 +63,25 @@ class DefaultController extends Controller {
             'deposits' => $deposits,
             'q' => $q,
         );
+    }
+    
+    /**
+     * Fetch a processed and packaged deposit.
+     *
+     * @Route("/fetch/{journalUuid}/{depositUuid}.zip", name="fetch")
+     * @ParamConverter("journal", class="AppBundle:Journal", options={"mapping": {"journalUuid"="uuid"}})
+     * @ParamConverter("deposit", class="AppBundle:Deposit", options={"mapping": {"depositUuid"="depositUuid"}})
+     */
+    public function fetchAction(Request $request, Journal $journal, Deposit $deposit, FilePaths $fp) {
+        if( $deposit->getJournal() !== $journal) {
+            throw new BadRequestHttpException("The requested Journal ID does not match the deposit's journal ID.");            
+        }
+        $fs = new Filesystem();
+        $path = $fp->getStagingBagPath($deposit);
+        if( ! $fs->exists($path)) {
+            throw new NotFoundHttpException("Deposit not found.");            
+        }
+        return new BinaryFileResponse($path);
     }
 
 }

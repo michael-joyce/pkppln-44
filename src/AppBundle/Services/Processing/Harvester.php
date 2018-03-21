@@ -99,7 +99,7 @@ class Harvester {
         $this->maxAttempts = $maxHarvestAttempts;
         $this->filePaths = $filePaths;
         $this->fs = new Filesystem();
-        $this->client = new Client();
+        $this->client = new Client(self::CONF);
     }
 
     /**
@@ -163,7 +163,7 @@ class Harvester {
      *   If the HTTP status code isn't 200, throw an error.
      */
     public function fetchDeposit($url) {
-        $response = $this->client->get($url, self::CONF);
+        $response = $this->client->get($url);
         if ($response->getStatusCode() !== 200) {
             throw new Exception("Harvest download error "
                     . "- {$url} - HTTP {$response->getHttpStatus()} "
@@ -182,7 +182,7 @@ class Harvester {
      *   If the HEAD request status code isn't 200, throw an exception.
      */
     public function checkSize(Deposit $deposit) {
-        $response = $this->client->head($deposit->getUrl(), self::CONF);
+        $response = $this->client->head($deposit->getUrl());
         if ($response->getStatusCode() != 200 || !$response->hasHeader('Content-Length')) {
             throw new Exception("HTTP HEAD request cannot check file size: "
                     . "HTTP {$response->getStatusCode()} - {$response->getReasonPhrase()} "

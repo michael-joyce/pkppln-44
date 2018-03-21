@@ -19,8 +19,9 @@
 
 namespace AppBundle\Services\Processing;
 
-use AppBundle\Entity\AuContainer;
 use AppBundle\Entity\Deposit;
+use AppBundle\Services\FilePaths;
+use AppBundle\Utilities\BagReader;
 use BagIt;
 
 /**
@@ -29,12 +30,26 @@ use BagIt;
 class BagReserializer {
 
     /**
-     * {@inheritdoc}
+     * @var FilePaths
      */
-    protected function configure() {
-        $this->setName('pln:reserialize');
-        $this->setDescription('Reserialize the deposit bag.');
-        parent::configure();
+    private $filePaths;
+
+    /**
+     * @var BagReader
+     */
+    private $bagReader;
+
+    /**
+     *
+     * @param FilePaths $fp
+     */
+    public function __construct(FilePaths $fp, BagReader $bagReader) {
+        $this->bagReader = $bagReader;
+        $this->filePaths = $fp;
+    }
+
+    public function setBagReader(BagReader $bagReader) {
+        $this->bagReader = $bagReader;
     }
 
     /**
@@ -70,84 +85,26 @@ class BagReserializer {
     /**
      * {@inheritdoc}
      */
-    protected function processDeposit(Deposit $deposit) {
-        $extractedPath = $this->filePaths->getProcessingBagPath($deposit);
-        $this->logger->info("Reserializing {$extractedPath}");
-
-        $temp = tempnam(sys_get_temp_dir(), 'deposit_processing_log');
-        if (file_exists($temp)) {
-            unlink($temp);
-        }
-        file_put_contents($temp, $deposit->getProcessingLog());
-
-        $bag = new BagIt($extractedPath);
-        $bag->addFile($temp, 'data/processing-log.txt');
+    public function processDeposit(Deposit $deposit) {
+        $harvestedPath = $this->filePaths->getHarvestFile($deposit);
+        $bag = $this->bagReader->readBag($harvestedPath);
+        $bag->createFile($deposit->getProcessingLog(), 'data/processing-log.txt');
+        $bag->createFile($deposit->getErrorLog("\n\n"), 'data/error-log.txt');
         $this->addMetadata($bag, $deposit);
         $bag->update();
-        unlink($temp);
 
         $path = $this->filePaths->getStagingBagPath($deposit);
-
         if (file_exists($path)) {
-            $this->logger->warning("{$path} already exists. Removing it.");
             unlink($path);
         }
 
         $bag->package($path, 'zip');
-        $deposit->setPackagePath($path);
         // Bytes to kb.
         $deposit->setPackageSize(ceil(filesize($path) / 1000));
         $deposit->setPackageChecksumType('sha1');
         $deposit->setPackageChecksumValue(hash_file('sha1', $path));
 
-        $auContainer = $this->em->getRepository('AppBundle:AuContainer')->getOpenContainer();
-        if ($auContainer === null) {
-            $auContainer = new AuContainer();
-            $this->em->persist($auContainer);
-        }
-        $deposit->setAuContainer($auContainer);
-        $auContainer->addDeposit($deposit);
-        if ($auContainer->getSize() > $this->container->getParameter('pln_maxAuSize')) {
-            $auContainer->setOpen(false);
-            $this->em->flush($auContainer);
-        }
-
         return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function failureLogMessage() {
-        return 'Bag Reserialize failed.';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function nextState() {
-        return 'reserialized';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function processingState() {
-        return 'virus-checked';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function successLogMessage() {
-        return 'Bag Reserialize succeeded.';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function errorState() {
-        return 'reserialize-error';
     }
 
 }

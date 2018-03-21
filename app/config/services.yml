@@ -64,6 +64,10 @@ services:
         arguments:
             $minOjsVersion: '%pln.min_ojs_version%'
             
+    AppBundle\Services\Processing\Depositor:
+        arguments: 
+            $heldVersions: '%pln.held_versions%'            
+            
     AppBundle\Services\Processing\Harvester:
         arguments: 
             $maxHarvestAttempts: '%pln.max_harvest_attepmts%'
@@ -71,3 +75,9 @@ services:
     AppBundle\Services\Processing\VirusScanner:
         arguments:
             $socketPath: '%pln.clamd_socket%'
+
+    AppBundle\Services\SwordClient:
+        arguments:
+            $serviceUri: '%pln.service_uri%'
+            $uuid: '%pln.uuid%'
+            $saveXml: '%pln.save_deposit_xml%'

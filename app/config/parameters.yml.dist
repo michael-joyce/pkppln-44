@@ -21,7 +21,7 @@ parameters:
     # routing and session configuration.
     router.request_context.host: localhost
     router.request_context.scheme: http
-    router.request_context.base_url: /lom/web/app_dev.php
+    router.request_context.base_url: /pkppln2/web/app_dev.php
     secure_cookies: false
 
     # should the staging server accept deposits?
@@ -49,3 +49,10 @@ parameters:
 
     # Path to the ClamAV socket
     pln.clamd_socket: /tmp/clamd.socket
+
+    # Sword client config
+    pln.service_uri: http://localhost/locossomatic/api/sword/2.0/sd-iri
+    pln.save_deposit_xml: false
+    pln.remove_completed_deposits: false
+    pln.journalTitle: 'PKP PLN Deposits'
+    pln.uuid: ~

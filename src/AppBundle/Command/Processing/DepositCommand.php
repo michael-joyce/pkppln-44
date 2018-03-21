@@ -2,44 +2,77 @@
 
 namespace AppBundle\Command\Processing;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
+use AppBundle\Entity\Deposit;
+use AppBundle\Services\Processing\Depositor;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * PlnDepositCommand command.
  */
-class DepositCommand extends ContainerAwareCommand {
+class DepositCommand extends AbstractProcessingCmd {
 
     /**
-     * Configure the command.
+     * @var Depositor
      */
-    protected function configure() {
-        $this
-            ->setName('pln:deposit')
-          ->setDescription('...')
-            ->addArgument('argument', InputArgument::OPTIONAL, 'Argument description')
-          ->addOption('option', null, InputOption::VALUE_NONE, 'Option description');
+    private $depositor;
+    
+    public function __construct(EntityManagerInterface $em, Depositor $depositor) {
+        parent::__construct($em);
+        $this->depositor = $depositor;
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure()
+    {
+        $this->setName('pln:deposit');
+        $this->setDescription('Send deposits to LockssOMatic.');
+        parent::configure();
+    }
+
+
+    protected function processDeposit(Deposit $deposit) {
+        $this->depositor->processDeposit($deposit);
     }
 
     /**
-     * Execute the command.
-     *
-     * @param InputInterface $input
-     *   Command input, as defined in the configure() method.
-     * @param OutputInterface $output
-     *   Output destination.
+     * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output) {
-        $argument = $input->getArgument('argument');
-
-        if ($input->getOption('option')) {
-            // ...
-        }
-
-        $output->writeln('Command result.');
+    public function nextState()
+    {
+        return 'deposited';
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function processingState()
+    {
+        return 'reserialized';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function failureLogMessage()
+    {
+        return 'Deposit to Lockssomatic failed.';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function successLogMessage()
+    {
+        return 'Deposit to Lockssomatic succeeded.';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function errorState()
+    {
+        return 'deposit-error';
+    }
 }
