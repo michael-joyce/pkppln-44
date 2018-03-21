@@ -4,7 +4,6 @@ parameters:
     container.autowiring.strict_mode: true
 
 services:
-services:
     _defaults:
         autowire: true
         autoconfigure: true
@@ -27,7 +26,7 @@ services:
     AppBundle\Services\Ping:
         arguments:
             $minOjsVersion: '%pln.min_ojs_version%'
-            
+
     AppBundle\Services\Processing\Depositor:
         arguments: 
             $heldVersions: '%pln.held_versions%'            

@@ -77,7 +77,6 @@ class DepositBuilderTest extends BaseTestCase {
             ['depositedByJournal', 'getState'],
             [[], 'getErrorLog'],
             [null, 'getPlnState'],
-            [null, 'getPackagePath'],
             [null, 'getPackageChecksumType'],
             [null, 'getPackageChecksumValue'],
             [null, 'getDepositDate'],

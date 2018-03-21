@@ -19,6 +19,11 @@ use Xenolope\Quahog\Client;
 class VirusScanner {
     
     /**
+     * Buffer size for extracting embedded files.
+     */
+    const BUFFER_SIZE = 64 * 1024;
+    
+    /**
      * File path service.
      *
      * @var FilePaths
@@ -57,6 +62,7 @@ class VirusScanner {
     public function __construct($socketPath, FilePaths $filePaths) {
         $this->filePaths = $filePaths;
         $this->socketPath = $socketPath;
+        $this->bufferSize = self::BUFFER_SIZE;
         $this->factory = new Factory();
         $this->fs = new Filesystem();
     }
