@@ -170,7 +170,7 @@ class AbstractProcessingCmdTest extends BaseTestCase {
         $this->em->flush();
         
         $cmd = new DummyCommand($this->em, "held");
-        $deposits = $cmd->getDeposits(false, 1);
+        $deposits = $cmd->getDeposits(false, [1]);
         $this->assertEquals(1, count($deposits));
         $this->assertEquals($deposit, $deposits[0]);
     }
@@ -181,7 +181,7 @@ class AbstractProcessingCmdTest extends BaseTestCase {
         $this->em->flush();
         
         $cmd = new DummyCommand($this->em, "held");
-        $deposits = $cmd->getDeposits(true, 1);
+        $deposits = $cmd->getDeposits(true, [1]);
         $this->assertEquals(1, count($deposits));
         $this->assertEquals($deposit, $deposits[0]);
     }
