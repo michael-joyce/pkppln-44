@@ -23,6 +23,11 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class DefaultController extends Controller {
 
     /**
+     * Home page action.
+     *
+     * @return Response
+     *   HTTP Response with rendered content.
+     *
      * @Route("/", name="homepage")
      */
     public function indexAction(Request $request) {
@@ -41,6 +46,9 @@ class DefaultController extends Controller {
      *
      * @param Request $request
      *   Dependency injected HTTP request object.
+     *
+     * @return array
+     *   Variables passed to the templating system.
      *
      * @Route("/deposit_search", name="all_deposit_search")
      * @Method("GET")
@@ -67,6 +75,21 @@ class DefaultController extends Controller {
     
     /**
      * Fetch a processed and packaged deposit.
+     *
+     * @param Request $request
+     *   Dependency injected HTTP request object.
+     * @param Journal $journal
+     *   Journal from the URL parameter journalUuid.
+     * @param Deposit $deposit
+     *   Deposit from the URL parameter depositUuid.
+     * @param FilePaths $fp
+     *   Dependency-injected file path service.
+     *
+     * @return BinaryFileResponse
+     *   Processed deposit ready for preservation.
+     *
+     * @throws BadRequestHttpException
+     * @throws NotFoundHttpException
      *
      * @Route("/fetch/{journalUuid}/{depositUuid}.zip", name="fetch")
      * @ParamConverter("journal", class="AppBundle:Journal", options={"mapping": {"journalUuid"="uuid"}})

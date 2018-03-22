@@ -62,6 +62,7 @@ class ResetDepositCommand extends ContainerAwareCommand {
      *   Optional list of deposit database ids.
      *
      * @return IterableResult|Deposit[]
+     *   Iterator for all the deposits to reset.
      */
     public function getDepositIterator(array $ids = null) {
         $qb = $this->em->createQueryBuilder();

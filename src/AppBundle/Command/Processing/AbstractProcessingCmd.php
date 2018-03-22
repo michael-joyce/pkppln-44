@@ -108,13 +108,14 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
      * Get a list of deposits to process.
      *
      * @param bool $retry
-     *   retry failed deposits.
+     *   Retry failed deposits.
      * @param int[] $depositIds
-     *   zero or more deposit Ids to filter.
+     *   Zero or more deposit Ids to filter.
      * @param int $limit
-     *   maximum number of deposits to return.
+     *   Maximum number of deposits to return.
      *
      * @return Deposit[]
+     *   List of deposits for processing.
      */
     public function getDeposits($retry = false, array $depositIds = array(), $limit = null) {
         $repo = $this->em->getRepository(Deposit::class);
