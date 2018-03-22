@@ -30,7 +30,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
- * Description of SwordController.
+ * An implementation of the SWORD v2 protocol.
  *
  * @Route("/api/sword/2.0")
  */
@@ -168,6 +168,9 @@ class SwordController extends Controller {
      * @Method("GET")
      *
      * @param Request $request
+     *   HTTP request object.
+     * @param JournalBuilder $builder
+     *   Dependency injected journal builder service.
      *
      * @return array
      *
@@ -217,7 +220,13 @@ class SwordController extends Controller {
      * @Method("POST")
      *
      * @param Request $request
+     *   HTTP Request object.
      * @param Journal $journal
+     *   Journal, as determined by the UUID in the URL.
+     * @param JournalBuilder $journalBuilder
+     *   Dependency injected journal builder
+     * @param DepositBuilder $depositBuilder
+     *   Dependency injected deposit builder
      *
      * @return Response
      */
@@ -286,6 +295,15 @@ class SwordController extends Controller {
     /**
      * Edit a deposit with an HTTP PUT.
      *
+     * @param Request $request
+     *   HTTP request object.
+     * @param Journal $journal
+     *   Journal from the journal_uuid parameter in the URL.
+     * @param Deposit $deposit
+     *   Deposit from the deposit_uuid parameter in the URL.
+     * @param DepositBuilder $builder
+     *   Dependency injected deposit builder.
+     *
      * @Route("/cont-iri/{journal_uuid}/{deposit_uuid}/edit", name="sword_edit", requirements={
      *      "journal_uuid": ".{36}",
      *      "deposit_uuid": ".{36}"
@@ -293,10 +311,6 @@ class SwordController extends Controller {
      * @ParamConverter("journal", options={"mapping": {"journal_uuid"="uuid"}})
      * @ParamConverter("deposit", options={"mapping": {"deposit_uuid"="depositUuid"}})
      * @Method("PUT")
-     *
-     * @param Request $request
-     * @param Journal $journal
-     * @param Deposit $deposit
      *
      * @return Response
      */

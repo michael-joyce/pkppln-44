@@ -23,16 +23,18 @@ class BagValidator {
     private $bagReader;
 
     /**
+     * Build the validator.
      *
      * @param FilePaths $fp
+     *   Dependency injected file path service.
      */
-    public function __construct(FilePaths $fp, BagReader $bagReader) {
-        $this->bagReader = $bagReader;
+    public function __construct(FilePaths $fp) {
         $this->filePaths = $fp;
+        $this->bagReader = new BagReader();
     }
     
     /**
-     *
+     * Overridet the bag reader.
      */
     public function setBagReader(BagReader $bagReader) {
         $this->bagReader = $bagReader;

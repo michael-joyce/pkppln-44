@@ -12,7 +12,15 @@ use Doctrine\ORM\Query;
 class DepositRepository extends EntityRepository {
 
     /**
+     * Create a search query and return it. 
+     * 
+     * The query isn't executed here.
+     * 
      * @param string $q
+     *   Seartch term.
+     * @param Journal $journal
+     *   Optional journal to search.
+     * 
      * @return Query
      */
     public function searchQuery($q, Journal $journal = null) {

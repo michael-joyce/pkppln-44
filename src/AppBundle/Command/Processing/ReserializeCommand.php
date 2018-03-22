@@ -7,7 +7,7 @@ use AppBundle\Services\Processing\BagReserializer;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * PlnReserializeCommand command.
+ * Reserialize the bags and add some metadata.
  */
 class ReserializeCommand extends AbstractProcessingCmd {
 
@@ -22,6 +22,8 @@ class ReserializeCommand extends AbstractProcessingCmd {
      * 
      * @param EntityManagerInterface $em
      *   Dependency injected entity manager.
+     * @param BagReserializer $bagReserializer
+     *   Dependency injected bag reserializer service.
      */
     public function __construct(EntityManagerInterface $em, BagReserializer $bagReserializer) {
         parent::__construct($em);
