@@ -596,7 +596,7 @@ class Deposit extends AbstractEntity {
      * @return array|string
      */
     public function getErrorLog($delim = null) {
-        if($delim) {
+        if ($delim) {
             return implode($delim, $this->errorLog);
         }
         return $this->errorLog;

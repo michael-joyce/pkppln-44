@@ -7,18 +7,20 @@ use AppBundle\Services\Processing\Harvester;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * Harvest a deposit from a journal.
+ * Harvest deposits from journals.
  */
 class HarvestCommand extends AbstractProcessingCmd {
 
     /**
+     * Harvester service.
+     *
      * @var Harvester
      */
     private $harvester;
 
     /**
      * Build the command.
-     * 
+     *
      * @param EntityManagerInterface $em
      *   Dependency injected entity manager.
      * @param Harvester $harvester

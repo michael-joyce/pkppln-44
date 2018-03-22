@@ -224,9 +224,9 @@ class SwordController extends Controller {
      * @param Journal $journal
      *   Journal, as determined by the UUID in the URL.
      * @param JournalBuilder $journalBuilder
-     *   Dependency injected journal builder
+     *   Dependency injected journal builder.
      * @param DepositBuilder $depositBuilder
-     *   Dependency injected deposit builder
+     *   Dependency injected deposit builder.
      *
      * @return Response
      */

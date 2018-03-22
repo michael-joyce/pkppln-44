@@ -12,13 +12,15 @@ use Doctrine\ORM\EntityManagerInterface;
 class ValidateXmlCommand extends AbstractProcessingCmd {
 
     /**
+     * XML validator service.
+     *
      * @var XmlValidator
      */
     private $validator;
 
     /**
      * Build the command.
-     * 
+     *
      * @param EntityManagerInterface $em
      *   Dependency injected entity manager.
      * @param XmlValidator $validator

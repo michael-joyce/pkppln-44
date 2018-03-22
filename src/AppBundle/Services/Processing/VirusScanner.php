@@ -211,8 +211,8 @@ class VirusScanner {
      * @return bool
      *   True if the scan succeeded, regardless of viruses present in the deposit.
      */
-    public function processDeposit(Deposit $deposit, Client $client = null) {        
-        if($client === null) {
+    public function processDeposit(Deposit $deposit, Client $client = null) {
+        if ($client === null) {
             $client = $this->getClient();
         }
         $harvestedPath = $this->filePaths->getHarvestFile($deposit);

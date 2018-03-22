@@ -24,16 +24,17 @@ use Symfony\Component\Console\Output\OutputInterface;
 abstract class AbstractProcessingCmd extends ContainerAwareCommand {
 
     /**
+     * Database interface.
+     *
      * @var EntityManagerInterface
      */
     private $em;
 
     /**
      * Build the command.
-     * 
+     *
      * @param EntityManagerInterface $em
      *   Dependency injected entity manager.
-     *
      */
     public function __construct(EntityManagerInterface $em) {
         parent::__construct();
@@ -54,8 +55,9 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
      * Preprocess the list of deposits.
      *
      * @param Deposit[] $deposits
+     *   List of deposits to process.
      */
-    protected function preprocessDeposits($deposits = array()) {
+    protected function preprocessDeposits(array $deposits = array()) {
         // Do nothing by default.
     }
 
@@ -63,8 +65,10 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
      * Process one deposit return true on success and false on failure.
      *
      * @param Deposit $deposit
+     *   Single deposit to process.
      *
-     * @return bool|null
+     * @return string|bool|null
+     *   True for success, false for fail, null for unknown, and string for other.
      */
     abstract protected function processDeposit(Deposit $deposit);
 
@@ -101,6 +105,8 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
     }
 
     /**
+     * Get a list of deposits to process.
+     *
      * @param bool $retry
      *   retry failed deposits.
      * @param int[] $depositIds
@@ -110,7 +116,7 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
      *
      * @return Deposit[]
      */
-    public function getDeposits($retry = false, $depositIds = array(), $limit = null) {
+    public function getDeposits($retry = false, array $depositIds = array(), $limit = null) {
         $repo = $this->em->getRepository(Deposit::class);
         $state = $this->processingState();
         if ($retry) {
@@ -128,15 +134,14 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
 
     /**
      * Run and process one deposit.
-     * 
+     *
      * @param Deposit $deposit
      *   Deposit to process.
      * @param OutputInterface $output
      *   Output for writing messages.
-     * @param boolean $dryRun
-     *   If true, then this is a dry run and 
+     * @param bool $dryRun
+     *   If true, then this is a dry run and
      *   results are not flushed to the database.
-     * @return void
      */
     public function runDeposit(Deposit $deposit, OutputInterface $output, $dryRun = false) {
         try {

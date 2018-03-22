@@ -12,13 +12,15 @@ use Doctrine\ORM\EntityManagerInterface;
 class ValidateBagCommand extends AbstractProcessingCmd {
     
     /**
+     * Bag validator service.
+     *
      * @var BagValidator
      */
     private $bagValidator;
     
     /**
      * Build the command.
-     * 
+     *
      * @param EntityManagerInterface $em
      *   Dependency injected entity manager.
      * @param BagValidator $bagValidator

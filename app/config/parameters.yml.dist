@@ -38,6 +38,9 @@ parameters:
     # Minimum OJS version:
     pln.min_ojs_version: 2.4.8.0
 
+    # OJS Versions to hold deposits for.
+    pln.held_versions: ~
+
     # Maximum file upload size in 1000-byte kb.
     pln.max_upload: 10000
     

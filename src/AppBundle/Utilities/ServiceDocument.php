@@ -12,7 +12,7 @@ namespace AppBundle\Utilities;
 use SimpleXMLElement;
 
 /**
- * Description of ServiceDocument
+ * Description of ServiceDocument.
  */
 class ServiceDocument {
 
@@ -21,11 +21,17 @@ class ServiceDocument {
      */
     private $xml;
 
+    /**
+     *
+     */
     public function __construct($data) {
         $this->xml = new SimpleXMLElement($data);
         Namespaces::registerNamespaces($this->xml);
     }
 
+    /**
+     *
+     */
     private function getXpathValue($xpath) {
         $result = $this->xml->xpath($xpath);
         if (count($result) === 0) {
@@ -37,18 +43,30 @@ class ServiceDocument {
         return (string) $result[0];
     }
 
+    /**
+     *
+     */
     public function getMaxUpload() {
         return $this->getXpathValue('sword:maxUploadSize');
     }
 
+    /**
+     *
+     */
     public function getUploadChecksum() {
         return $this->getXpathValue('lom:uploadChecksumType');
     }
 
+    /**
+     *
+     */
     public function getCollectionUri() {
         return $this->getXpathValue('.//app:collection/@href');
     }
 
+    /**
+     *
+     */
     public function __toString() {
         return $this->xml->asXML();
     }

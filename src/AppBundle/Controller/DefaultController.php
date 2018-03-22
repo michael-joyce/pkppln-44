@@ -33,8 +33,8 @@ class DefaultController extends Controller {
     }
 
     /**
-     * Search for Deposit entities. 
-     * 
+     * Search for Deposit entities.
+     *
      * This action lives in the default controller because the deposit controller
      * works with deposits from a single journal. This search works across all
      * deposits.
@@ -73,13 +73,13 @@ class DefaultController extends Controller {
      * @ParamConverter("deposit", class="AppBundle:Deposit", options={"mapping": {"depositUuid"="depositUuid"}})
      */
     public function fetchAction(Request $request, Journal $journal, Deposit $deposit, FilePaths $fp) {
-        if( $deposit->getJournal() !== $journal) {
-            throw new BadRequestHttpException("The requested Journal ID does not match the deposit's journal ID.");            
+        if ($deposit->getJournal() !== $journal) {
+            throw new BadRequestHttpException("The requested Journal ID does not match the deposit's journal ID.");
         }
         $fs = new Filesystem();
         $path = $fp->getStagingBagPath($deposit);
-        if( ! $fs->exists($path)) {
-            throw new NotFoundHttpException("Deposit not found.");            
+        if (!$fs->exists($path)) {
+            throw new NotFoundHttpException("Deposit not found.");
         }
         return new BinaryFileResponse($path);
     }

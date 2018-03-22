@@ -12,13 +12,15 @@ use Doctrine\ORM\EntityManagerInterface;
 class ScanCommand extends AbstractProcessingCmd {
 
     /**
+     * Virus scanning service.
+     *
      * @var VirusScanner
      */
     private $scanner;
 
     /**
      * Build the command.
-     * 
+     *
      * @param EntityManagerInterface $em
      *   Dependency injected entity manager.
      * @param VirusScanner $scanner

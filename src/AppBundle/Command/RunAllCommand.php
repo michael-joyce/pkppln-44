@@ -11,15 +11,19 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Run all the processing commands in order.
  */
 class RunAllCommand extends ContainerAwareCommand {
+    
+    /**
+     * List of commands to run, in order.
+     */
     const COMMAND_LIST = array(
             'pln:harvest',
             'pln:validate:payload',
             'pln:validate:bag',
             'pln:validate:xml',
             'pln:scan',
-            //'pln:reserialize',
-            //'pln:deposit',
-            //'pln:status',
+            // 'pln:reserialize',
+            // 'pln:deposit',
+            // 'pln:status',.
     );
     
     /**

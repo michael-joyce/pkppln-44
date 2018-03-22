@@ -53,7 +53,7 @@ class BagReserializer {
 
     /**
      * Override the default bag reader.
-     * 
+     *
      * @param BagReader $bagReader
      *   Bag reader object.
      */

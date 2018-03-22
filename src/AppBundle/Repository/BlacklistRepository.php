@@ -19,7 +19,7 @@ class BlacklistRepository extends EntityRepository {
         $qb->where('CONCAT(b.uuid, \' \', b.comment) LIKE :q');
         $qb->setParameter('q', '%' . $q . '%');
         $query = $qb->getQuery();
-        return $query;        
+        return $query;
     }
     
 }

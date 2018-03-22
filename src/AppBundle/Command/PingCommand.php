@@ -12,23 +12,27 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * PlnPingCommand command.
+ * Ping the journals to make sure they're up and running.
  */
 class PingCommand extends ContainerAwareCommand {
 
     /**
+     * Fully configured ping service.
+     *
      * @var Ping
      */
     private $ping;
     
     /**
+     * Database interface.
+     *
      * @var EntityManagerInterface
      */
     private $em;
 
     /**
      * Build the command.
-     * 
+     *
      * @param EntityManagerInterface $em
      *   Dependency injected entity manager.
      * @param Ping $ping
@@ -53,8 +57,8 @@ class PingCommand extends ContainerAwareCommand {
     
     /**
      * Find the journals that need to be binged.
-     * 
-     * @param boolean $all
+     *
+     * @param bool $all
      *   If true, all journals will be returned.
      */
     public function findJournals($all) {

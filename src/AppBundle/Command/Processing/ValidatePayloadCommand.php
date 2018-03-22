@@ -12,13 +12,15 @@ use Doctrine\ORM\EntityManagerInterface;
 class ValidatePayloadCommand extends AbstractProcessingCmd {
 
     /**
+     * Payload validator service.
+     *
      * @var PayloadValidator
      */
     private $payloadValidator;
 
     /**
      * Build the command.
-     * 
+     *
      * @param EntityManagerInterface $em
      *   Dependency injected entity manager.
      * @param PayloadValidator $payloadValidator

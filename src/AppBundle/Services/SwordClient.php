@@ -20,7 +20,7 @@ use Symfony\Component\Templating\EngineInterface;
 use function GuzzleHttp\Psr7\str;
 
 /**
- * Description of SwordClient
+ * Description of SwordClient.
  */
 class SwordClient {
 
@@ -58,6 +58,9 @@ class SwordClient {
     private $saveXml;
     private $uuid;
 
+    /**
+     *
+     */
     public function __construct($serviceUri, $uuid, $saveXml, FilePaths $filePaths, EngineInterface $templating) {
         $this->serviceUri = $serviceUri;
         $this->uuid = $uuid;
@@ -86,18 +89,27 @@ class SwordClient {
         $this->fs = $fs;
     }
 
+    /**
+     *
+     */
     public function setServiceUri($serviceUri) {
         $this->serviceUri = $serviceUri;
     }
 
+    /**
+     *
+     */
     public function setUuid($uuid) {
         $this->uuid = $uuid;
     }
 
+    /**
+     *
+     */
     public function serviceDocument() {
         try {
             $response = $this->client->get($this->serviceUri, array(
-                'headers' => array('On-Behalf-Of' => $this->uuid),
+            'headers' => array('On-Behalf-Of' => $this->uuid),
             ));
             return new ServiceDocument($response->getBody());
         } catch (RequestException $e) {
@@ -109,6 +121,9 @@ class SwordClient {
         }
     }
 
+    /**
+     *
+     */
     public function createDeposit(Deposit $deposit) {
         $sd = $this->serviceDocument();
         $xml = $this->templating->render('AppBundle:sword:deposit.xml.twig', array(
@@ -120,7 +135,7 @@ class SwordClient {
         }
         try {
             $response = $this->client->request('POST', $sd->getCollectionUri(), array(
-                'body' => $xml,
+            'body' => $xml,
             ));
         } catch (RequestException $e) {
             $message = str($e->getRequest());

@@ -28,7 +28,7 @@ class DepositController extends Controller {
      *   Dependency injected HTTP request object.
      * @param Journal $journal
      *   Injected journal parameter from the URL.
-     * 
+     *
      * @return array
      *   Array data for the template processor.
      *
@@ -51,8 +51,8 @@ class DepositController extends Controller {
     }
 
     /**
-     * Search for Deposit entities. 
-     * 
+     * Search for Deposit entities.
+     *
      * This action lives in the default controller because the deposit controller
      * works with deposits from a single journal. This search works across all
      * deposits.

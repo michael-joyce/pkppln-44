@@ -13,13 +13,15 @@ class ReserializeCommand extends AbstractProcessingCmd {
 
 
     /**
+     * Bag reserializer service.
+     *
      * @var BagReserializer
      */
     private $bagReserializer;
 
     /**
      * Build the command.
-     * 
+     *
      * @param EntityManagerInterface $em
      *   Dependency injected entity manager.
      * @param BagReserializer $bagReserializer
@@ -29,8 +31,7 @@ class ReserializeCommand extends AbstractProcessingCmd {
         parent::__construct($em);
         $this->bagReserializer = $bagReserializer;
     }
-    
-    
+
     /**
      * {@inheritdoc}
      */
@@ -40,6 +41,9 @@ class ReserializeCommand extends AbstractProcessingCmd {
         parent::configure();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function processDeposit(Deposit $deposit) {
         return $this->bagReserializer->processDeposit($deposit);
     }

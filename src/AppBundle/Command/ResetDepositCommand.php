@@ -17,22 +17,36 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Description of ResetDepositCommand.
+ * Reset the processing status on one or more deposits.
  */
 class ResetDepositCommand extends ContainerAwareCommand {
-    
-    const BATCH_SIZE = 100;
-    
+
     /**
+     * Number of deposits to process in one batch.
+     */
+    const BATCH_SIZE = 100;
+
+    /**
+     * Database interface.
+     *
      * @var EntityManagerInterface
      */
     private $em;
-    
+
+    /**
+     * Build the command.
+     *
+     * @param EntityManagerInterface $em
+     *   Dependency injected database interface.
+     */
     public function __construct(EntityManagerInterface $em) {
         parent::__construct();
         $this->em = $em;
     }
-    
+
+    /**
+     * {@inheritdoc}
+     */
     public function configure() {
         $this->setName('pln:reset');
         $this->setDescription('Reset the processing status on one or more deposits.');
@@ -40,32 +54,43 @@ class ResetDepositCommand extends ContainerAwareCommand {
         $this->addArgument('state', InputArgument::REQUIRED, 'One or more deposit database IDs to process');
         $this->addArgument('deposit-id', InputArgument::IS_ARRAY, 'One or more deposit database IDs to process');
     }
-    
-    public function getDepositIterator($ids) {
+
+    /**
+     * Create an iterator for the deposits.
+     *
+     * @param int[] $ids
+     *   Optional list of deposit database ids.
+     *
+     * @return IterableResult|Deposit[]
+     */
+    public function getDepositIterator(array $ids = null) {
         $qb = $this->em->createQueryBuilder();
-        $qb->select('d')->from('AppBundle:Deposit', 'd');        
-        if($ids && count($ids)) {
+        $qb->select('d')->from('AppBundle:Deposit', 'd');
+        if ($ids && count($ids)) {
             $qb->andWhere('d.depositUuid IN :ids');
             $qb->setParameter('ids', $ids);
         }
         return $qb->getQuery()->iterate();
     }
-    
+
+    /**
+     * {@inheritdoc}
+     */
     protected function execute(InputInterface $input, OutputInterface $output) {
         $ids = $input->getArgument('deposit-id');
-        if( count($ids) === 0 && !$input->getOption('all')) {
+        if (count($ids) === 0 && !$input->getOption('all')) {
             $output->writeln('Either --all or one or more deposit UUIDs are required.');
             return;
         }
         $state = $input->getArgument('state');
         $iterator = $this->getDepositIterator($ids);
         $i = 0;
-        foreach($iterator as $row) {
+        foreach ($iterator as $row) {
             $i++;
             $deposit = $row[0];
             $deposit->setState($state);
             $deposit->addToProcessingLog('Deposit state reset to ' . $state);
-            if(($i % self::BATCH_SIZE) === 0) {
+            if (($i % self::BATCH_SIZE) === 0) {
                 $this->em->flush();
                 $this->em->clear();
             }
@@ -73,5 +98,5 @@ class ResetDepositCommand extends ContainerAwareCommand {
         $this->em->flush();
         $this->em->clear();
     }
-    
+
 }

@@ -18,10 +18,10 @@ class StatusCommand extends ContainerAwareCommand {
      */
     protected function configure() {
         $this
-            ->setName('pln:status')
-          ->setDescription('...')
-            ->addArgument('argument', InputArgument::OPTIONAL, 'Argument description')
-          ->addOption('option', null, InputOption::VALUE_NONE, 'Option description');
+          ->setName('pln:status')
+            ->setDescription('...')
+          ->addArgument('argument', InputArgument::OPTIONAL, 'Argument description')
+            ->addOption('option', null, InputOption::VALUE_NONE, 'Option description');
     }
 
     /**

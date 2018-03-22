@@ -7,31 +7,42 @@ use AppBundle\Services\Processing\Depositor;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
- * PlnDepositCommand command.
+ * Send pending deposits to LOCKSS.
  */
 class DepositCommand extends AbstractProcessingCmd {
 
     /**
+     * Depositor service.
+     *
      * @var Depositor
      */
     private $depositor;
-    
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param EntityManagerInterface $em
+     *   Dependency-injected database interface.
+     * @param Depositor $depositor
+     *   Dependency-injected depositor service.
+     */
     public function __construct(EntityManagerInterface $em, Depositor $depositor) {
         parent::__construct($em);
         $this->depositor = $depositor;
     }
-    
+
     /**
      * {@inheritdoc}
      */
-    protected function configure()
-    {
+    protected function configure() {
         $this->setName('pln:deposit');
         $this->setDescription('Send deposits to LockssOMatic.');
         parent::configure();
     }
 
-
+    /**
+     * {@inheritdoc}
+     */
     protected function processDeposit(Deposit $deposit) {
         $this->depositor->processDeposit($deposit);
     }
@@ -39,40 +50,36 @@ class DepositCommand extends AbstractProcessingCmd {
     /**
      * {@inheritdoc}
      */
-    public function nextState()
-    {
+    public function nextState() {
         return 'deposited';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function processingState()
-    {
+    public function processingState() {
         return 'reserialized';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function failureLogMessage()
-    {
+    public function failureLogMessage() {
         return 'Deposit to Lockssomatic failed.';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function successLogMessage()
-    {
+    public function successLogMessage() {
         return 'Deposit to Lockssomatic succeeded.';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function errorState()
-    {
+    public function errorState() {
         return 'deposit-error';
     }
+
 }
