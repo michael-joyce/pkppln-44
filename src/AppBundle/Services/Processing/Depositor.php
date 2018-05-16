@@ -12,11 +12,21 @@ use AppBundle\Services\SwordClient;
  */
 class Depositor {
 
+    /**
+     * @var SwordClient
+     */
     private $client;
+    
+    /**
+     * @var string
+     */
     private $heldVersions;
 
     /**
-     *
+     * Build the service.
+     * 
+     * @param SwordClient $client
+     * @param string $heldVersions
      */
     public function __construct(SwordClient $client, $heldVersions) {
         $this->client = $client;
@@ -24,7 +34,11 @@ class Depositor {
     }
 
     /**
-     *
+     * Process one deposit.
+     * 
+     * @param Deposit deposit
+     * 
+     * @return bool|null|string
      */
     public function processDeposit(Deposit $deposit) {
         if ($this->heldVersions && version_compare($deposit->getJournalVersion(), $this->heldVersions, ">=")) {

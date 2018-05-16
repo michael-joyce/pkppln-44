@@ -51,6 +51,7 @@ class ResetDepositCommand extends ContainerAwareCommand {
         $this->setName('pln:reset');
         $this->setDescription('Reset the processing status on one or more deposits.');
         $this->addOption('all', null, InputOption::VALUE_NONE, 'Update all deposits. Use with caution.');
+        $this->addOption('clear', null, InputOption::VALUE_NONE, 'Clear the error and processing log for the deposits Use with caution.');
         $this->addArgument('state', InputArgument::REQUIRED, 'One or more deposit database IDs to process');
         $this->addArgument('deposit-id', InputArgument::IS_ARRAY, 'One or more deposit database IDs to process');
     }
@@ -79,6 +80,7 @@ class ResetDepositCommand extends ContainerAwareCommand {
      */
     protected function execute(InputInterface $input, OutputInterface $output) {
         $ids = $input->getArgument('deposit-id');
+        $clear = $input->getOption('clear');
         if (count($ids) === 0 && !$input->getOption('all')) {
             $output->writeln('Either --all or one or more deposit UUIDs are required.');
             return;
@@ -90,6 +92,10 @@ class ResetDepositCommand extends ContainerAwareCommand {
             $i++;
             $deposit = $row[0];
             $deposit->setState($state);
+            if($clear) {
+                $deposit->setErrorLog([]);
+                $deposit->setProcessingLog('');
+            }
             $deposit->addToProcessingLog('Deposit state reset to ' . $state);
             if (($i % self::BATCH_SIZE) === 0) {
                 $this->em->flush();

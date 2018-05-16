@@ -54,12 +54,36 @@ class SwordClient {
      * @var Client
      */
     private $client;
+    
+    /**
+     * URL for the service document.
+     *
+     * @var string
+     */
     private $serviceUri;
+    
+    /**
+     * If true, save the deposit XML at /path/to/deposit.zip.xml
+     *
+     * @var bool
+     */
     private $saveXml;
+    
+    /**
+     * Staging server UUID.
+     * 
+     * @var string
+     */
     private $uuid;
 
     /**
-     *
+     * Construct the sword client.
+     * 
+     * @param string $serviceUri
+     * @param string $uuid
+     * @param bool $saveXml
+     * @param FilePaths $filePaths
+     * @param EngineInterface $templating
      */
     public function __construct($serviceUri, $uuid, $saveXml, FilePaths $filePaths, EngineInterface $templating) {
         $this->serviceUri = $serviceUri;
@@ -72,7 +96,7 @@ class SwordClient {
     }
 
     /**
-     * Set the HTTP client, usually based on Guzzle.
+     * Set or override the HTTP client, usually based on Guzzle.
      *
      * @param Client $client
      */
@@ -81,7 +105,7 @@ class SwordClient {
     }
 
     /**
-     * Set the file system client.
+     * Set or override  the file system client.
      *
      * @param Filesystem $fs
      */
@@ -90,21 +114,29 @@ class SwordClient {
     }
 
     /**
-     *
+     * Set or override the service document URI.
+     * 
+     * @param string $serviceUri
      */
     public function setServiceUri($serviceUri) {
         $this->serviceUri = $serviceUri;
     }
 
     /**
-     *
+     * Set or override the UUID.
+     * 
+     * @param string $uuid
      */
     public function setUuid($uuid) {
         $this->uuid = $uuid;
     }
 
     /**
-     *
+     * Fetch the service document.
+     * 
+     * @return ServiceDocument
+     * 
+     * @throws Exception
      */
     public function serviceDocument() {
         try {
@@ -122,7 +154,13 @@ class SwordClient {
     }
 
     /**
-     *
+     * Create a deposit in LOCKSSOMatic.
+     * 
+     * @param Deposit $deposit
+     * 
+     * @return bool
+     * 
+     * @throws Exception
      */
     public function createDeposit(Deposit $deposit) {
         $sd = $this->serviceDocument();
@@ -149,7 +187,10 @@ class SwordClient {
             $deposit->addErrorLog($message);
             throw new Exception($message);
         }
-        $deposit->setDepositReceipt($response->getHeader('Location'));
+        $locationHeader = $response->getHeader('Location');
+        if(count($locationHeader) > 0) {
+            $deposit->setDepositReceipt($locationHeader[0]);
+        }
         $deposit->setDepositDate(new DateTime());
         return true;
     }

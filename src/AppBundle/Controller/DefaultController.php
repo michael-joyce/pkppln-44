@@ -14,6 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -21,6 +22,12 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * Default controller.
  */
 class DefaultController extends Controller {
+
+    /**
+     * The LOCKSS permision statement, required for LOCKSS to harvest
+     * content.
+     */
+    const PERMISSION_STMT = 'LOCKSS system has permission to collect, preserve, and serve this Archival Unit.';
 
     /**
      * Home page action.
@@ -72,7 +79,7 @@ class DefaultController extends Controller {
             'q' => $q,
         );
     }
-    
+
     /**
      * Fetch a processed and packaged deposit.
      *
@@ -105,6 +112,19 @@ class DefaultController extends Controller {
             throw new NotFoundHttpException("Deposit not found.");
         }
         return new BinaryFileResponse($path);
+    }
+
+    /**
+     * Return the permission statement for LOCKSS.
+     *
+     * @Route("/permission", name="lockss_permission")
+     *
+     * @return Response
+     */
+    public function permissionAction() {
+        return new Response(self::PERMISSION_STMT, Response::HTTP_OK, array(
+            'content-type' => 'text/plain',
+        ));
     }
 
 }

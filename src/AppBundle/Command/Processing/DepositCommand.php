@@ -44,7 +44,7 @@ class DepositCommand extends AbstractProcessingCmd {
      * {@inheritdoc}
      */
     protected function processDeposit(Deposit $deposit) {
-        $this->depositor->processDeposit($deposit);
+        return $this->depositor->processDeposit($deposit);
     }
 
     /**
