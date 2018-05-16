@@ -1,26 +1,26 @@
 <?xml version="1.0"?>
 <ruleset name="Custom Standard" namespace="LOM2">
 
-    <description>Coding standards for LOCKSSOMatic version 2</description>
+    <description>Coding standards for PKP PN version 2</description>
 
     <file>src/AppBundle</file>
-  
+
     <exclude-pattern>src/AppBundle/Test</exclude-pattern>
 
     <arg name="extensions" value="php,js,css,twig"/>
     <arg value="s"/>
     <arg value="p"/>
-  
+
     <ini name="memory_limit" value="-1"/>
 
     <config name="installed_paths" value="vendor/drupal/coder/coder_sniffer"/>
-    
-    <!--    
+
+    <!--
     <config name="php_path" value="/usr/local/bin/php"/>
     <config name="csslint_path" value="/usr/local/bin/csslint"/>
     <config name="jslint_path" value="/usr/local/bin/jslint"/>
     -->
-  
+
     <autoload>vendor/autoload.php</autoload>
 
     <rule ref="PSR2">
@@ -29,7 +29,7 @@
         <exclude name="Squiz.ControlStructures.ControlSignature.SpaceAfterCloseBrace"/>
         <exclude name="Squiz.Functions.MultiLineFunctionDeclaration.BraceOnSameLine"/>
     </rule>
-  
+
     <rule ref="Squiz.CSS.Indentation">
         <properties>
             <property name="indent" value="4" />
@@ -45,13 +45,13 @@
         <exclude name="Drupal.Commenting.FileComment.NamespaceNoFileDoc"/>
         <exclude name="Generic.PHP.UpperCaseConstant.Found"/>
     </rule>
-  
+
     <rule ref="Drupal.WhiteSpace.ScopeIndent">
         <properties>
             <property name="indent" value="4"/>
         </properties>
     </rule>
-  
+
     <rule ref="Generic.Strings.UnnecessaryStringConcat">
         <properties>
             <property name="allowMultiline" value="true" />
@@ -60,18 +60,18 @@
 
     <!-- PHP keywords MUST be in lower case. -->
     <rule ref="Generic.PHP.LowerCaseKeyword"/>
-  
+
     <!-- The PHP constants true, false, and null MUST be in lower case. -->
     <rule ref="Generic.PHP.LowerCaseConstant"/>
-  
+
     <rule ref="Generic.Commenting.Todo.CommentFound">
         <message>Please review this TODO comment: %s</message>
     </rule>
-  
+
     <rule ref="Generic.WhiteSpace.ScopeIndent">
         <properties>
             <property name="indent" value="4"/>
         </properties>
     </rule>
-  
+
 </ruleset>

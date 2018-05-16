@@ -21,3 +21,4 @@ web/bower
 phpcs.xml
 data
 web/docs
+etc

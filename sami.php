@@ -15,10 +15,10 @@ $iterator = Finder::create()
 
 $options = array(
     // 'theme' => 'symfony',
-    'title' => 'LOCKSSOMatic Internals',
-    'build_dir' => $dir . '/web/docs/api/sami',
+    'title' => 'PKP PN Internals',
+    'build_dir' => $dir . '/web/docs/sami',
     'cache_dir' => $dir . '/var/cache/sami',
-    'remote_repository' => new GitHubRemoteRepository('ubermichael/lom', $dir),
+    'remote_repository' => new GitHubRemoteRepository('ubermichael/pkppln', $dir),
     'default_opened_level' => 2,
     'include_parent_data' => true,
     'insert_todos' => true,
