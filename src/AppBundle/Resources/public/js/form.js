@@ -104,15 +104,14 @@
             simpleCollection();
             complexCollection();
         }
-
-        $("input, textarea, select").each(function () {
-            var $this = $(this);
-            if ($this.attr('type') == 'radio' || $this.attr('type') == 'checkbox') {
-                $(this).after('<span class="widgetname">' + $(this).attr('name') + '=' + $this.attr('value') + '</span>');
-            } else {
-                $(this).after('<span class="widgetname">' + $(this).attr('name') + '</span>');
-            }
-        });
+//        $("input, textarea, select").each(function () {
+//            var $this = $(this);
+//            if ($this.attr('type') == 'radio' || $this.attr('type') == 'checkbox') {
+//                $(this).after('<span class="widgetname">' + $(this).attr('name') + '=' + $this.attr('value') + '</span>');
+//            } else {
+//                $(this).after('<span class="widgetname">' + $(this).attr('name') + '</span>');
+//            }
+//        });
     });
 
 })(jQuery, window);

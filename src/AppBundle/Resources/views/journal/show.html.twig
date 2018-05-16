@@ -2,18 +2,21 @@
 
 {% block title %}Journal{% endblock %}
 
- {% block pageheader %} 
+{% block pageheader %}
     <h1>Journal Details</h1>
- {% endblock %} 
+{% endblock %}
 
 {% block body %}
     <div class="btn-toolbar">
-    <div class="btn-group pull-right">
-        <a href="{{ path('journal_index') }}" class="btn btn-default">
-            <span class="glyphicon glyphicon-arrow-left"></span> Back
-        </a>
+        <div class="btn-group pull-right">
+            <a href="{{ path('journal_index') }}" class="btn btn-default">
+                <span class="glyphicon glyphicon-arrow-left"></span> Back
+            </a>
+            <a href="{{ path('journal_ping', {'id': journal.id}) }}" class="btn btn-default ping">
+                <span class="glyphicon glyphicon-refresh"></span> Ping
+            </a>
+        </div>
     </div>
-</div>
     <table class="table table-bordered table-condensed table-hover table-striped">
         <tbody>
             <tr>
@@ -83,19 +86,19 @@
             <tr>
                 <th>Updated</th>
                 <td>{% if journal.updated %}{{ journal.updated|date }}{% endif %}</td>
-            </tr>        
+            </tr>
         </tbody>
     </table>
-    {% if journal.deposits | length > 0 %}    
-    <h2>Deposits</h2>
-    <ul>
-        {% for deposit in journal.deposits %}
-        <li>
-            <a href="{{ path("deposit_show", {"journalId": journal.id, "id":deposit.id}) }}">
-                {{ deposit }}
-            </a>
-        </li>
-        {% endfor %} 
-    </ul>
+    {% if journal.deposits | length > 0 %}
+        <h2>Deposits</h2>
+        <ul>
+            {% for deposit in journal.deposits %}
+                <li>
+                    <a href="{{ path("deposit_show", {"journalId": journal.id, "id":deposit.id}) }}">
+                        {{ deposit }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
     {% endif %}
 {% endblock %}

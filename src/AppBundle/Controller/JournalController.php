@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Journal;
+use AppBundle\Services\Ping;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -92,4 +93,25 @@ class JournalController extends Controller {
         );
     }
 
+
+    /**
+     * Finds and displays a Journal entity.
+     *
+     * @param Journal $journal
+     *   The Journal to show.
+     *
+     * @return array
+     *   Array data for the template processor.
+     *
+     * @Route("/{id}/ping", name="journal_ping")
+     * @Method("GET")
+     * @Template()
+     */
+    public function pingAction(Journal $journal, Ping $ping) {
+        $result = $ping->ping($journal);
+        return array(
+            'journal' => $journal,
+            'result' => $result,
+        );
+    }
 }
