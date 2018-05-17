@@ -24,8 +24,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class DefaultController extends Controller {
 
     /**
-     * The LOCKSS permision statement, required for LOCKSS to harvest
-     * content.
+     * The LOCKSS permision statement.
      */
     const PERMISSION_STMT = 'LOCKSS system has permission to collect, preserve, and serve this Archival Unit.';
 
@@ -47,9 +46,9 @@ class DefaultController extends Controller {
     /**
      * Search for Deposit entities.
      *
-     * This action lives in the default controller because the deposit controller
-     * works with deposits from a single journal. This search works across all
-     * deposits.
+     * This action lives in the default controller because the
+     * deposit controller works with deposits from a single
+     * journal. This search works across all deposits.
      *
      * @param Request $request
      *   Dependency injected HTTP request object.
@@ -117,9 +116,10 @@ class DefaultController extends Controller {
     /**
      * Return the permission statement for LOCKSS.
      *
-     * @Route("/permission", name="lockss_permission")
-     *
      * @return Response
+     *   The permission statement as a plain text HTTP response.
+     *
+     * @Route("/permission", name="lockss_permission")
      */
     public function permissionAction() {
         return new Response(self::PERMISSION_STMT, Response::HTTP_OK, array(

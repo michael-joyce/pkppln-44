@@ -35,25 +35,34 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * @Route("/api/sword/2.0")
  */
 class SwordController extends Controller {
-    
+
     /**
+     * Black and white list service.
+     *
      * @var BlackWhiteList
      */
     private $blackwhitelist;
-    
+
     /**
+     * Doctrine entity manager.
+     *
      * @var EntityManagerInterface
      */
     private $em;
-    
+
     /**
+     * Build the controller.
      *
+     * @param BlackWhiteList $blackwhitelist
+     *   Black and white list service.
+     * @param EntityManagerInterface $em
+     *   Doctrine entity manager.
      */
     public function __construct(BlackWhiteList $blackwhitelist, EntityManagerInterface $em) {
         $this->blackwhitelist = $blackwhitelist;
         $this->em = $em;
     }
-    
+
     /**
      * Fetch an HTTP header.
      *
@@ -88,7 +97,7 @@ class SwordController extends Controller {
         }
         return null;
     }
-    
+
     /**
      * Check if a journal's uuid is whitelised or blacklisted.
      *
@@ -99,8 +108,10 @@ class SwordController extends Controller {
      * Return the pln_accepting parameter from parameters.yml
      *
      * @param string $uuid
+     *   Journal UUID to check.
      *
      * @return bool
+     *   True if the journal is whitelisted.
      */
     private function checkAccess($uuid) {
         if ($this->blackwhitelist->isWhitelisted($uuid)) {
@@ -112,13 +123,15 @@ class SwordController extends Controller {
 
         return $this->getParameter('pln.accepting');
     }
-    
+
     /**
      * Figure out which message to return for the network status widget in OJS.
      *
      * @param Journal $journal
+     *   Journal to get the message for.
      *
      * @return string
+     *   Network message for the journal.
      */
     private function getNetworkMessage(Journal $journal) {
         if ($journal->getOjsVersion() === null) {
@@ -130,7 +143,7 @@ class SwordController extends Controller {
 
         return $this->getParameter('pln.network_oldojs');
     }
-    
+
     /**
      * Get the XML from an HTTP request.
      *
@@ -155,17 +168,11 @@ class SwordController extends Controller {
             throw new BadRequestHttpException("Cannot parse request XML.", $e, Response::HTTP_BAD_REQUEST);
         }
     }
-    
+
     /**
-     * Return a SWORD service document for a journal. Requires On-Behalf-Of
-     * and Journal-Url HTTP headers.
+     * Return a SWORD service document for a journal.
      *
-     * @Route("/sd-iri.{_format}",
-     *  name="sword_service_document",
-     *  defaults={"_format": "xml"},
-     *  requirements={"_format": "xml"}
-     * )
-     * @Method("GET")
+     * Requires On-Behalf-Of and Journal-Url HTTP headers.
      *
      * @param Request $request
      *   HTTP request object.
@@ -173,8 +180,15 @@ class SwordController extends Controller {
      *   Dependency injected journal builder service.
      *
      * @return array
+     *   Data for the template engine.
      *
-     * @Template
+     * @Method("GET")
+     * @Template()
+     * @Route("/sd-iri.{_format}",
+     *  name="sword_service_document",
+     *  defaults={"_format": "xml"},
+     *  requirements={"_format": "xml"}
+     * )
      */
     public function serviceDocumentAction(Request $request, JournalBuilder $builder) {
         $obh = strtoupper($this->fetchHeader($request, 'On-Behalf-Of'));
@@ -213,12 +227,6 @@ class SwordController extends Controller {
     /**
      * Create a deposit.
      *
-     * @Route("/col-iri/{uuid}", name="sword_create_deposit", requirements={
-     *      "uuid": ".{36}",
-     * })
-     * @ParamConverter("journal", options={"mapping": {"uuid"="uuid"}})
-     * @Method("POST")
-     *
      * @param Request $request
      *   HTTP Request object.
      * @param Journal $journal
@@ -229,6 +237,13 @@ class SwordController extends Controller {
      *   Dependency injected deposit builder.
      *
      * @return Response
+     *   HTTP repsponse with the deposit information.
+     *
+     * @Route("/col-iri/{uuid}", name="sword_create_deposit", requirements={
+     *      "uuid": ".{36}",
+     * })
+     * @ParamConverter("journal", options={"mapping": {"uuid"="uuid"}})
+     * @Method("POST")
      */
     public function createDepositAction(Request $request, Journal $journal, JournalBuilder $journalBuilder, DepositBuilder $depositBuilder) {
         $accepting = $this->checkAccess($journal->getUuid());
@@ -260,6 +275,16 @@ class SwordController extends Controller {
     /**
      * Check that status of a deposit by fetching the sword statemt.
      *
+     * @param Request $request
+     *   HTTP request.
+     * @param Journal $journal
+     *   Journal that made the deposit.
+     * @param Deposit $deposit
+     *   Deposit to check.
+     *
+     * @return Response
+     *   HTTP response with the deposit statement data.
+     *
      * @Route("/cont-iri/{journal_uuid}/{deposit_uuid}/state", name="sword_statement", requirements={
      *      "journal_uuid": ".{36}",
      *      "deposit_uuid": ".{36}"
@@ -267,12 +292,6 @@ class SwordController extends Controller {
      * @ParamConverter("journal", options={"mapping": {"journal_uuid"="uuid"}})
      * @ParamConverter("deposit", options={"mapping": {"deposit_uuid"="depositUuid"}})
      * @Method("GET")
-     *
-     * @param Request $request
-     * @param Journal $journal
-     * @param Deposit $deposit
-     *
-     * @return Response
      */
     public function statementAction(Request $request, Journal $journal, Deposit $deposit) {
         $accepting = $this->checkAccess($journal->getUuid());
@@ -291,7 +310,7 @@ class SwordController extends Controller {
         $response->headers->set('Content-Type', 'text/xml');
         return $response;
     }
-    
+
     /**
      * Edit a deposit with an HTTP PUT.
      *
@@ -304,6 +323,9 @@ class SwordController extends Controller {
      * @param DepositBuilder $builder
      *   Dependency injected deposit builder.
      *
+     * @return Response
+     *   HTTP response with the result.
+     *
      * @Route("/cont-iri/{journal_uuid}/{deposit_uuid}/edit", name="sword_edit", requirements={
      *      "journal_uuid": ".{36}",
      *      "deposit_uuid": ".{36}"
@@ -311,8 +333,6 @@ class SwordController extends Controller {
      * @ParamConverter("journal", options={"mapping": {"journal_uuid"="uuid"}})
      * @ParamConverter("deposit", options={"mapping": {"deposit_uuid"="depositUuid"}})
      * @Method("PUT")
-     *
-     * @return Response
      */
     public function editAction(Request $request, Journal $journal, Deposit $deposit, DepositBuilder $builder) {
         $accepting = $this->checkAccess($journal->getUuid());
@@ -336,8 +356,19 @@ class SwordController extends Controller {
 
         return $response;
     }
-    
+
     /**
+     * Request the original deposit back from the storage network.
+     *
+     * @param Request $request
+     *   HTTP request.
+     * @param Journal $journal
+     *   Journal that made the deposit.
+     * @param Deposit $deposit
+     *   Original deposit to fetch.
+     *
+     * @return BinaryFileResponse
+     *   The deposit.
      *
      * @Route("/original/{journal_uuid}/{deposit_uuid}", name="sword_original_deposit", requirements={
      *      "journal_uuid": ".{36}",
@@ -346,14 +377,8 @@ class SwordController extends Controller {
      * @ParamConverter("journal", options={"uuid"="journal_uuid"})
      * @ParamConverter("deposit", options={"deposit_uuid"="deposit_uuid"})
      * @Method("GET")
-     *
-     * @param Request $request
-     * @param Journal $journal
-     * @param Deposit $deposit
-     *
-     * @return BinaryFileResponse
      */
     public function originalDepositAction(Request $request, Journal $journal, Deposit $deposit) {
     }
-    
+
 }

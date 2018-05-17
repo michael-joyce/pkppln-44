@@ -53,9 +53,9 @@ class DepositController extends Controller {
     /**
      * Search for Deposit entities.
      *
-     * This action lives in the default controller because the deposit controller
-     * works with deposits from a single journal. This search works across all
-     * deposits.
+     * This action lives in the default controller because the deposit
+     * controller works with deposits from a single journal. This
+     * search works across all deposits.
      *
      * @param Request $request
      *   Dependency injected HTTP request object.

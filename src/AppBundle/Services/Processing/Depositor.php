@@ -24,7 +24,7 @@ class Depositor {
 
     /**
      * Build the service.
-     * 
+     *
      * @param SwordClient $client
      * @param string $heldVersions
      */
@@ -35,9 +35,9 @@ class Depositor {
 
     /**
      * Process one deposit.
-     * 
+     *
      * @param Deposit deposit
-     * 
+     *
      * @return bool|null|string
      */
     public function processDeposit(Deposit $deposit) {

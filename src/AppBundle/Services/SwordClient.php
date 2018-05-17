@@ -63,7 +63,7 @@ class SwordClient {
     private $serviceUri;
     
     /**
-     * If true, save the deposit XML at /path/to/deposit.zip.xml
+     * If true, save the deposit XML at /path/to/deposit.zip.xml.
      *
      * @var bool
      */
@@ -71,14 +71,14 @@ class SwordClient {
     
     /**
      * Staging server UUID.
-     * 
+     *
      * @var string
      */
     private $uuid;
 
     /**
      * Construct the sword client.
-     * 
+     *
      * @param string $serviceUri
      * @param string $uuid
      * @param bool $saveXml
@@ -115,7 +115,7 @@ class SwordClient {
 
     /**
      * Set or override the service document URI.
-     * 
+     *
      * @param string $serviceUri
      */
     public function setServiceUri($serviceUri) {
@@ -124,7 +124,7 @@ class SwordClient {
 
     /**
      * Set or override the UUID.
-     * 
+     *
      * @param string $uuid
      */
     public function setUuid($uuid) {
@@ -133,9 +133,9 @@ class SwordClient {
 
     /**
      * Fetch the service document.
-     * 
+     *
      * @return ServiceDocument
-     * 
+     *
      * @throws Exception
      */
     public function serviceDocument() {
@@ -155,11 +155,11 @@ class SwordClient {
 
     /**
      * Create a deposit in LOCKSSOMatic.
-     * 
+     *
      * @param Deposit $deposit
-     * 
+     *
      * @return bool
-     * 
+     *
      * @throws Exception
      */
     public function createDeposit(Deposit $deposit) {
@@ -188,7 +188,7 @@ class SwordClient {
             throw new Exception($message);
         }
         $locationHeader = $response->getHeader('Location');
-        if(count($locationHeader) > 0) {
+        if (count($locationHeader) > 0) {
             $deposit->setDepositReceipt($locationHeader[0]);
         }
         $deposit->setDepositDate(new DateTime());

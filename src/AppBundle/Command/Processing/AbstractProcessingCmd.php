@@ -68,7 +68,7 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
      *   Single deposit to process.
      *
      * @return string|bool|null
-     *   True for success, false for fail, null for unknown, and string for other.
+     *   True for success, false for fail, null for unknown, string for other.
      */
     abstract protected function processDeposit(Deposit $deposit);
 

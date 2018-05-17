@@ -93,12 +93,13 @@ class JournalController extends Controller {
         );
     }
 
-
     /**
-     * Finds and displays a Journal entity.
+     * Pings a journal and displays the result.
      *
      * @param Journal $journal
      *   The Journal to show.
+     * @param Ping $ping
+     *   Dependency-injected Ping service.
      *
      * @return array
      *   Array data for the template processor.
@@ -114,4 +115,5 @@ class JournalController extends Controller {
             'result' => $result,
         );
     }
+
 }

@@ -36,7 +36,10 @@ class Blacklist extends AbstractEntity {
     private $comment;
 
     /**
+     * Return the UUID.
      *
+     * @return string
+     *   The UUID.
      */
     public function __toString() {
         return $this->uuid;
@@ -46,8 +49,10 @@ class Blacklist extends AbstractEntity {
      * Set uuid.
      *
      * @param string $uuid
+     *   UUID to set.
      *
      * @return Blacklist
+     *   returns $this.
      */
     public function setUuid($uuid) {
         $this->uuid = strtoupper($uuid);
@@ -58,7 +63,10 @@ class Blacklist extends AbstractEntity {
     /**
      * Get uuid.
      *
+     * UUIDs will be returned in uppercase.
+     *
      * @return string
+     *   The UUID.
      */
     public function getUuid() {
         return $this->uuid;
@@ -68,8 +76,10 @@ class Blacklist extends AbstractEntity {
      * Set comment.
      *
      * @param string $comment
+     *   Comment to set.
      *
      * @return Blacklist
+     *   returns $this.
      */
     public function setComment($comment) {
         $this->comment = $comment;
@@ -81,6 +91,7 @@ class Blacklist extends AbstractEntity {
      * Get comment.
      *
      * @return string
+     *   The comment.
      */
     public function getComment() {
         return $this->comment;

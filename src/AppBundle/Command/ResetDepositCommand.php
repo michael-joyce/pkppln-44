@@ -92,7 +92,7 @@ class ResetDepositCommand extends ContainerAwareCommand {
             $i++;
             $deposit = $row[0];
             $deposit->setState($state);
-            if($clear) {
+            if ($clear) {
                 $deposit->setErrorLog([]);
                 $deposit->setProcessingLog('');
             }

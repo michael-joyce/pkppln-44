@@ -12,6 +12,7 @@ use Nines\UtilBundle\Entity\AbstractEntity;
  * @ORM\Entity(repositoryClass="AppBundle\Repository\DocumentRepository")
  */
 class Document extends AbstractEntity {
+
     /**
      * Document title.
      *
@@ -43,11 +44,12 @@ class Document extends AbstractEntity {
      * @ORM\Column(type="text", nullable=false)
      */
     private $content;
-    
+
     /**
-     *
+     * Return the document title.
      */
     public function __toString() {
+        return $this->title;
     }
 
     /**
