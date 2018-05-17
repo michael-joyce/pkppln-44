@@ -19,7 +19,7 @@ class LoadDeposit extends Fixture implements DependentFixtureInterface {
         '92ED9A27-A584-4487-A3F9-997379FBA182',
         '978EA2B4-01DB-4F37-BD74-871DDBE71BF5',
     );
-    
+
     /**
      * {@inheritDoc}.
      */
@@ -27,7 +27,7 @@ class LoadDeposit extends Fixture implements DependentFixtureInterface {
         for ($i = 0; $i < 4; $i++) {
             $fixture = new Deposit();
             $fixture->setJournalVersion('2.4.8.' . $i);
-            $fixture->setLicense('Creative Commons');
+            $fixture->setLicense(['Creative Commons']);
             $fixture->setFileType('application/zip');
             $fixture->setDepositUuid(self::UUIDS[$i]);
             $fixture->setReceived(new DateTime("2018-{$i}-{$i}T12:00:00"));
