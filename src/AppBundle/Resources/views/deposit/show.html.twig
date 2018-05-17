@@ -2,9 +2,9 @@
 
 {% block title %}Deposit{% endblock %}
 
-{% block pageheader %} 
+{% block pageheader %}
     <h1>Deposit Details</h1>
-{% endblock %} 
+{% endblock %}
 
 {% block body %}
     <div class="btn-toolbar">
@@ -93,6 +93,12 @@
                 <td>{{ deposit.packageChecksumValue }}</td>
             </tr>
             <tr>
+                <th>LOM URL</th>
+                <td>
+                    {{ url('fetch', { 'journalUuid': deposit.journal.uuid, 'depositUuid': deposit.depositUuid }) }}
+                </td>
+            </tr>
+            <tr>
                 <th>Deposit Date</th>
                 <td>{% if deposit.depositDate %}{{ deposit.depositDate|date('Y-m-d') }}{% endif %}</td>
             </tr>
@@ -115,7 +121,7 @@
             <tr>
                 <th>Updated</th>
                 <td>{% if deposit.updated %}{{ deposit.updated|date }}{% endif %}</td>
-            </tr>        
+            </tr>
             <tr>
                 <th>Journal</th>
                 <td>
@@ -123,7 +129,7 @@
                         {{ deposit.journal }}
                     </a>
                 </td>
-            </tr>        
+            </tr>
         </tbody>
     </table>
 {% endblock %}

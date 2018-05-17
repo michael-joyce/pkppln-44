@@ -7,7 +7,7 @@
     <p class="count">
         Displaying {{ deposits|length }} deposits of {{ deposits.getTotalItemCount }} total.
     </p>
-{% endblock %} 
+{% endblock %}
 
 {% block body %}
 
@@ -24,6 +24,7 @@
             <tr>
                 <th>Deposit Uuid</th>
                 <th>Received</th>
+                <th>Status</th>
             </tr>
         </thead>
         <tbody>
@@ -35,6 +36,7 @@
                         </a>
                     </td>
                     <td>{% if deposit.received %}{{ deposit.received|date('Y-m-d H:i:s') }}{% endif %}</td>
+                    <td>{{ deposit.state }}</td>
                 </tr>
             {% endfor %}
         </tbody>

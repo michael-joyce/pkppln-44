@@ -10,7 +10,7 @@
         Content deposited to LOCKSS-O-Matic via the PKP PLN Staging Server.
     </summary>
     <!-- @size is the file size in kB (1,000 bytes) -->
-    <lom:content 
+    <lom:content
         size="{{ deposit.packageSize }}"
         checksumType="{{ deposit.packageChecksumType }}"
         checksumValue="{{ deposit.packageChecksumValue }}"
@@ -20,7 +20,7 @@
         pkp:journalTitle="PKP PLN Preservation"
         pkp:journalUrl="{{deposit.journal.url}}"
         pkp:issn="{{deposit.journal.issn}}"
-	pkp:publisher="PKP PLN Preservation"
+        pkp:publisher="PKP PLN Preservation"
         pkp:publisherName="{{deposit.journal.publisherName}}"
         pkp:publisherUrl="{{deposit.journal.publisherUrl}}">
         {{ url('fetch', { 'journalUuid': deposit.journal.uuid, 'depositUuid': deposit.depositUuid }) }}

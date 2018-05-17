@@ -11,7 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Run all the processing commands in order.
  */
 class RunAllCommand extends ContainerAwareCommand {
-    
+
     /**
      * List of commands to run, in order.
      */
@@ -21,11 +21,11 @@ class RunAllCommand extends ContainerAwareCommand {
             'pln:validate:bag',
             'pln:validate:xml',
             'pln:scan',
-            // 'pln:reserialize',
-            // 'pln:deposit',
+            'pln:reserialize',
+            'pln:deposit',
             // 'pln:status',.
     );
-    
+
     /**
      * {@inheritdoc}
      */
