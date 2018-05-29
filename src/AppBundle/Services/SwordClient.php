@@ -54,21 +54,21 @@ class SwordClient {
      * @var Client
      */
     private $client;
-    
+
     /**
      * URL for the service document.
      *
      * @var string
      */
     private $serviceUri;
-    
+
     /**
      * If true, save the deposit XML at /path/to/deposit.zip.xml.
      *
      * @var bool
      */
     private $saveXml;
-    
+
     /**
      * Staging server UUID.
      *
@@ -141,7 +141,7 @@ class SwordClient {
     public function serviceDocument() {
         try {
             $response = $this->client->get($this->serviceUri, array(
-            'headers' => array('On-Behalf-Of' => $this->uuid),
+                'headers' => array('On-Behalf-Of' => $this->uuid),
             ));
             return new ServiceDocument($response->getBody());
         } catch (RequestException $e) {
