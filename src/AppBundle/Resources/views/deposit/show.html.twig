@@ -62,7 +62,11 @@
             </tr>
             <tr>
                 <th>Url</th>
-                <td>{{ deposit.url }}</td>
+                <td>
+                    <a href="{{ deposit.url }}">
+                        {{ deposit.url }}
+                    </a>
+                </td>
             </tr>
             <tr>
                 <th>Size</th>
@@ -71,6 +75,14 @@
             <tr>
                 <th>State</th>
                 <td>{{ deposit.state }}</td>
+            </tr>
+            <tr>
+                <th>Staging Server Receipt</th>
+                <td>
+                    <a href="{{ url('sword_statement', {'journal_uuid': deposit.journal.uuid, 'deposit_uuid': deposit.depositUuid}) }}">
+                        {{ url('sword_statement', {'journal_uuid': deposit.journal.uuid, 'deposit_uuid': deposit.depositUuid}) }}
+                    </a>
+                </td>
             </tr>
             <tr>
                 <th>Error Log</th>
@@ -93,9 +105,11 @@
                 <td>{{ deposit.packageChecksumValue }}</td>
             </tr>
             <tr>
-                <th>LOM URL</th>
+                <th>LOM Fetch URL</th>
                 <td>
-                    {{ url('fetch', { 'journalUuid': deposit.journal.uuid, 'depositUuid': deposit.depositUuid }) }}
+                    <a href="{{ url('fetch', { 'journalUuid': deposit.journal.uuid, 'depositUuid': deposit.depositUuid }) }}">
+                        {{ url('fetch', { 'journalUuid': deposit.journal.uuid, 'depositUuid': deposit.depositUuid }) }}
+                    </a>
                 </td>
             </tr>
             <tr>
@@ -103,8 +117,14 @@
                 <td>{% if deposit.depositDate %}{{ deposit.depositDate|date('Y-m-d') }}{% endif %}</td>
             </tr>
             <tr>
-                <th>Deposit Receipt</th>
-                <td>{{ deposit.depositReceipt }}</td>
+                <th>LOM Deposit Receipt</th>
+                <td>
+                    {% if deposit.depositReceipt %}
+                        <a href="{{ deposit.depositReceipt }}">
+                            {{ deposit.depositReceipt }}
+                        </a>
+                    {% endif %}
+                </td>
             </tr>
             <tr>
                 <th>Processing Log</th>

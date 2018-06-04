@@ -97,18 +97,13 @@
                 <th>Updated</th>
                 <td>{% if journal.updated %}{{ journal.updated|date }}{% endif %}</td>
             </tr>
+            <tr>
+                <th>Journal Deposits</th>
+                <td>
+                    <a href="{{ path('deposit_index', {'journalId': journal.id}) }}">
+                        {{ journal.deposits | length }}
+                    </a>
+                </td>
         </tbody>
     </table>
-    {% if journal.deposits | length > 0 %}
-        <h2>Deposits</h2>
-        <ul>
-            {% for deposit in journal.deposits %}
-                <li>
-                    <a href="{{ path("deposit_show", {"journalId": journal.id, "id":deposit.id}) }}">
-                        {{ deposit }}
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
 {% endblock %}

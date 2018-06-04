@@ -9,7 +9,7 @@
 {% block body %}
     <div class="btn-toolbar">
         <div class="btn-group pull-right">
-            <a href="{{ path('journal_index') }}" class="btn btn-default">
+            <a href="{{ path('journal_show', {'id': journal.id}) }}" class="btn btn-default">
                 <span class="glyphicon glyphicon-arrow-left"></span> Back
             </a>
         </div>
