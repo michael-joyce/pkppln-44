@@ -62,7 +62,7 @@ class JournalBuilder {
 
         return $journal;
     }
-    
+
     /**
      * The journal with UUID $uuid has contacted the PLN.
      *
@@ -78,8 +78,6 @@ class JournalBuilder {
         if ($journal === null) {
             $journal = new Journal();
             $journal->setUuid($uuid);
-            $journal->setTitle('unknown');
-            $journal->setIssn('unknown');
             $journal->setStatus('new');
             $journal->setEmail('unknown@unknown.com');
             $this->em->persist($journal);

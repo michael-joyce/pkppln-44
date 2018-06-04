@@ -3,7 +3,9 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Journal;
+use AppBundle\Services\BlackWhiteList;
 use AppBundle\Services\Ping;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -86,10 +88,11 @@ class JournalController extends Controller {
      * @Method("GET")
      * @Template()
      */
-    public function showAction(Journal $journal) {
+    public function showAction(Journal $journal, BlackWhiteList $list) {
 
         return array(
             'journal' => $journal,
+            'list' => $list,
         );
     }
 
@@ -108,8 +111,10 @@ class JournalController extends Controller {
      * @Method("GET")
      * @Template()
      */
-    public function pingAction(Journal $journal, Ping $ping) {
+    public function pingAction(Journal $journal, Ping $ping, EntityManagerInterface $em) {
         $result = $ping->ping($journal);
+        $em->flush();
+        
         return array(
             'journal' => $journal,
             'result' => $result,

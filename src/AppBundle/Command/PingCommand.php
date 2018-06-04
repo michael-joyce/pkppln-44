@@ -22,7 +22,7 @@ class PingCommand extends ContainerAwareCommand {
      * @var Ping
      */
     private $ping;
-    
+
     /**
      * Database interface.
      *
@@ -54,7 +54,7 @@ class PingCommand extends ContainerAwareCommand {
         $this->addOption('dry-run', 'd', InputOption::VALUE_NONE, 'Do not update the whitelist - report only.');
         $this->addOption('all', 'a', InputOption::VALUE_NONE, 'Ping all journals, including whitelisted/blacklisted.');
     }
-    
+
     /**
      * Find the journals that need to be binged.
      *

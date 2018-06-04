@@ -52,6 +52,16 @@
                 </td>
             </tr>
             <tr>
+                <th>Permissions</th>
+                <td>
+                    {% if list.isWhitelisted(journal.uuid) %}
+                        Whitelisted
+                    {% elseif list.isBlacklisted(journal.uuid) %}
+                        Blacklisted
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
                 <th>Ping Url</th>
                 <td>
                     <a href="{{ journal.getGatewayUrl }}">

@@ -73,7 +73,7 @@ class Journal extends AbstractEntity {
      * The title of the journal.
      *
      * @var string
-     * @ORM\Column(type="string", nullable=false)
+     * @ORM\Column(type="string", nullable=true)
      */
     private $title;
 
@@ -81,7 +81,7 @@ class Journal extends AbstractEntity {
      * Journal's ISSN.
      *
      * @var string
-     * @ORM\Column(type="string", length=9, nullable=false)
+     * @ORM\Column(type="string", length=9, nullable=true)
      */
     private $issn;
 
@@ -103,7 +103,7 @@ class Journal extends AbstractEntity {
      * @ORM\Column(type="string", nullable=false)
      */
     private $status;
-    
+
     /**
      * True if a ping reports that the journal manager has accepts the terms of
      * use.
@@ -153,14 +153,17 @@ class Journal extends AbstractEntity {
     public function __construct() {
         parent::__construct();
         $this->status = 'healthy';
-        $this->contacted = new \DateTime();
+        $this->contacted = new DateTime();
         $this->termsAccepted = false;
     }
-    
+
     /**
      *
      */
     public function __toString() {
+        if($this->title) {
+            return $this->title;
+        }
         return $this->uuid;
     }
 
