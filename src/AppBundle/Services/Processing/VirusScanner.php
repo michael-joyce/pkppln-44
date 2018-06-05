@@ -17,12 +17,12 @@ use Xenolope\Quahog\Client;
  * Virus scanning service, via ClamAV.
  */
 class VirusScanner {
-    
+
     /**
      * Buffer size for extracting embedded files.
      */
     const BUFFER_SIZE = 64 * 1024;
-    
+
     /**
      * File path service.
      *
@@ -43,7 +43,7 @@ class VirusScanner {
      * @var Factory
      */
     private $factory;
-    
+
     /**
      * Filesystem client.
      *
@@ -123,7 +123,7 @@ class VirusScanner {
         rewind($handle);
         return $client->scanResourceStream($handle);
     }
-    
+
     /**
      * Scan an XML file and it's embedded content.
      *
@@ -155,7 +155,7 @@ class VirusScanner {
         }
         return $results;
     }
-    
+
     /**
      * Find all the embedded files in the XML and scan them.
      *
@@ -176,10 +176,10 @@ class VirusScanner {
             }
             $results = array_merge($this->scanXmlFile($file->getPathname(), $client, $parser), $results);
         }
-        
+
         return $results;
     }
-    
+
     /**
      * Scan an archive.
      *
@@ -202,7 +202,7 @@ class VirusScanner {
                 $results[] = "{$file->getFileName()} {$r['status']}: {$r['reason']}";
             }
         }
-        
+
         return $results;
     }
 
@@ -224,7 +224,7 @@ class VirusScanner {
         $harvestedPath = $this->filePaths->getHarvestFile($deposit);
         $basename = basename($harvestedPath);
         $phar = new PharData($harvestedPath);
-        
+
         $baseResult = array();
         $r = $client->scanFile($harvestedPath);
         if ($r['status'] === 'OK') {
