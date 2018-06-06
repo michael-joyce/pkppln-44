@@ -26,7 +26,6 @@ class BagValidator {
      * Build the validator.
      *
      * @param FilePaths $fp
-     *   Dependency injected file path service.
      */
     public function __construct(FilePaths $fp) {
         $this->filePaths = $fp;

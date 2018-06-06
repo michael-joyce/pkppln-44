@@ -52,11 +52,8 @@ class Builder implements ContainerAwareInterface {
      * Build the menu builder.
      *
      * @param FactoryInterface $factory
-     *   Dependency injected menu factory.
      * @param AuthorizationCheckerInterface $authChecker
-     *   Dependency injected authorization checker.
      * @param TokenStorageInterface $tokenStorage
-     *   Dependency injected token storage service.
      */
     public function __construct(FactoryInterface $factory, AuthorizationCheckerInterface $authChecker, TokenStorageInterface $tokenStorage) {
         $this->factory = $factory;
@@ -68,10 +65,8 @@ class Builder implements ContainerAwareInterface {
      * Check if the currently logged in user has a given role.
      *
      * @param string $role
-     *   Named role.
      *
      * @return bool
-     *   True if the use has a role.
      */
     private function hasRole($role) {
         if (!$this->tokenStorage->getToken()) {
@@ -84,10 +79,8 @@ class Builder implements ContainerAwareInterface {
      * Build the app's main navigation menu.
      *
      * @param array $options
-     *   Unused array of options.
      *
      * @return ItemInterface
-     *   The complete menu.
      */
     public function mainMenu(array $options) {
         $menu = $this->factory->createItem('root');

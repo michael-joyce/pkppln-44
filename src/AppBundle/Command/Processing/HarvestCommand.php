@@ -22,9 +22,7 @@ class HarvestCommand extends AbstractProcessingCmd {
      * Build the command.
      *
      * @param EntityManagerInterface $em
-     *   Dependency injected entity manager.
      * @param Harvester $harvester
-     *   Dependency injected harvester service.
      */
     public function __construct(EntityManagerInterface $em, Harvester $harvester) {
         parent::__construct($em);

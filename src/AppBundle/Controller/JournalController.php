@@ -25,10 +25,8 @@ class JournalController extends Controller {
      * Lists all Journal entities.
      *
      * @param Request $request
-     *   Dependency injected HTTP request object.
      *
      * @return array
-     *   Array data for the template processor.
      *
      * @Route("/", name="journal_index")
      * @Method("GET")
@@ -51,7 +49,6 @@ class JournalController extends Controller {
      * Search for Journal entities.
      *
      * @param Request $request
-     *   Dependency injected HTTP request object.
      *
      * @Route("/search", name="journal_search")
      * @Method("GET")
@@ -79,12 +76,9 @@ class JournalController extends Controller {
      * Finds and displays a Journal entity.
      *
      * @param Journal $journal
-     *   The Journal to show.
      * @param BlackWhiteList $list
-     *   Black and white service to check the journal permissions.
      *
      * @return array
-     *   Array data for the template processor.
      *
      * @Route("/{id}", name="journal_show")
      * @Method("GET")
@@ -102,14 +96,10 @@ class JournalController extends Controller {
      * Pings a journal and displays the result.
      *
      * @param Journal $journal
-     *   The Journal to show.
      * @param Ping $ping
-     *   Dependency-injected Ping service.
      * @param EntityManagerInterface $em
-     *   Dependency-injected doctrine instance.
      *
      * @return array
-     *   Array data for the template processor.
      *
      * @Route("/{id}/ping", name="journal_ping")
      * @Method("GET")

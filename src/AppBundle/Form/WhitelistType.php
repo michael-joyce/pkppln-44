@@ -17,9 +17,7 @@ class WhitelistType extends AbstractType {
      * Add form fields to $builder.
      *
      * @param FormBuilderInterface $builder
-     *   The form builder to add the fields to.
      * @param array $options
-     *   Options for the form, as defined in configureOptions.
      */
     public function buildForm(FormBuilderInterface $builder, array $options) {
         $builder->add('uuid', null, array(
@@ -45,7 +43,6 @@ class WhitelistType extends AbstractType {
      * buildForm() method via the $options parameter.
      *
      * @param OptionsResolver $resolver
-     *   Resolver of options.
      */
     public function configureOptions(OptionsResolver $resolver) {
         $resolver->setDefaults(array(

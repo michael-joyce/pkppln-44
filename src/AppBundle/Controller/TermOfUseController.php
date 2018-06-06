@@ -24,10 +24,8 @@ class TermOfUseController extends Controller {
      * Lists all TermOfUse entities.
      *
      * @param Request $request
-     *   Dependency injected HTTP request object.
      *
      * @return array
-     *   Array data for the template processor.
      *
      * @Route("/", name="termofuse_index")
      * @Method("GET")
@@ -50,7 +48,6 @@ class TermOfUseController extends Controller {
      * Creates a new TermOfUse entity.
      *
      * @param Request $request
-     *   Dependency injected HTTP request object.
      *
      * @return array|RedirectResponse
      *   Array data for the template processor or a redirect to the TermOfUse.
@@ -84,10 +81,8 @@ class TermOfUseController extends Controller {
      * Finds and displays a TermOfUse entity.
      *
      * @param TermOfUse $termOfUse
-     *   The TermOfUse to show.
      *
      * @return array
-     *   Array data for the template processor.
      *
      * @Route("/{id}", name="termofuse_show")
      * @Method("GET")
@@ -104,9 +99,7 @@ class TermOfUseController extends Controller {
      * Displays a form to edit an existing TermOfUse entity.
      *
      * @param Request $request
-     *   Dependency injected HTTP request object.
      * @param TermOfUse $termOfUse
-     *   The TermOfUse to edit.
      *
      * @return array|RedirectResponse
      *   Array data for the template processor or a redirect to the TermOfUse.
@@ -137,9 +130,7 @@ class TermOfUseController extends Controller {
      * Deletes a TermOfUse entity.
      *
      * @param Request $request
-     *   Dependency injected HTTP request object.
      * @param TermOfUse $termOfUse
-     *   The TermOfUse to delete.
      *
      * @return array|RedirectResponse
      *   A redirect to the termofuse_index.

@@ -22,9 +22,7 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
      * Build the command.
      *
      * @param EntityManagerInterface $em
-     *   Dependency injected entity manager.
      * @param XmlValidator $validator
-     *   Dependency injected validator service.
      */
     public function __construct(EntityManagerInterface $em, XmlValidator $validator) {
         parent::__construct($em);

@@ -37,7 +37,6 @@ class ResetDepositCommand extends ContainerAwareCommand {
      * Build the command.
      *
      * @param EntityManagerInterface $em
-     *   Dependency injected database interface.
      */
     public function __construct(EntityManagerInterface $em) {
         parent::__construct();

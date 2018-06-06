@@ -27,7 +27,6 @@ class TermOfUseRepository extends EntityRepository {
      * Get the date of the most recent update to the terms of use.
      *
      * @return string
-     *   Date, as a string.
      */
     public function getLastUpdated() {
         $qb = $this->createQueryBuilder('t');

@@ -34,9 +34,7 @@ class PingCommand extends ContainerAwareCommand {
      * Build the command.
      *
      * @param EntityManagerInterface $em
-     *   Dependency injected entity manager.
      * @param Ping $ping
-     *   Dependency injected ping service.
      */
     public function __construct(EntityManagerInterface $em, Ping $ping) {
         parent::__construct();
@@ -59,7 +57,6 @@ class PingCommand extends ContainerAwareCommand {
      * Find the journals that need to be binged.
      *
      * @param bool $all
-     *   If true, all journals will be returned.
      */
     public function findJournals($all) {
         $repo = $this->em->getRepository(Journal::class);

@@ -27,7 +27,6 @@ class PayloadValidator {
      * Construct the validator.
      *
      * @param FilePaths $fp
-     *   Dependency injected file path service.
      */
     public function __construct(FilePaths $fp) {
         $this->fp = $fp;
@@ -37,7 +36,6 @@ class PayloadValidator {
      * Override the file path service.
      *
      * @param FilePaths $filePaths
-     *   File path service.
      */
     public function setFilePaths(FilePaths $filePaths) {
         $this->fp = $filePaths;
@@ -47,12 +45,9 @@ class PayloadValidator {
      * Hash a file.
      *
      * @param string $algorithm
-     *   Hashing algorithm to use.
      * @param string $filepath
-     *   Path to the file to hash.
      *
      * @return string
-     *   Calculated, hex-encoded hash.
      *
      * @throws Exception
      *   If the algorithm is unknown.
@@ -85,10 +80,8 @@ class PayloadValidator {
      * Process one deposit.
      *
      * @param Deposit $deposit
-     *   Deposit to scan and parse.
      *
      * @return bool
-     *   True if the hash matches.
      */
     public function processDeposit(Deposit $deposit) {
         try {

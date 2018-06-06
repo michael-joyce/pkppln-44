@@ -22,9 +22,7 @@ class ScanCommand extends AbstractProcessingCmd {
      * Build the command.
      *
      * @param EntityManagerInterface $em
-     *   Dependency injected entity manager.
      * @param VirusScanner $scanner
-     *   Dependency injected virus scanner service.
      */
     public function __construct(EntityManagerInterface $em, VirusScanner $scanner) {
         parent::__construct($em);

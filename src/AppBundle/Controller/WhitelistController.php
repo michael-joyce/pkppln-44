@@ -24,10 +24,8 @@ class WhitelistController extends Controller {
      * Lists all Whitelist entities.
      *
      * @param Request $request
-     *   Dependency injected HTTP request object.
      *
      * @return array
-     *   Array data for the template processor.
      *
      * @Route("/", name="whitelist_index")
      * @Method("GET")
@@ -50,7 +48,6 @@ class WhitelistController extends Controller {
      * Search for Whitelist entities.
      *
      * @param Request $request
-     *   Dependency injected HTTP request object.
      *
      * @Route("/search", name="whitelist_search")
      * @Method("GET")
@@ -78,7 +75,6 @@ class WhitelistController extends Controller {
      * Creates a new Whitelist entity.
      *
      * @param Request $request
-     *   Dependency injected HTTP request object.
      *
      * @return array|RedirectResponse
      *   Array data for the template processor or a redirect to the Whitelist.
@@ -112,10 +108,8 @@ class WhitelistController extends Controller {
      * Finds and displays a Whitelist entity.
      *
      * @param Whitelist $whitelist
-     *   The Whitelist to show.
      *
      * @return array
-     *   Array data for the template processor.
      *
      * @Route("/{id}", name="whitelist_show")
      * @Method("GET")
@@ -132,9 +126,7 @@ class WhitelistController extends Controller {
      * Displays a form to edit an existing Whitelist entity.
      *
      * @param Request $request
-     *   Dependency injected HTTP request object.
      * @param Whitelist $whitelist
-     *   The Whitelist to edit.
      *
      * @return array|RedirectResponse
      *   Array data for the template processor or a redirect to the Whitelist.
@@ -165,9 +157,7 @@ class WhitelistController extends Controller {
      * Deletes a Whitelist entity.
      *
      * @param Request $request
-     *   Dependency injected HTTP request object.
      * @param Whitelist $whitelist
-     *   The Whitelist to delete.
      *
      * @return array|RedirectResponse
      *   A redirect to the whitelist_index.

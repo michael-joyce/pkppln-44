@@ -42,9 +42,7 @@ class BagReserializer {
     /**
      *
      * @param FilePaths $fp
-     *   Dependency injected file path service.
      * @param BagReader $bagReader
-     *   Dependency injected bag reader.
      */
     public function __construct(FilePaths $fp, BagReader $bagReader) {
         $this->bagReader = $bagReader;
@@ -55,7 +53,6 @@ class BagReserializer {
      * Override the default bag reader.
      *
      * @param BagReader $bagReader
-     *   Bag reader object.
      */
     public function setBagReader(BagReader $bagReader) {
         $this->bagReader = $bagReader;
@@ -65,9 +62,7 @@ class BagReserializer {
      * Add the metadata from the database to the bag-info.txt file.
      *
      * @param BagIt $bag
-     *   Bag containing the deposit.
      * @param Deposit $deposit
-     *   Deposit object with the new metadata.
      */
     protected function addMetadata(BagIt $bag, Deposit $deposit) {
         // @todo this is very very bad. Once BagItPHP is updated it should be $bag->clearAllBagInfo();

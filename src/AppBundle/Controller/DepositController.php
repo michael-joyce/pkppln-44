@@ -25,12 +25,9 @@ class DepositController extends Controller {
      * Lists all Deposit entities.
      *
      * @param Request $request
-     *   Dependency injected HTTP request object.
      * @param Journal $journal
-     *   Injected journal parameter from the URL.
      *
      * @return array
-     *   Array data for the template processor.
      *
      * @Route("/", name="deposit_index")
      * @Method("GET")
@@ -58,9 +55,7 @@ class DepositController extends Controller {
      * search works across all deposits.
      *
      * @param Request $request
-     *   Dependency injected HTTP request object.
      * @param Journal $journal
-     *   Injected journal parameter from the URL.
      *
      * @Route("/search", name="deposit_search")
      * @Method("GET")
@@ -90,12 +85,9 @@ class DepositController extends Controller {
      * Finds and displays a Deposit entity.
      *
      * @param Journal $journal
-     *   Injected journal parameter from the URL.
      * @param Deposit $deposit
-     *   The Deposit to show.
      *
      * @return array
-     *   Array data for the template processor.
      *
      * @Route("/{id}", name="deposit_show")
      * @Method("GET")

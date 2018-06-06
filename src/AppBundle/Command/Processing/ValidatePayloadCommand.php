@@ -22,9 +22,7 @@ class ValidatePayloadCommand extends AbstractProcessingCmd {
      * Build the command.
      *
      * @param EntityManagerInterface $em
-     *   Dependency injected entity manager.
      * @param PayloadValidator $payloadValidator
-     *   Dependency injected payload validator.
      */
     public function __construct(EntityManagerInterface $em, PayloadValidator $payloadValidator) {
         parent::__construct($em);

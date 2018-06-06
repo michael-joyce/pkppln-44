@@ -52,7 +52,6 @@ class FilePaths {
      * Get the root file system path.
      *
      * @return string
-     *   Path to the root.
      */
     public function getRootPath() {
         return $this->root;

@@ -29,7 +29,6 @@ class BagReader {
      * Override the default Filesystem component.
      *
      * @param Filesystem $fs
-     *   Filesystem client.
      */
     public function setFilesystem(Filesystem $fs) {
         $this->fs = $fs;
@@ -39,10 +38,8 @@ class BagReader {
      * Read a bag from the file system.
      *
      * @param string $path
-     *   Path to the bag.
      *
      * @return BagIt
-     *   Parsed, unvalidated, bag.
      *
      * @throws Exception
      *   Exception thrown if the bag doesn't exist.

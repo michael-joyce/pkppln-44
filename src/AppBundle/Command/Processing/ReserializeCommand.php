@@ -23,9 +23,7 @@ class ReserializeCommand extends AbstractProcessingCmd {
      * Build the command.
      *
      * @param EntityManagerInterface $em
-     *   Dependency injected entity manager.
      * @param BagReserializer $bagReserializer
-     *   Dependency injected bag reserializer service.
      */
     public function __construct(EntityManagerInterface $em, BagReserializer $bagReserializer) {
         parent::__construct($em);

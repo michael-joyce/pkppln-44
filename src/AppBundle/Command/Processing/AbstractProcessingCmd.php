@@ -34,7 +34,6 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
      * Build the command.
      *
      * @param EntityManagerInterface $em
-     *   Dependency injected entity manager.
      */
     public function __construct(EntityManagerInterface $em) {
         parent::__construct();
@@ -65,7 +64,6 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
      * Process one deposit return true on success and false on failure.
      *
      * @param Deposit $deposit
-     *   Single deposit to process.
      *
      * @return string|bool|null
      *   True for success, false for fail, null for unknown, string for other.
@@ -108,11 +106,9 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
      * Get a list of deposits to process.
      *
      * @param bool $retry
-     *   Retry failed deposits.
      * @param int[] $depositIds
      *   Zero or more deposit Ids to filter.
      * @param int $limit
-     *   Maximum number of deposits to return.
      *
      * @return Deposit[]
      *   List of deposits for processing.
@@ -137,11 +133,8 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
      * Run and process one deposit.
      *
      * @param Deposit $deposit
-     *   Deposit to process.
      * @param OutputInterface $output
-     *   Output for writing messages.
      * @param bool $dryRun
-     *   If true, then this is a dry run and
      *   results are not flushed to the database.
      */
     public function runDeposit(Deposit $deposit, OutputInterface $output, $dryRun = false) {

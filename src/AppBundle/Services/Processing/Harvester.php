@@ -91,9 +91,7 @@ class Harvester {
      * Construct the harvester.
      *
      * @param int $maxHarvestAttempts
-     *   Maximum number of harvest attempts.
      * @param FilePaths $filePaths
-     *   Dependency injected file path service.
      */
     public function __construct($maxHarvestAttempts, FilePaths $filePaths) {
         $this->maxAttempts = $maxHarvestAttempts;
@@ -106,7 +104,6 @@ class Harvester {
      * Override the HTTP client, usually based on Guzzle.
      *
      * @param Client $client
-     *   HTTP Client.
      */
     public function setClient(Client $client) {
         $this->client = $client;
@@ -116,7 +113,6 @@ class Harvester {
      * Override the file system client.
      *
      * @param Filesystem $fs
-     *   File system interface.
      */
     public function setFilesystem(Filesystem $fs) {
         $this->fs = $fs;
@@ -128,12 +124,9 @@ class Harvester {
      * Returns true on success and false on failure.
      *
      * @param string $path
-     *   Path to the file to write.
      * @param ResponseInterface $response
-     *   HTTP Response.
      *
      * @return bool
-     *   True on success and false on failure.
      */
     public function writeDeposit($path, ResponseInterface $response) {
         $body = $response->getBody();
@@ -154,10 +147,8 @@ class Harvester {
      * Fetch a deposit URL with Guzzle.
      *
      * @param string $url
-     *   URL to fetch.
      *
      * @return Response
-     *   HTTP response from the remote host.
      *
      * @throws Exception
      *   If the HTTP status code isn't 200, throw an error.
@@ -176,7 +167,6 @@ class Harvester {
      * Do an HTTP HEAD to get the deposit download size.
      *
      * @param Deposit $deposit
-     *   Deposit to check.
      *
      * @throws Exception
      *   If the HEAD request status code isn't 200, throw an exception.
@@ -209,10 +199,8 @@ class Harvester {
      * Fetch the data and write it to the file system.
      *
      * @param Deposit $deposit
-     *   The deposit to process.
      *
      * @return bool
-     *   True if the deposit was downloaded.
      */
     public function processDeposit(Deposit $deposit) {
         if ($deposit->getHarvestAttempts() > $this->maxAttempts) {

@@ -23,10 +23,8 @@ class BlacklistController extends Controller {
      * Lists all Blacklist entities.
      *
      * @param Request $request
-     *   Dependency injected HTTP request object.
      *
      * @return array
-     *   Array data for the template processor.
      *
      * @Route("/", name="blacklist_index")
      * @Method("GET")
@@ -49,7 +47,6 @@ class BlacklistController extends Controller {
      * Search for Blacklist entities.
      *
      * @param Request $request
-     *   Dependency injected HTTP request object.
      *
      * @Route("/search", name="blacklist_search")
      * @Method("GET")
@@ -77,7 +74,6 @@ class BlacklistController extends Controller {
      * Creates a new Blacklist entity.
      *
      * @param Request $request
-     *   Dependency injected HTTP request object.
      *
      * @return array|RedirectResponse
      *   Array data for the template processor or a redirect to the Blacklist.
@@ -111,10 +107,8 @@ class BlacklistController extends Controller {
      * Finds and displays a Blacklist entity.
      *
      * @param Blacklist $blacklist
-     *   The Blacklist to show.
      *
      * @return array
-     *   Array data for the template processor.
      *
      * @Route("/{id}", name="blacklist_show")
      * @Method("GET")
@@ -131,9 +125,7 @@ class BlacklistController extends Controller {
      * Displays a form to edit an existing Blacklist entity.
      *
      * @param Request $request
-     *   Dependency injected HTTP request object.
      * @param Blacklist $blacklist
-     *   The Blacklist to edit.
      *
      * @return array|RedirectResponse
      *   Array data for the template processor or a redirect to the Blacklist.
@@ -164,9 +156,7 @@ class BlacklistController extends Controller {
      * Deletes a Blacklist entity.
      *
      * @param Request $request
-     *   Dependency injected HTTP request object.
      * @param Blacklist $blacklist
-     *   The Blacklist to delete.
      *
      * @return array|RedirectResponse
      *   A redirect to the blacklist_index.

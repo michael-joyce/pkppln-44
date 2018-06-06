@@ -32,7 +32,6 @@ class DefaultController extends Controller {
      * Home page action.
      *
      * @return Response
-     *   HTTP Response with rendered content.
      *
      * @Route("/", name="homepage")
      */
@@ -51,10 +50,8 @@ class DefaultController extends Controller {
      * journal. This search works across all deposits.
      *
      * @param Request $request
-     *   Dependency injected HTTP request object.
      *
      * @return array
-     *   Variables passed to the templating system.
      *
      * @Route("/deposit_search", name="all_deposit_search")
      * @Method("GET")
@@ -83,16 +80,11 @@ class DefaultController extends Controller {
      * Fetch a processed and packaged deposit.
      *
      * @param Request $request
-     *   Dependency injected HTTP request object.
      * @param Journal $journal
-     *   Journal from the URL parameter journalUuid.
      * @param Deposit $deposit
-     *   Deposit from the URL parameter depositUuid.
      * @param FilePaths $fp
-     *   Dependency-injected file path service.
      *
      * @return BinaryFileResponse
-     *   Processed deposit ready for preservation.
      *
      * @throws BadRequestHttpException
      * @throws NotFoundHttpException
@@ -117,7 +109,6 @@ class DefaultController extends Controller {
      * Return the permission statement for LOCKSS.
      *
      * @return Response
-     *   The permission statement as a plain text HTTP response.
      *
      * @Route("/permission", name="lockss_permission")
      */

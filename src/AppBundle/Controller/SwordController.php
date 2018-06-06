@@ -54,9 +54,7 @@ class SwordController extends Controller {
      * Build the controller.
      *
      * @param BlackWhiteList $blackwhitelist
-     *   Black and white list service.
      * @param EntityManagerInterface $em
-     *   Doctrine entity manager.
      */
     public function __construct(BlackWhiteList $blackwhitelist, EntityManagerInterface $em) {
         $this->blackwhitelist = $blackwhitelist;
@@ -74,11 +72,8 @@ class SwordController extends Controller {
      * will be thrown.
      *
      * @param Request $request
-     *   Request which should contain the header.
      * @param string $key
-     *   Name of the header.
      * @param string $required
-     *   If true, an exception will be thrown if the header is missing.
      *
      * @return string|null
      *   The value of the header or null if that's OK.
@@ -108,10 +103,8 @@ class SwordController extends Controller {
      * Return the pln_accepting parameter from parameters.yml
      *
      * @param string $uuid
-     *   Journal UUID to check.
      *
      * @return bool
-     *   True if the journal is whitelisted.
      */
     private function checkAccess($uuid) {
         if ($this->blackwhitelist->isWhitelisted($uuid)) {
@@ -128,10 +121,8 @@ class SwordController extends Controller {
      * Figure out which message to return for the network status widget in OJS.
      *
      * @param Journal $journal
-     *   Journal to get the message for.
      *
      * @return string
-     *   Network message for the journal.
      */
     private function getNetworkMessage(Journal $journal) {
         if ($journal->getOjsVersion() === null) {
@@ -148,10 +139,8 @@ class SwordController extends Controller {
      * Get the XML from an HTTP request.
      *
      * @param Request $request
-     *   Depedency injected http request.
      *
      * @return SimpleXMLElement
-     *   Parsed XML.
      *
      * @throws BadRequestHttpException
      */
@@ -175,12 +164,9 @@ class SwordController extends Controller {
      * Requires On-Behalf-Of and Journal-Url HTTP headers.
      *
      * @param Request $request
-     *   HTTP request object.
      * @param JournalBuilder $builder
-     *   Dependency injected journal builder service.
      *
      * @return array
-     *   Data for the template engine.
      *
      * @Method("GET")
      * @Template()
@@ -228,16 +214,11 @@ class SwordController extends Controller {
      * Create a deposit.
      *
      * @param Request $request
-     *   HTTP Request object.
      * @param Journal $journal
-     *   Journal, as determined by the UUID in the URL.
      * @param JournalBuilder $journalBuilder
-     *   Dependency injected journal builder.
      * @param DepositBuilder $depositBuilder
-     *   Dependency injected deposit builder.
      *
      * @return Response
-     *   HTTP repsponse with the deposit information.
      *
      * @Route("/col-iri/{uuid}", name="sword_create_deposit", requirements={
      *      "uuid": ".{36}",
@@ -276,14 +257,10 @@ class SwordController extends Controller {
      * Check that status of a deposit by fetching the sword statemt.
      *
      * @param Request $request
-     *   HTTP request.
      * @param Journal $journal
-     *   Journal that made the deposit.
      * @param Deposit $deposit
-     *   Deposit to check.
      *
      * @return Response
-     *   HTTP response with the deposit statement data.
      *
      * @Route("/cont-iri/{journal_uuid}/{deposit_uuid}/state", name="sword_statement", requirements={
      *      "journal_uuid": ".{36}",
@@ -315,16 +292,11 @@ class SwordController extends Controller {
      * Edit a deposit with an HTTP PUT.
      *
      * @param Request $request
-     *   HTTP request object.
      * @param Journal $journal
-     *   Journal from the journal_uuid parameter in the URL.
      * @param Deposit $deposit
-     *   Deposit from the deposit_uuid parameter in the URL.
      * @param DepositBuilder $builder
-     *   Dependency injected deposit builder.
      *
      * @return Response
-     *   HTTP response with the result.
      *
      * @Route("/cont-iri/{journal_uuid}/{deposit_uuid}/edit", name="sword_edit", requirements={
      *      "journal_uuid": ".{36}",
@@ -361,14 +333,10 @@ class SwordController extends Controller {
      * Request the original deposit back from the storage network.
      *
      * @param Request $request
-     *   HTTP request.
      * @param Journal $journal
-     *   Journal that made the deposit.
      * @param Deposit $deposit
-     *   Original deposit to fetch.
      *
      * @return BinaryFileResponse
-     *   The deposit.
      *
      * @Route("/original/{journal_uuid}/{deposit_uuid}", name="sword_original_deposit", requirements={
      *      "journal_uuid": ".{36}",

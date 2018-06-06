@@ -22,9 +22,7 @@ class DepositCommand extends AbstractProcessingCmd {
      * {@inheritdoc}
      *
      * @param EntityManagerInterface $em
-     *   Dependency-injected database interface.
      * @param Depositor $depositor
-     *   Dependency-injected depositor service.
      */
     public function __construct(EntityManagerInterface $em, Depositor $depositor) {
         parent::__construct($em);

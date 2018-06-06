@@ -22,9 +22,7 @@ class ValidateBagCommand extends AbstractProcessingCmd {
      * Build the command.
      *
      * @param EntityManagerInterface $em
-     *   Dependency injected entity manager.
      * @param BagValidator $bagValidator
-     *   Dependency injected bag validator.
      */
     public function __construct(EntityManagerInterface $em, BagValidator $bagValidator) {
         parent::__construct($em);

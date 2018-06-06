@@ -23,10 +23,8 @@ class DocumentController extends Controller {
      * Lists all Document entities.
      *
      * @param Request $request
-     *   Dependency injected HTTP request object.
      *
      * @return array
-     *   Array data for the template processor.
      *
      * @Route("/", name="document_index")
      * @Method("GET")
@@ -49,7 +47,6 @@ class DocumentController extends Controller {
      * Creates a new Document entity.
      *
      * @param Request $request
-     *   Dependency injected HTTP request object.
      *
      * @return array|RedirectResponse
      *   Array data for the template processor or a redirect to the Document.
@@ -83,10 +80,8 @@ class DocumentController extends Controller {
      * Finds and displays a Document entity.
      *
      * @param Document $document
-     *   The Document to show.
      *
      * @return array
-     *   Array data for the template processor.
      *
      * @Route("/{id}", name="document_show")
      * @Method("GET")
@@ -103,9 +98,7 @@ class DocumentController extends Controller {
      * Displays a form to edit an existing Document entity.
      *
      * @param Request $request
-     *   Dependency injected HTTP request object.
      * @param Document $document
-     *   The Document to edit.
      *
      * @return array|RedirectResponse
      *   Array data for the template processor or a redirect to the Document.
@@ -136,9 +129,7 @@ class DocumentController extends Controller {
      * Deletes a Document entity.
      *
      * @param Request $request
-     *   Dependency injected HTTP request object.
      * @param Document $document
-     *   The Document to delete.
      *
      * @return array|RedirectResponse
      *   A redirect to the document_index.

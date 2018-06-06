@@ -45,7 +45,6 @@ class XmlParser {
      * Check if the parse generated errors.
      *
      * @return bool
-     *   True if the parse generated errors.
      */
     public function hasErrors() {
         return count($this->errors) > 0;
@@ -55,12 +54,9 @@ class XmlParser {
      * Filter out any invalid UTF-8 data in $from and write the result to $to.
      *
      * @param string $from
-     *   Path to the source file.
      * @param string $to
-     *   Path to the destination file.
      *
      * @return int
-     *   The number of invalid bytes filtered out.
      */
     public function filter($from, $to) {
         $fromHandle = fopen($from, 'rb');
@@ -87,10 +83,8 @@ class XmlParser {
      * Other errors in the XML, beyond the bad UTF-8, will not be tolerated.
      *
      * @param string $filename
-     *   Path to the source file.
      *
      * @return DOMDocument
-     *   Parsed XML document in a DOM.
      */
     public function fromFile($filename) {
         $dom = new DOMDocument("1.0", "UTF-8");

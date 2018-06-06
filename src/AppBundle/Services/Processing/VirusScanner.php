@@ -55,9 +55,7 @@ class VirusScanner {
      * Construct the virus scanner.
      *
      * @param string $socketPath
-     *   Path to the clamd socket.
      * @param FilePaths $filePaths
-     *   FilePath service.
      */
     public function __construct($socketPath, FilePaths $filePaths) {
         $this->filePaths = $filePaths;
@@ -71,7 +69,6 @@ class VirusScanner {
      * Set the socket factory.
      *
      * @param Factory $factory
-     *   Override the default socket factory.
      */
     public function setFactory(Factory $factory) {
         $this->factory = $factory;
@@ -86,7 +83,6 @@ class VirusScanner {
      * one constructor throws an exception everything gets cranky.
      *
      * @return Client
-     *   Fully configured client.
      */
     public function getClient() {
         $socket = $this->factory->createClient('unix://' . $this->socketPath);
@@ -99,14 +95,10 @@ class VirusScanner {
      * Scan an embedded file.
      *
      * @param DOMElement $embed
-     *   DOM Element with the embedded content.
      * @param DOMXpath $xp
-     *   XPath context with pointing to the embedded element.
      * @param Client $client
-     *   Configured virus scanning client.
      *
      * @return array
-     *   Scan details.
      */
     public function scanEmbed(DOMElement $embed, DOMXpath $xp, Client $client) {
         $length = $xp->evaluate('string-length(./text())', $embed);
@@ -128,14 +120,10 @@ class VirusScanner {
      * Scan an XML file and it's embedded content.
      *
      * @param string $pathname
-     *   Path to the file to scan.
      * @param Client $client
-     *   Configured virus client.
      * @param XmlParser $parser
-     *   Parser to get the XML out of $pathname.
      *
      * @return array
-     *   Virus scanning details.
      */
     public function scanXmlFile($pathname, Client $client, XmlParser $parser = null) {
         if (!$parser) {
@@ -160,12 +148,9 @@ class VirusScanner {
      * Find all the embedded files in the XML and scan them.
      *
      * @param PharData $phar
-     *   Parsed bag data.
      * @param Client $client
-     *   Virus scannign client.
      *
      * @return array
-     *   Scan details.
      */
     public function scanEmbededFiles(PharData $phar, Client $client) {
         $results = array();
@@ -184,12 +169,9 @@ class VirusScanner {
      * Scan an archive.
      *
      * @param PharData $phar
-     *   Parsed compressed bag.
      * @param Client $client
-     *   Virus scanning client.
      *
      * @return array
-     *   Scan details.
      */
     public function scanArchiveFiles(PharData $phar, Client $client) {
         $results = array();
@@ -210,12 +192,9 @@ class VirusScanner {
      * Process one deposit.
      *
      * @param Deposit $deposit
-     *   Deposit to scan and parse.
      * @param Client $client
-     *   Optional virus client.
      *
      * @return bool
-     *   True if the scan succeeded, regardless of viruses present in the deposit.
      */
     public function processDeposit(Deposit $deposit, Client $client = null) {
         if ($client === null) {
