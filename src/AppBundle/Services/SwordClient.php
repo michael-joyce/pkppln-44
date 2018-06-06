@@ -178,7 +178,7 @@ class SwordClient {
      */
     public function serviceDocument() {
         $response = $this->request('GET', $this->serviceUri, array(
-            'headers' => array('On-Behalf-Of' => $this->uuid),
+            'On-Behalf-Of' => $this->uuid,
         ));
         return new ServiceDocument($response->getBody());
     }

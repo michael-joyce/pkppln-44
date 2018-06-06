@@ -38,8 +38,8 @@ class SwordClientTest extends BaseTestCase {
 
     protected function getFixtures() {
         return array(
-        LoadDeposit::class,
-        LoadJournal::class,
+            LoadDeposit::class,
+            LoadJournal::class,
         );
     }
 
@@ -65,8 +65,7 @@ class SwordClientTest extends BaseTestCase {
         $transaction = $container[0];
         $this->assertEquals('GET', $transaction['request']->getMethod());
         $this->assertEquals(
-            ['9AE14D70-B799-473C-8072-983310ECB0E1'],
-            $transaction['request']->getHeader('On-Behalf-Of')
+            ['9AE14D70-B799-473C-8072-983310ECB0E1'], $transaction['request']->getHeader('On-Behalf-Of')
         );
     }
 
@@ -117,8 +116,7 @@ class SwordClientTest extends BaseTestCase {
         $request = $container[1]['request'];
         $this->assertEquals('POST', $request->getMethod());
         $this->assertEquals(
-            'http://localhost/lom2/web/app_dev.php/api/sword/2.0/col-iri/29125DE2-E622-416C-93EB-E887B2A3126C',
-            (string)$request->getUri()
+            'http://localhost/lom2/web/app_dev.php/api/sword/2.0/col-iri/29125DE2-E622-416C-93EB-E887B2A3126C', (string) $request->getUri()
         );
 
         $this->assertEquals('http://example.com', $deposit->getDepositReceipt());
@@ -143,8 +141,6 @@ class SwordClientTest extends BaseTestCase {
         $deposit = $this->getReference('deposit.1');
         $result = $this->client->createDeposit($deposit);
     }
-
-
 
     private function serviceDocumentData() {
         $xml = <<<'ENDXML'
