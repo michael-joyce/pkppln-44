@@ -10,11 +10,14 @@
 namespace AppBundle\Services;
 
 use AppBundle\Entity\Deposit;
+use AppBundle\Utilities\Namespaces;
 use AppBundle\Utilities\ServiceDocument;
 use DateTime;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Psr7\Request;
+use SimpleXMLElement;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Templating\EngineInterface;
 use function GuzzleHttp\Psr7\str;
@@ -132,6 +135,41 @@ class SwordClient {
     }
 
     /**
+     * @param string $method
+     * @param string $url
+     * @param array $headers
+     * @param mixed $xml
+     * @param Deposit $deposit
+     * @param array $options
+     *
+     * @return Response
+     *
+     * @throws Exception
+     */
+    public function request($method, $url, array $headers = [], $xml = null, Deposit $deposit = null, array $options = []) {
+        try {
+            $request = new Request($method, $url, $headers, $xml);
+            $response = $this->client->send($request, $options);
+            return $response;
+        } catch (RequestException $e) {
+            $message = str($e->getRequest());
+            if ($e->hasResponse()) {
+                $message .= "\n\n" . str($e->getResponse());
+            }
+            if($deposit) {
+                $deposit->addErrorLog($message);
+            }
+            throw new Exception($message);
+        } catch (Exception $e) {
+            $message = $e->getMessage();
+            if($deposit) {
+                $deposit->addErrorLog($message);
+            }
+            throw new Exception($message);
+        }
+    }
+
+    /**
      * Fetch the service document.
      *
      * @return ServiceDocument
@@ -139,18 +177,10 @@ class SwordClient {
      * @throws Exception
      */
     public function serviceDocument() {
-        try {
-            $response = $this->client->get($this->serviceUri, array(
-                'headers' => array('On-Behalf-Of' => $this->uuid),
-            ));
-            return new ServiceDocument($response->getBody());
-        } catch (RequestException $e) {
-            $message = str($e->getRequest());
-            if ($e->hasResponse()) {
-                $message .= "\n\n" . str($e->getResponse());
-            }
-            throw new Exception($message);
-        }
+        $response = $this->request('GET', $this->serviceUri, array(
+            'headers' => array('On-Behalf-Of' => $this->uuid),
+        ));
+        return new ServiceDocument($response->getBody());
     }
 
     /**
@@ -171,28 +201,45 @@ class SwordClient {
             $path = $this->fp->getStagingBagPath($deposit) . '.xml';
             $this->fs->dumpFile($path, $xml);
         }
-        try {
-            $response = $this->client->request('POST', $sd->getCollectionUri(), array(
-            'body' => $xml,
-            ));
-        } catch (RequestException $e) {
-            $message = str($e->getRequest());
-            if ($e->hasResponse()) {
-                $message .= "\n\n" . str($e->getResponse());
-            }
-            $deposit->addErrorLog($message);
-            throw new Exception($message);
-        } catch (Exception $e) {
-            $message = $e->getMessage();
-            $deposit->addErrorLog($message);
-            throw new Exception($message);
-        }
+        $response = $this->client->request('POST', $sd->getCollectionUri(), array(), $xml, $deposit);
         $locationHeader = $response->getHeader('Location');
         if (count($locationHeader) > 0) {
             $deposit->setDepositReceipt($locationHeader[0]);
         }
         $deposit->setDepositDate(new DateTime());
         return true;
+    }
+
+    public function receipt(Deposit $deposit) {
+        if( ! $deposit->getDepositReceipt()) {
+            return null;
+        }
+        $response = $this->client->request('GET', $deposit->getDepositReceipt(), array(), null, $deposit);
+        $xml = new SimpleXMLElement($response->getBody());
+        Namespaces::registerNamespaces($xml);
+        return $xml;
+    }
+
+    public function statement(Deposit $deposit) {
+        $receiptXml = $this->receipt($deposit);
+        $statementUrl = (string)$receiptXml->xpath('atom:link[@rel="http://purl.org/net/sword/terms/statement"]/@href')[0];
+        $response = $this->client->request('GET', $statementUrl, array(), null, $deposit);
+        $statementXml = new SimpleXMLElement($response->getBody());
+        Namespaces::registerNamespaces($statementXml);
+        return $statementXml;
+    }
+
+    public function fetch(Deposit $deposit){
+        $statement = $this->statement($deposit);
+        $original = $statement->xpath('//sword:originalDeposit/@href')[0];
+        $filepath = $this->fp->getRestoreFile($deposit);
+
+        $this->request('GET', $original, array(), null, $deposit, array(
+            'allow_redirects' => false,
+            'decode_content' => false,
+            'save_to' => $filepath,
+        ));
+        return $filepath;
     }
 
 }

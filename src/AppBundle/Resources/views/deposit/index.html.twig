@@ -25,6 +25,7 @@
                 <th>Deposit Uuid</th>
                 <th>Received</th>
                 <th>Status</th>
+                <th>PLN</th>
             </tr>
         </thead>
         <tbody>
@@ -37,6 +38,7 @@
                     </td>
                     <td>{% if deposit.received %}{{ deposit.received|date('Y-m-d H:i:s') }}{% endif %}</td>
                     <td>{{ deposit.state }}</td>
+                    <td>{{ deposit.plnState }}</td>
                 </tr>
             {% endfor %}
         </tbody>
