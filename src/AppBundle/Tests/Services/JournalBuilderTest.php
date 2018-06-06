@@ -20,31 +20,31 @@ use Nines\UtilBundle\Tests\Util\BaseTestCase;
  * Description of JournalBuilderTest
  */
 class JournalBuilderTest extends BaseTestCase {
-    
+
     /**
      * @var JournalBuilder
      */
     private $builder;
-    
+
     protected function setUp() {
         parent::setUp();
         $this->builder = $this->container->get(JournalBuilder::class);
     }
-    
+
     public function testInstance() {
         $this->assertInstanceOf(JournalBuilder::class,  $this->container->get(JournalBuilder::class));
     }
-    
+
     public function testResultInstance() {
         $this->journal = $this->builder->fromXml($this->getXml(), 'B99FE131-48B5-440A-A552-4F1BF2BFDE82');
         $this->assertInstanceOf(Journal::class, $this->journal);
     }
-    
+
     public function testGetContacted() {
         $this->journal = $this->builder->fromXml($this->getXml(), 'B99FE131-48B5-440A-A552-4F1BF2BFDE82');
         $this->assertInstanceOf(DateTime::class, $this->journal->getContacted());
     }
-    
+
     /**
      * @dataProvider journalXmlData
      */
@@ -52,7 +52,7 @@ class JournalBuilderTest extends BaseTestCase {
         $this->journal = $this->builder->fromXml($this->getXml(), 'B99FE131-48B5-440A-A552-4F1BF2BFDE82');
         $this->assertEquals($expected, $this->journal->$method());
     }
-    
+
     public function journalXmlData() {
         return [
             ['B99FE131-48B5-440A-A552-4F1BF2BFDE82', 'getUuid'],
@@ -76,14 +76,14 @@ class JournalBuilderTest extends BaseTestCase {
         $this->journal = $this->builder->fromRequest('B99FE131-48B5-440A-A552-4F1BF2BFDE82', 'http://example.com/journal');
         $this->assertEquals($expected, $this->journal->$method());
     }
-    
+
     public function journalRequestData() {
         return [
             ['B99FE131-48B5-440A-A552-4F1BF2BFDE82', 'getUuid'],
             [null, 'getOjsVersion'],
             [null, 'getNotified'],
-            ['unknown', 'getTitle'],
-            ['unknown', 'getIssn'],
+            [null, 'getTitle'],
+            [null, 'getIssn'],
             ['http://example.com/journal', 'getUrl'],
             ['new', 'getStatus'],
             [null, 'getTermsAccepted'],
@@ -92,19 +92,19 @@ class JournalBuilderTest extends BaseTestCase {
             [null, 'getPublisherUrl'],
         ];
     }
-    
+
     public function testFromRequestExisting() {
         $this->journal = $this->builder->fromRequest(LoadJournal::UUIDS[1], 'http://example.com/journal');
         $this->assertEquals('healthy', $this->journal->getStatus());
     }
-    
+
 
 
     private function getXml() {
         $data = <<<'ENDXML'
 <?xml version="1.0" encoding="utf-8"?>
-<entry xmlns="http://www.w3.org/2005/Atom" 
-       xmlns:dcterms="http://purl.org/dc/terms/" 
+<entry xmlns="http://www.w3.org/2005/Atom"
+       xmlns:dcterms="http://purl.org/dc/terms/"
        xmlns:pkp="http://pkp.sfu.ca/SWORD">
 	<email>user@example.com</email>
 	<title>Intl J Test</title>
@@ -114,7 +114,7 @@ class JournalBuilderTest extends BaseTestCase {
 	<pkp:issn>0000-0000</pkp:issn>
 	<id>urn:uuid:00FD6D96-0155-43A4-97F7-2C6EE8EBFF09</id>
 	<updated>1996-12-31T16:00:00Z</updated>
-	<pkp:content size="3613" volume="44" issue="4" pubdate="2015-07-14" 
+	<pkp:content size="3613" volume="44" issue="4" pubdate="2015-07-14"
             checksumType="SHA-1" checksumValue="25b0bd51bb05c145672617fced484c9e71ec553b">
             http://ojs.dv/index.php/ijt/pln/deposits/00FD6D96-0155-43A4-97F7-2C6EE8EBFF09
         </pkp:content>
@@ -126,11 +126,11 @@ class JournalBuilderTest extends BaseTestCase {
             <pkp:copyrightBasis>article</pkp:copyrightBasis>
             <pkp:copyrightHolder>author</pkp:copyrightHolder>
 	</pkp:license>
-</entry>   
+</entry>
 ENDXML;
         $xml = simplexml_load_string($data);
         Namespaces::registerNamespaces($xml);
         return $xml;
     }
-    
+
 }

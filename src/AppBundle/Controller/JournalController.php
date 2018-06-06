@@ -80,6 +80,8 @@ class JournalController extends Controller {
      *
      * @param Journal $journal
      *   The Journal to show.
+     * @param BlackWhiteList $list
+     *   Black and white service to check the journal permissions.
      *
      * @return array
      *   Array data for the template processor.
@@ -103,6 +105,8 @@ class JournalController extends Controller {
      *   The Journal to show.
      * @param Ping $ping
      *   Dependency-injected Ping service.
+     * @param EntityManagerInterface $em
+     *   Dependency-injected doctrine instance.
      *
      * @return array
      *   Array data for the template processor.
@@ -114,7 +118,7 @@ class JournalController extends Controller {
     public function pingAction(Journal $journal, Ping $ping, EntityManagerInterface $em) {
         $result = $ping->ping($journal);
         $em->flush();
-        
+
         return array(
             'journal' => $journal,
             'result' => $result,
