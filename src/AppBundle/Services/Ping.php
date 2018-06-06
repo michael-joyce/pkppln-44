@@ -112,6 +112,7 @@ class Ping {
             $this->process($journal, $result);
             return $result;
         } catch (Exception $e) {
+            $journal->setStatus('ping-error');
             $message = strip_tags($e->getMessage());
             return new PingResult(null, $message);
         }
