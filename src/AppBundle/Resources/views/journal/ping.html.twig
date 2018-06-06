@@ -72,8 +72,8 @@
         {% endif %}
     </dl>
 
-    <h3>Articles: {{ result.getArticleCount() }}</h3>
     {% if result.getArticleCount() > 0 %}
+        <h3>Articles: {{ result.getArticleCount() }}</h3>
         <ul>
             {% for title in result.getArticleTitles() %}
                 <li>

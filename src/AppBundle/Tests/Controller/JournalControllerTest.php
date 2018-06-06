@@ -83,4 +83,23 @@ class JournalControllerTest extends BaseTestCase {
         $this->assertEquals(1, $client->getCrawler()->filter('td:contains("CBF45637-5D69-44C3-AEC0-A906CBC3E27B")')->count());
     }
 
+    public function testAnonPing() {
+        $client = $this->makeClient();
+        $client->request('GET', '/journal/1/ping');
+        $this->assertEquals(302, $client->getResponse()->getStatusCode());
+        $this->assertTrue($client->getResponse()->isRedirect());
+    }
+
+    public function testUserPing() {
+        $client = $this->makeClient(LoadUser::USER);
+        $client->request('GET', '/journal/1/ping');
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+    }
+
+    public function testAdminPing() {
+        $client = $this->makeClient(LoadUser::ADMIN);
+        $client->request('GET', '/journal/1/ping');
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+    }
+
 }

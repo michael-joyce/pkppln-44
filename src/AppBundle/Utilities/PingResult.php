@@ -25,65 +25,78 @@ class PingResult {
      * @var ResponseInterface
      */
     private $response;
-    
+
     /**
      * Parsed XML from the response.
      *
      * @var SimpleXMLElement
      */
     private $xml;
-    
+
     /**
      * Error from parsing the XML response.
      *
      * @var array|string[]
      */
-    private $error;
-    
+    private $errors;
+
     /**
      * Construct a ping result from an HTTP request.
      *
      * @param ResponseInterface $response
      */
-    public function __construct(ResponseInterface $response) {
+    public function __construct(ResponseInterface $response = null, $errors = null) {
         $this->response = $response;
-        $this->error = array();
-        $this->xml = null;
-        $oldErrors = libxml_use_internal_errors(true);
-        $this->xml = simplexml_load_string($response->getBody());
-        if ($this->xml === false) {
-            foreach (libxml_get_errors() as $error) {
-                $this->error[] = "{$error->line}:{$error->column}:{$error->code}:{$error->message}";
-            }
+        $this->errors = array();
+        if($errors) {
+            $this->errors[] = $errors;
         }
-        libxml_use_internal_errors($oldErrors);
+        $this->xml = null;
+
+        if($response) {
+            $oldErrors = libxml_use_internal_errors(true);
+            $this->xml = simplexml_load_string($response->getBody());
+            if ($this->xml === false) {
+                foreach (libxml_get_errors() as $error) {
+                    $this->errors[] = "{$error->line}:{$error->column}:{$error->code}:{$error->message}";
+                }
+            }
+            libxml_use_internal_errors($oldErrors);
+        }
     }
-    
+
     /**
      * Get the HTTP response status.
      *
      * @return int
      */
     public function getHttpStatus() {
-        return $this->response->getStatusCode();
+        if($this->response) {
+            return $this->response->getStatusCode();
+        }
+        return 500;
     }
-    
+
     /**
      * Return true if the request generated an error.
      *
      * @return bool
      */
     public function hasError() {
-        return count($this->error) > 0;
+        return count($this->errors) > 0;
     }
-    
+
+    public function addError($error) {
+        $this->errors[] = $error;
+    }
+
     /**
      * Get the XML processing error.
      *
      * @return string
      */
     public function getError() {
-        return implode("\n", $this->error);
+        return implode("\n", $this->errors);
     }
 
     /**
@@ -96,21 +109,24 @@ class PingResult {
      * @return string
      */
     public function getBody($stripTags = true) {
+        if( ! $this->response) {
+            return '';
+        }
         if ($stripTags) {
             return strip_tags($this->response->getBody());
         }
         return $this->response->getBody();
     }
-    
+
     /**
      * Check if the http response was XML.
      *
      * @return bool
      */
     public function hasXml() {
-        return $this->xml !== null;
+        return (bool)$this->xml;
     }
-    
+
     /**
      * Get the response XML.
      *
@@ -119,7 +135,7 @@ class PingResult {
     public function getXml() {
         return $this->xml;
     }
-    
+
     /**
      * Get an HTTP header.
      *
@@ -128,72 +144,96 @@ class PingResult {
      * @return string
      */
     public function getHeader($name) {
+        if( ! $this->response) {
+            return '';
+        }
         return $this->response->getHeader($name);
     }
-    
+
     /**
      * Get the OJS release version.
      *
      * @return string
      */
     public function getOjsRelease() {
+        if(!$this->xml) {
+            return '';
+        }
         return Xpath::getXmlValue($this->xml, '//ojsInfo/release', Deposit::DEFAULT_JOURNAL_VERSION);
     }
-    
+
     /**
      * Get the plugin release version.
      *
      * @return string
      */
     public function getPluginReleaseVersion() {
+        if(!$this->xml) {
+            return '';
+        }
         return Xpath::getXmlValue($this->xml, '//pluginInfo/release');
     }
-    
+
     /**
      * Get the plugin release date.
      *
      * @return string
      */
     public function getPluginReleaseDate() {
+        if(!$this->xml) {
+            return '';
+        }
         return Xpath::getXmlValue($this->xml, '//pluginInfo/releaseDate');
     }
-    
+
     /**
      * Check if the plugin thinks its current.
      *
      * @return string
      */
     public function isPluginCurrent() {
+        if(!$this->xml) {
+            return '';
+        }
         return Xpath::getXmlValue($this->xml, '//pluginInfo/current');
     }
-    
+
     /**
      * Check if the terms of use have been accepted.
      *
      * @return string
      */
     public function areTermsAccepted() {
+        if(!$this->xml) {
+            return '';
+        }
         return Xpath::getXmlValue($this->xml, '//terms/@termsAccepted');
     }
-    
+
     /**
      * Get the journal title from the response.
      *
      * @return string
      */
     public function getJournalTitle($default = null) {
+        if(!$this->xml) {
+            return '';
+        }
         return Xpath::getXmlValue($this->xml, '//journalInfo/title', $default);
     }
-    
+
     /**
      * Get the number of articles the journal has published.
      *
      * @return int
      */
     public function getArticleCount() {
+        if(!$this->xml) {
+            return '';
+        }
         return Xpath::getXmlValue($this->xml, '//articles/@count');
     }
-    
+
     /**
      * Get a list of article titles reported in the response.
      *
@@ -201,6 +241,9 @@ class PingResult {
      *   Array of associative array data.
      */
     public function getArticleTitles() {
+        if(!$this->xml) {
+            return [];
+        }
         $articles = array();
         foreach (Xpath::query($this->xml, '//articles/article') as $node) {
             $articles[] = array(

@@ -14,7 +14,7 @@ class DefaultControllerTest extends BaseTestCase {
             LoadUser::class,
         );
     }
-    
+
     public function testAnonIndex() {
         $client = $this->makeClient();
         $crawler = $client->request('GET', '/');
@@ -62,6 +62,27 @@ class DefaultControllerTest extends BaseTestCase {
         $client->submit($form);
         $this->assertEquals(200, $client->getresponse()->getStatusCode());
         $this->assertEquals(1, $client->getCrawler()->filter('td:contains("978EA2B4-01DB-4F37-BD74-871DDBE71BF5")')->count());
+    }
+
+    public function testFetchActionJournalMismatch() {
+        $client = $this->makeClient();
+        $crawler = $client->request('GET', '/fetch/44428B12-CDC4-453E-8157-319004CD8CE6/F93A8108-B705-4763-A592-B718B00BD4EA.zip');
+        $this->assertEquals(400, $client->getResponse()->getStatusCode());
+        $this->assertContains('Journal ID does not match', $client->getResponse()->getContent());
+    }
+
+    public function testFetchActionDeposit404() {
+        $client = $this->makeClient();
+        $crawler = $client->request('GET', '/fetch/04F2C06E-35B8-43C1-B60C-1934271B0B7E/F93A8108-B705-4763-A592-B718B00BD4EA.zip');
+        $this->assertEquals(404, $client->getResponse()->getStatusCode());
+        $this->assertContains('Deposit not found.', $client->getResponse()->getContent());
+    }
+
+    public function testPermissionAction() {
+        $client = $this->makeClient();
+        $crawler = $client->request('GET', '/permission');
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        $this->assertContains('LOCKSS system has permission', $client->getResponse()->getContent());
     }
 
 }

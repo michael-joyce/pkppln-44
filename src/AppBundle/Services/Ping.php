@@ -16,6 +16,8 @@ use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use function GuzzleHttp\Psr7\str;
 
 /**
  * Description of Ping.
@@ -29,7 +31,7 @@ class Ping {
             'Accept' => 'application/xml,text/xml,*/*;q=0.1',
         ),
     );
-    
+
     /**
      * @var string
      */
@@ -39,7 +41,7 @@ class Ping {
      * @var EntityManagerInterface
      */
     private $em;
-    
+
     /**
      * @var BlackWhiteList
      */
@@ -76,12 +78,9 @@ class Ping {
      * @return void
      */
     public function process(Journal $journal, PingResult $result) {
-        if ($result->getHttpStatus() !== 200) {
-            $journal->setStatus('ping-error');
-            return;
-        }
         if (!$result->getOjsRelease()) {
             $journal->setStatus('ping-error');
+            $result->addError("Journal version information missing in ping result.");
             return;
         }
         $journal->setContacted(new DateTime());
@@ -100,7 +99,7 @@ class Ping {
         $whitelist->setComment("{$journal->getUrl()} added by ping.");
         $this->em->persist($whitelist);
     }
-    
+
     /**
      *
      * @param Journal $journal
@@ -113,7 +112,8 @@ class Ping {
             $this->process($journal, $result);
             return $result;
         } catch (Exception $e) {
-            $journal->setStatus('ping-error');
+            $message = strip_tags($e->getMessage());
+            return new PingResult(null, $message);
         }
     }
 
