@@ -39,7 +39,11 @@ class TermOfUse extends AbstractEntity {
      * @ORM\Column(type="text")
      */
     private $content;
-    
+
+    public function __construct() {
+        parent::__construct();
+    }
+
     /**
      *
      */

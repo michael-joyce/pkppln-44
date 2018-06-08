@@ -62,7 +62,7 @@ class Deposit extends AbstractEntity {
      * extension. So set the file type, and build file names from that.
      *
      * @var string
-     * @ORM\Column(type="string", nullable=false);
+     * @ORM\Column(type="string", nullable=true);
      */
     private $fileType;
 
@@ -238,12 +238,12 @@ class Deposit extends AbstractEntity {
      * Construct a deposit.
      */
     public function __construct() {
+        parent::__construct();
         $this->license = array();
         $this->received = new DateTime();
         $this->processingLog = '';
         $this->state = 'depositedByJournal';
         $this->errorLog = array();
-        $this->errorCount = 0;
         $this->harvestAttempts = 0;
         $this->journalVersion = self::DEFAULT_JOURNAL_VERSION;
     }

@@ -118,7 +118,7 @@ class Journal extends AbstractEntity {
      *
      * @var string
      * @Assert\Email
-     * @ORM\Column(type="string", nullable=false)
+     * @ORM\Column(type="string", nullable=true)
      */
     private $email;
 

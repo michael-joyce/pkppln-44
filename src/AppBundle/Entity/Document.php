@@ -45,6 +45,10 @@ class Document extends AbstractEntity {
      */
     private $content;
 
+    public function __construct() {
+        parent::__construct();
+    }
+
     /**
      * Return the document title.
      */

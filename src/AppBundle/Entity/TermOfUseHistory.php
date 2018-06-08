@@ -44,6 +44,10 @@ class TermOfUseHistory extends AbstractEntity {
      */
     private $user;
 
+    public function __construct() {
+        parent::__construct();
+    }
+
     /**
      *
      */

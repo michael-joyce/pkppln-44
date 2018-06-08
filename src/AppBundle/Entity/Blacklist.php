@@ -35,6 +35,10 @@ class Blacklist extends AbstractEntity {
      */
     private $comment;
 
+    public function __construct() {
+        parent::__construct();
+    }
+
     /**
      * Return the UUID.
      *

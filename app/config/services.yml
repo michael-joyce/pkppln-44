@@ -19,11 +19,11 @@ services:
         # you can exclude directories or files
         # but if a service is unused, it's removed anyway
         exclude: '../../src/Nines/UserBundle/{Entity,Repository,Resources,Tests}'
-        
+
     Nines\UserBundle\Menu\Builder:
         tags:
             - { name: knp_menu.menu_builder, method: userNavMenu, alias: user}
-            
+
     # makes classes in src/AppBundle available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     AppBundle\:
@@ -44,34 +44,34 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.exception }
             - { name: kernel.event_listener, event: kernel.controller }
-            
+
     AppBundle\EventListener\TermsOfUseListener:
         tags:
             - { name: doctrine.event_listener, event: postPersist }
             - { name: doctrine.event_listener, event: postUpdate }
             - { name: doctrine.event_listener, event: preRemove }
-            
+
     AppBundle\Menu\Builder:
         tags:
             - { name: knp_menu.menu_builder, method: mainMenu, alias: main}
-            
+
     AppBundle\Services\FilePaths:
         arguments:
             $root: '%pln.data_dir%'
             $projectDir: '%kernel.project_dir%'
-            
+
     AppBundle\Services\Ping:
         arguments:
             $minOjsVersion: '%pln.min_ojs_version%'
-            
+
     AppBundle\Services\Processing\Depositor:
-        arguments: 
-            $heldVersions: '%pln.held_versions%'            
-            
+        arguments:
+            $heldVersions: '%pln.held_versions%'
+
     AppBundle\Services\Processing\Harvester:
-        arguments: 
+        arguments:
             $maxHarvestAttempts: '%pln.max_harvest_attepmts%'
-            
+
     AppBundle\Services\Processing\VirusScanner:
         arguments:
             $socketPath: '%pln.clamd_socket%'
@@ -81,3 +81,7 @@ services:
             $serviceUri: '%pln.service_uri%'
             $uuid: '%pln.uuid%'
             $saveXml: '%pln.save_deposit_xml%'
+
+    AppBundle\Command\UpgradeCommand:
+        arguments:
+            $oldEm: '@doctrine.dbal.oldversion_connection'

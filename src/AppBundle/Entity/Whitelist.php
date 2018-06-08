@@ -34,7 +34,11 @@ class Whitelist extends AbstractEntity {
      * @ORM\Column(type="text")
      */
     private $comment;
-    
+
+    public function __construct() {
+        parent::__construct();
+    }
+
     /**
      *
      */
