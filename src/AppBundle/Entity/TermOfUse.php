@@ -48,6 +48,7 @@ class TermOfUse extends AbstractEntity {
      *
      */
     public function __toString() {
+        return $this->content;
     }
 
     /**

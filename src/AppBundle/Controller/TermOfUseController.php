@@ -2,15 +2,16 @@
 
 namespace AppBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use AppBundle\Entity\TermOfUse;
+use AppBundle\Entity\TermOfUseHistory;
+use AppBundle\Form\TermOfUseType;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use AppBundle\Entity\TermOfUse;
-use AppBundle\Form\TermOfUseType;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * TermOfUse controller.
@@ -88,10 +89,12 @@ class TermOfUseController extends Controller {
      * @Method("GET")
      * @Template()
      */
-    public function showAction(TermOfUse $termOfUse) {
-
+    public function showAction(EntityManagerInterface $em, TermOfUse $termOfUse) {
+        $repo = $em->getRepository(TermOfUseHistory::class);
+        $history = $repo->findBy(array('termId' => $termOfUse->getId()), array('id' => 'ASC'));
         return array(
             'termOfUse' => $termOfUse,
+            'history' => $history,
         );
     }
 
