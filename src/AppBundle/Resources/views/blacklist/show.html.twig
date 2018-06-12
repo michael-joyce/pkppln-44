@@ -2,9 +2,9 @@
 
 {% block title %}Blacklist{% endblock %}
 
- {% block pageheader %} 
+ {% block pageheader %}
     <h1>Blacklist Details</h1>
- {% endblock %} 
+ {% endblock %}
 
 {% block body %}
     <div class="btn-toolbar">
@@ -33,13 +33,23 @@
                 <td>{{ blacklist.comment }}</td>
             </tr>
             <tr>
+                <th>Journal</th>
+                <td>
+                    {% if journal %}
+                        <a href='{{ path('journal_show', {'id': journal.id}) }}'>
+                            {{ journal }}
+                        </a>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
                 <th>Created</th>
                 <td>{% if blacklist.created %}{{ blacklist.created|date }}{% endif %}</td>
             </tr>
             <tr>
                 <th>Updated</th>
                 <td>{% if blacklist.updated %}{{ blacklist.updated|date }}{% endif %}</td>
-            </tr>        
+            </tr>
         </tbody>
     </table>
 {% endblock %}

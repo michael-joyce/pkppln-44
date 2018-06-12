@@ -3,7 +3,9 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Blacklist;
+use AppBundle\Entity\Journal;
 use AppBundle\Form\BlacklistType;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -114,10 +116,13 @@ class BlacklistController extends Controller {
      * @Method("GET")
      * @Template()
      */
-    public function showAction(Blacklist $blacklist) {
+    public function showAction(EntityManagerInterface $em, Blacklist $blacklist) {
+        $repo = $em->getRepository(Journal::class);
+        $journal = $repo->findOneBy(array('uuid' => $blacklist->getUuid()));
 
         return array(
             'blacklist' => $blacklist,
+            'journal' => $journal,
         );
     }
 

@@ -2,10 +2,11 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Journal;
 use AppBundle\Entity\Whitelist;
 use AppBundle\Form\WhitelistType;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -115,10 +116,13 @@ class WhitelistController extends Controller {
      * @Method("GET")
      * @Template()
      */
-    public function showAction(Whitelist $whitelist) {
+    public function showAction(EntityManagerInterface $em, Whitelist $whitelist) {
+        $repo = $em->getRepository(Journal::class);
+        $journal = $repo->findOneBy(array('uuid' => $whitelist->getUuid()));
 
         return array(
             'whitelist' => $whitelist,
+            'journal' => $journal,
         );
     }
 
