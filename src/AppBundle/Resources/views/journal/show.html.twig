@@ -79,7 +79,11 @@
             </tr>
             <tr>
                 <th>Email</th>
-                <td>{{ journal.email }}</td>
+                <td>
+                    {% if journal.email %}
+                        <a href='mailto:{{ journal.email }}'>{{ journal.email }}</a>
+                    {% endif %}
+                </td>
             </tr>
             <tr>
                 <th>Publisher Name</th>
@@ -87,7 +91,13 @@
             </tr>
             <tr>
                 <th>Publisher Url</th>
-                <td>{{ journal.publisherUrl }}</td>
+                <td>
+                    {% if journal.publisherUrl %}
+                        <a href='{{ journal.publisherUrl }}'>
+                            {{ journal.publisherUrl }}
+                        </a>
+                    {% endif %}
+                </td>
             </tr>
             <tr>
                 <th>Created</th>
