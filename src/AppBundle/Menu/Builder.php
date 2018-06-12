@@ -93,14 +93,14 @@ class Builder implements ContainerAwareInterface {
             'route' => 'homepage',
         ));
 
+        if (!$this->hasRole('ROLE_USER')) {
+            return $menu;
+        }
+
         $menu->addChild('terms', array(
             'label' => 'Terms of Use',
             'route' => 'termofuse_index',
         ));
-
-        if (!$this->hasRole('ROLE_USER')) {
-            return $menu;
-        }
 
         $journals = $menu->addChild('journals', array(
             'uri' => '#',
@@ -115,9 +115,9 @@ class Builder implements ContainerAwareInterface {
         $journals->addChild('Search Journals', array('route' => 'journal_search'));
         $journals->addChild('Whitelist', array('route' => 'whitelist_index'));
         $journals->addChild('Blacklist', array('route' => 'blacklist_index'));
-        
+
         $menu->addChild('Docs', array('route' => 'document_index'));
-        
+
         return $menu;
     }
 
