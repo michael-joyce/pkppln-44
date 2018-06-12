@@ -42,7 +42,7 @@ class DepositCommand extends AbstractProcessingCmd {
      * {@inheritdoc}
      */
     protected function processDeposit(Deposit $deposit) {
-        print $deposit->getDepositUuid();
+        print $deposit->getDepositUuid() . "\n";
         return $this->depositor->processDeposit($deposit);
     }
 

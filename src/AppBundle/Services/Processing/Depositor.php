@@ -16,7 +16,7 @@ class Depositor {
      * @var SwordClient
      */
     private $client;
-    
+
     /**
      * @var string
      */

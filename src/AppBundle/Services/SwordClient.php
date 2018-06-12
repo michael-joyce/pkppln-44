@@ -201,7 +201,7 @@ class SwordClient {
             $path = $this->fp->getStagingBagPath($deposit) . '.xml';
             $this->fs->dumpFile($path, $xml);
         }
-        $response = $this->client->request('POST', $sd->getCollectionUri(), array(), $xml, $deposit);
+        $response = $this->request('POST', $sd->getCollectionUri(), array(), $xml, $deposit);
         $locationHeader = $response->getHeader('Location');
         if (count($locationHeader) > 0) {
             $deposit->setDepositReceipt($locationHeader[0]);
@@ -214,7 +214,7 @@ class SwordClient {
         if( ! $deposit->getDepositReceipt()) {
             return null;
         }
-        $response = $this->client->request('GET', $deposit->getDepositReceipt(), array(), null, $deposit);
+        $response = $this->request('GET', $deposit->getDepositReceipt(), array(), null, $deposit);
         $xml = new SimpleXMLElement($response->getBody());
         Namespaces::registerNamespaces($xml);
         return $xml;
@@ -223,7 +223,7 @@ class SwordClient {
     public function statement(Deposit $deposit) {
         $receiptXml = $this->receipt($deposit);
         $statementUrl = (string)$receiptXml->xpath('atom:link[@rel="http://purl.org/net/sword/terms/statement"]/@href')[0];
-        $response = $this->client->request('GET', $statementUrl, array(), null, $deposit);
+        $response = $this->request('GET', $statementUrl, array(), null, $deposit);
         $statementXml = new SimpleXMLElement($response->getBody());
         Namespaces::registerNamespaces($statementXml);
         return $statementXml;
