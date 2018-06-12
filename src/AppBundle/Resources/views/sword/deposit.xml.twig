@@ -2,12 +2,12 @@
         xmlns:dcterms="http://purl.org/dc/terms/"
         xmlns:lom="http://lockssomatic.info/SWORD2"
         xmlns:pkp="http://pkp.sfu.ca/SWORD">
-    <title>Deposit from OJS</title>
+    <title>Deposit from {{ deposit.journal.title }}</title>
     <id>urn:uuid:{{ deposit.depositUuid }}</id>
     <updated>{{ deposit.received|date('Y-m-d') }}</updated>
     <author><name>{{ deposit.journal.title }}</name></author>
     <summary type="text">
-        Content deposited to LOCKSS-O-Matic via the PKP PLN Staging Server.
+        Deposit from {{ deposit.journal.title }}
     </summary>
     <!-- @size is the file size in kB (1,000 bytes) -->
     <lom:content
