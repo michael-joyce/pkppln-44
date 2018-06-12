@@ -4,6 +4,7 @@ namespace AppBundle\Command;
 
 use AppBundle\Entity\Blacklist;
 use AppBundle\Entity\Deposit;
+use AppBundle\Entity\Document;
 use AppBundle\Entity\Journal;
 use AppBundle\Entity\TermOfUse;
 use AppBundle\Entity\TermOfUseHistory;
@@ -243,6 +244,18 @@ class UpgradeCommand extends ContainerAwareCommand {
         $this->upgradeTable('deposit', $callback);
     }
 
+    public function upgradeDocuments() {
+        $callback = function($row) {
+            $document = new Document();
+            $document->setTitle($row['title']);
+            $document->setPath($row['path']);
+            $document->setSummary($row['summary']);
+            $document->setContent($row['content']);
+            return $document;
+        };
+        $this->ugpradeTable('documents', $callback);
+    }
+
     public function execute(InputInterface $input, OutputInterface $output) {
         if( ! $input->getOption('force')) {
             $output->writeln("Will not run without --force.");
@@ -255,5 +268,6 @@ class UpgradeCommand extends ContainerAwareCommand {
         $this->upgradeTermHistory();
         $this->upgradeJournals();
         $this->upgradeDeposits();
+        $this->upgradeDocuments();
     }
 }
