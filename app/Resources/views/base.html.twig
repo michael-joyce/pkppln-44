@@ -4,13 +4,13 @@
         <meta charset="UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="google" content="notranslate" />        
+        <meta name="google" content="notranslate" />
         <title>{% if block('title') is defined %}{{ block('title') }} | {% endif %}PKP PLN</title>
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">        
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
         <link rel="stylesheet" href="{{ asset('bower/bootstrap/dist/css/bootstrap.min.css') }}">
         <link rel="stylesheet" href="{{ asset('bower/bootstrap/dist/css/bootstrap-theme.min.css') }}">
-        <link rel="stylesheet" href="{{ asset('bundles/app/css/base.css') }}">        
-        <script src="{{ asset('bower/jquery/dist/jquery.min.js') }}"></script>        
+        <link rel="stylesheet" href="{{ asset('bundles/app/css/base.css') }}">
+        <script src="{{ asset('bower/jquery/dist/jquery.min.js') }}"></script>
         {% block htmlhead %}
         {% endblock %}
         {% block styles %}
@@ -29,7 +29,8 @@
                 </div>
                 <div id="navbar" class="collapse navbar-collapse">
                     {{ knp_menu_render('main') }}
-                    {{ knp_menu_render('user') }}
+                    {% set user_menu = knp_menu_get('user', [], {'name': 'Admin'}) %}
+                    {{ knp_menu_render(user_menu) }}
                     <ul class="nav navbar-nav navbar-right">
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Docs <span class="caret"></span></a>
