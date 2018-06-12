@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Deposit;
 use AppBundle\Entity\Journal;
 use AppBundle\Services\FilePaths;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -35,11 +36,44 @@ class DefaultController extends Controller {
      *
      * @Route("/", name="homepage")
      */
-    public function indexAction(Request $request) {
-        // Replace this example code with whatever you need.
-        return $this->render('default/index.html.twig', [
-                    'base_dir' => realpath($this->getParameter('kernel.project_dir')) . DIRECTORY_SEPARATOR,
-        ]);
+    public function indexAction(EntityManagerInterface $em) {
+        $user = $this->getUser();
+
+        if(!$user || !$user->hasRole('ROLE_USER')) {
+            return $this->render('default/index_anon.html.twig');
+        }
+
+        $journalRepo = $em->getRepository('AppBundle:Journal');
+        $depositRepo = $em->getRepository('AppBundle:Deposit');
+        return $this->render('default/index_user.html.twig', array(
+                'journals_new' => $journalRepo->findNew(),
+                'journal_summary' => $journalRepo->statusSummary(),
+                'deposits_new' => $depositRepo->findNew(),
+                'states' => $depositRepo->stateSummary(),
+        ));
+    }
+
+    /**
+     *
+     * @param EntityManagerInterface $em
+     * @param string $state
+     *
+     * @Route("/browse/{state}", name="deposit_browse")
+     * @Template()
+     */
+    public function depositStatusAction(Request $request, EntityManagerInterface $em, $state) {
+        $repo = $em->getRepository(Deposit::class);
+        $qb = $repo->createQueryBuilder('d');
+        $qb->where('d.state = :state');
+        $qb->setParameter('state', $state);
+        $qb->orderBy('d.id');
+        $paginator = $this->get('knp_paginator');
+        $deposits = $paginator->paginate($qb->getQuery(), $request->query->getInt('page', 1), 25);
+        $states = $repo->stateSummary();
+        return array(
+            'deposits' => $deposits,
+            'states' => $states,
+        );
     }
 
     /**
