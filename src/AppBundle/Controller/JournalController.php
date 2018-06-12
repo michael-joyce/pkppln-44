@@ -36,6 +36,10 @@ class JournalController extends Controller {
         $em = $this->getDoctrine()->getManager();
         $qb = $em->createQueryBuilder();
         $qb->select('e')->from(Journal::class, 'e')->orderBy('e.id', 'ASC');
+        if($request->query->get('status', null)) {
+            $qb->andWhere('e.status = :status');
+            $qb->setParameter('status', $request->query->get('status'));
+        }
         $query = $qb->getQuery();
         $paginator = $this->get('knp_paginator');
         $journals = $paginator->paginate($query, $request->query->getint('page', 1), 25);
