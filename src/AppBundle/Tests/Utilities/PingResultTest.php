@@ -53,7 +53,7 @@ class PingResultTest extends TestCase {
     }
 
     public function testAddError() {
-        $this->False($this->result->hasError());
+        $this->assertFalse($this->result->hasError());
         $this->result->addError("bad things happened.");
         $this->assertTrue($this->result->hasError());
     }
