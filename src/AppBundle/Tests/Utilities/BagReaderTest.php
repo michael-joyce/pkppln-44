@@ -24,18 +24,18 @@ class BagReaderTest extends TestCase {
      * @var vfsStreamDirectory
      */
     private $root;
-    
+
     /**
      * @var BagReader
      */
     private $reader;
-    
+
     protected function setUp() {
-        parent::setUp();        
+        parent::setUp();
         $this->root = vfsStream::setup();
         $this->reader = new BagReader();
     }
-    
+
     /**
      * @expectedException Exception
      */

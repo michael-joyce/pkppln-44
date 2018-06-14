@@ -22,7 +22,7 @@ class PingResultTest extends TestCase {
      * @var PingResult
      */
     private $result;
-    
+
     protected function setUp() {
         parent::setUp();
         $mock = $this->createMock(ResponseInterface::class);
@@ -31,9 +31,9 @@ class PingResultTest extends TestCase {
         $mock->method('getHeader')->willReturn('Validated');
         $this->result = new PingResult($mock);
     }
-    
+
     public function testInstance() {
-        $this->assertInstanceOf(PingResult::class, $this->result);        
+        $this->assertInstanceOf(PingResult::class, $this->result);
     }
 
     public function testConstructorException() {
@@ -42,59 +42,65 @@ class PingResultTest extends TestCase {
         $this->result = new PingResult($mock);
         $this->assertTrue($this->result->hasError());
     }
-    
+
     public function testHttpStatus() {
         $this->assertEquals(200, $this->result->getHttpStatus());
     }
-    
+
     public function testError() {
         $this->assertFalse($this->result->hasError());
         $this->assertEmpty($this->result->getError());
     }
-    
+
+    public function testAddError() {
+        $this->False($this->result->hasError());
+        $this->result->addError("bad things happened.");
+        $this->assertTrue($this->result->hasError());
+    }
+
     public function testGetBody() {
         $this->assertContains('1.2.0.0', $this->result->getBody());
         $this->assertContains('1.2.0.0', $this->result->getBody(true));
         $this->assertContains('1.2.0.0', $this->result->getBody(false));
     }
-    
+
     public function testXml() {
         $this->assertTrue($this->result->hasXml());
         $this->assertInstanceOf(\SimpleXMLElement::class, $this->result->getXml());
     }
-    
+
     public function testGetHeader() {
         $this->assertEquals('Validated', $this->result->getHeader('foo'));
     }
-    
+
     public function testGetOjsRelease() {
         $this->assertEquals('2.4.8.1', $this->result->getOjsRelease());
     }
-    
+
     public function testGetPluginReleaseVersion() {
         $this->assertEquals('1.2.0.0', $this->result->getPluginReleaseVersion());
     }
-    
+
     public function testPluginReleaseDate() {
         $this->assertEquals('2015-07-13', $this->result->getPluginReleaseDate());
     }
-    
+
     public function testPluginCurrent() {
         $this->assertEquals(1, $this->result->isPluginCurrent());
     }
-    
+
     public function testTermsAccepted() {
         $this->assertEquals('yes', $this->result->areTermsAccepted());
     }
-    
+
     public function testJournalTitle() {
         $this->assertEquals('Publication of Soft Cheeses', $this->result->getJournalTitle());
     }
-    
+
     public function testArticleCount() {
         $this->assertEquals(12, $this->result->getArticleCount());
     }
-    
+
     public function testArticleTitles() {
         $expected = [
             ['date' => '2017-12-26 13:56:20', 'title' => 'Brie'],
@@ -102,10 +108,10 @@ class PingResultTest extends TestCase {
         ];
         $this->assertEquals($expected, $this->result->getArticleTitles());
     }
-    
+
     private function getXml() {
         $data = <<<'ENDXML'
-<?xml version="1.0" ?> 
+<?xml version="1.0" ?>
 <plnplugin>
   <ojsInfo>
     <release>2.4.8.1</release>
@@ -143,5 +149,5 @@ class PingResultTest extends TestCase {
 ENDXML;
         return $data;
     }
-    
+
 }

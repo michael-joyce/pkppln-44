@@ -26,15 +26,6 @@ class BagReader {
     }
 
     /**
-     * Override the default Filesystem component.
-     *
-     * @param Filesystem $fs
-     */
-    public function setFilesystem(Filesystem $fs) {
-        $this->fs = $fs;
-    }
-
-    /**
      * Read a bag from the file system.
      *
      * @param string $path
@@ -49,6 +40,8 @@ class BagReader {
             throw new Exception("Bag {$path} does not exist");
         }
 
+        //This call isn't testable without a real bag due to limitations
+        // in the BagIt library.
         $bag = new BagIt($path);
         return $bag;
     }

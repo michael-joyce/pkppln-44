@@ -17,6 +17,7 @@ use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use SimpleXMLElement;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Templating\EngineInterface;
@@ -114,6 +115,15 @@ class SwordClient {
      */
     public function setFilesystem(Filesystem $fs) {
         $this->fs = $fs;
+    }
+
+    /**
+     * Set or override the file path service.
+     *
+     * @param FilePaths $fp
+     */
+    public function setFilePaths(FilePaths $fp) {
+        $this->fp = $fp;
     }
 
     /**

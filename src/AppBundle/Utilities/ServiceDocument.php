@@ -9,6 +9,7 @@
 
 namespace AppBundle\Utilities;
 
+use Exception;
 use SimpleXMLElement;
 
 /**
@@ -32,7 +33,7 @@ class ServiceDocument {
     /**
      *
      */
-    private function getXpathValue($xpath) {
+    public function getXpathValue($xpath) {
         $result = $this->xml->xpath($xpath);
         if (count($result) === 0) {
             return null;
