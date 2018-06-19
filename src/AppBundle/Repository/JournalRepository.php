@@ -48,19 +48,6 @@ class JournalRepository extends EntityRepository {
     }
 
     /**
-     * Find journals by status.
-     *
-     * @param string $status
-     *
-     * @return Collection|Journal[]
-     */
-    public function findByStatus($status) {
-        return $this->findBy(array(
-                'status' => $status,
-        ));
-    }
-
-    /**
      * Summarize the journal statuses, counting them by status.
      *
      * @return array

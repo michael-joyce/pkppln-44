@@ -316,6 +316,7 @@ class SwordController extends Controller {
         }
         $xml = $this->getXml($request);
         $newDeposit = $builder->fromXml($journal, $xml);
+        $newDeposit->setAction('edit');
         $this->em->flush();
 
         /* @var Response */

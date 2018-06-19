@@ -34,19 +34,6 @@ class DepositRepository extends EntityRepository {
     }
 
     /**
-     * Find deposits by state.
-     *
-     * @param string $state
-     *
-     * @return Collection|Deposit[]
-     */
-    public function findByState($state) {
-        return $this->findBy(array(
-                'state' => $state,
-        ));
-    }
-
-    /**
      * Summarize deposits by counting them by state.
      *
      * @return array
