@@ -3,21 +3,14 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Deposit;
-use AppBundle\Entity\Journal;
-use AppBundle\Services\FilePaths;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Default controller.
@@ -108,48 +101,6 @@ class DefaultController extends Controller {
             'deposits' => $deposits,
             'q' => $q,
         );
-    }
-
-    /**
-     * Fetch a processed and packaged deposit.
-     *
-     * @param Request $request
-     * @param Journal $journal
-     * @param Deposit $deposit
-     * @param FilePaths $fp
-     *
-     * @return BinaryFileResponse
-     *
-     * @throws BadRequestHttpException
-     * @throws NotFoundHttpException
-     *
-     * @Route("/fetch/{journalUuid}/{depositUuid}.zip", name="fetch")
-     * @ParamConverter("journal", class="AppBundle:Journal", options={"mapping": {"journalUuid"="uuid"}})
-     * @ParamConverter("deposit", class="AppBundle:Deposit", options={"mapping": {"depositUuid"="depositUuid"}})
-     */
-    public function fetchAction(Request $request, Journal $journal, Deposit $deposit, FilePaths $fp) {
-        if ($deposit->getJournal() !== $journal) {
-            throw new BadRequestHttpException("The requested Journal ID does not match the deposit's journal ID.");
-        }
-        $fs = new Filesystem();
-        $path = $fp->getStagingBagPath($deposit);
-        if (!$fs->exists($path)) {
-            throw new NotFoundHttpException("Deposit not found.");
-        }
-        return new BinaryFileResponse($path);
-    }
-
-    /**
-     * Return the permission statement for LOCKSS.
-     *
-     * @return Response
-     *
-     * @Route("/permission", name="lockss_permission")
-     */
-    public function permissionAction() {
-        return new Response(self::PERMISSION_STMT, Response::HTTP_OK, array(
-            'content-type' => 'text/plain',
-        ));
     }
 
 }

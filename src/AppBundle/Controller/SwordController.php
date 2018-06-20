@@ -18,10 +18,12 @@ use AppBundle\Services\JournalBuilder;
 use AppBundle\Utilities\Namespaces;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerAwareTrait;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use SimpleXMLElement;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,6 +37,8 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * @Route("/api/sword/2.0")
  */
 class SwordController extends Controller {
+
+    use LoggerAwareTrait;
 
     /**
      * Black and white list service.
@@ -179,12 +183,8 @@ class SwordController extends Controller {
     public function serviceDocumentAction(Request $request, JournalBuilder $builder) {
         $obh = strtoupper($this->fetchHeader($request, 'On-Behalf-Of'));
         $journalUrl = $this->fetchHeader($request, 'Journal-Url');
-
         $accepting = $this->checkAccess($obh);
-        $acceptingLog = 'not accepting';
-        if ($accepting) {
-            $acceptingLog = 'accepting';
-        }
+        $this->logger->notice("{$request->getClientIp()} - service document - {$obh} - {$journalUrl} - accepting: " . ($accepting ? 'yes' : 'no'));
         if (!$obh) {
             throw new BadRequestHttpException("Missing On-Behalf-Of header.", null, 400);
         }
@@ -231,6 +231,7 @@ class SwordController extends Controller {
         if (!$journal->getTermsAccepted()) {
             $this->accepting = false;
         }
+        $this->logger->notice("{$request->getClientIp()} - create deposit - {$journal->getUuid} - accepting: " . ($accepting ? 'yes' : 'no'));
 
         if (!$accepting) {
             throw new BadRequestHttpException('Not authorized to create deposits.', null, 400);
@@ -272,6 +273,7 @@ class SwordController extends Controller {
      */
     public function statementAction(Request $request, Journal $journal, Deposit $deposit) {
         $accepting = $this->checkAccess($journal->getUuid());
+        $this->logger->notice("{$request->getClientIp()} - statement - {$journal->getUuid} - {$deposit->getDepositUuid()} - accepting: " . ($accepting ? 'yes' : 'no'));
         if (!$accepting && !$this->isGranted('ROLE_USER')) {
             throw new BadRequestHttpException('Not authorized to request statements.', null, 400);
         }
@@ -308,6 +310,7 @@ class SwordController extends Controller {
      */
     public function editAction(Request $request, Journal $journal, Deposit $deposit, DepositBuilder $builder) {
         $accepting = $this->checkAccess($journal->getUuid());
+        $this->logger->notice("{$request->getClientIp()} - edit deposit - {$journal->getUuid} - {$deposit->getDepositUuid()} - accepting: " . ($accepting ? 'yes' : 'no'));
         if (!$accepting) {
             throw new BadRequestHttpException('Not authorized to create deposits.', null, 400);
         }
@@ -327,26 +330,6 @@ class SwordController extends Controller {
         $response->setStatusCode(Response::HTTP_CREATED);
 
         return $response;
-    }
-
-    /**
-     * Request the original deposit back from the storage network.
-     *
-     * @param Request $request
-     * @param Journal $journal
-     * @param Deposit $deposit
-     *
-     * @return BinaryFileResponse
-     *
-     * @Route("/original/{journal_uuid}/{deposit_uuid}", name="sword_original_deposit", requirements={
-     *      "journal_uuid": ".{36}",
-     *      "deposit_uuid": ".{36}"
-     * })
-     * @ParamConverter("journal", options={"uuid"="journal_uuid"})
-     * @ParamConverter("deposit", options={"deposit_uuid"="deposit_uuid"})
-     * @Method("GET")
-     */
-    public function originalDepositAction(Request $request, Journal $journal, Deposit $deposit) {
     }
 
 }

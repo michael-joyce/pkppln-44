@@ -39,6 +39,14 @@ services:
         public: true
         tags: ['controller.service_arguments']
 
+    AppBundle\Controller\SwordController:
+        calls:
+            - { method: setLogger, arguments: ['@monolog.logger.sword'] }
+
+    AppBundle\Controller\LockssController:
+        calls:
+            - { method: setLogger, arguments: ['@monolog.logger.lockss'] }
+
     AppBundle\EventListener\SwordExceptionListener:
         arguments: ["%kernel.environment%"]
         tags:
