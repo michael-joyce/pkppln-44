@@ -54,7 +54,7 @@ class DefaultController extends Controller {
      * @Route("/browse/{state}", name="deposit_browse")
      * @Template()
      */
-    public function depositStatusAction(Request $request, EntityManagerInterface $em, $state) {
+    public function browseAction(Request $request, EntityManagerInterface $em, $state) {
         $repo = $em->getRepository(Deposit::class);
         $qb = $repo->createQueryBuilder('d');
         $qb->where('d.state = :state');
