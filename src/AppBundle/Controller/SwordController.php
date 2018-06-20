@@ -231,7 +231,7 @@ class SwordController extends Controller {
         if (!$journal->getTermsAccepted()) {
             $this->accepting = false;
         }
-        $this->logger->notice("{$request->getClientIp()} - create deposit - {$journal->getUuid} - accepting: " . ($accepting ? 'yes' : 'no'));
+        $this->logger->notice("{$request->getClientIp()} - create deposit - {$journal->getUuid()} - accepting: " . ($accepting ? 'yes' : 'no'));
 
         if (!$accepting) {
             throw new BadRequestHttpException('Not authorized to create deposits.', null, 400);
@@ -273,7 +273,7 @@ class SwordController extends Controller {
      */
     public function statementAction(Request $request, Journal $journal, Deposit $deposit) {
         $accepting = $this->checkAccess($journal->getUuid());
-        $this->logger->notice("{$request->getClientIp()} - statement - {$journal->getUuid} - {$deposit->getDepositUuid()} - accepting: " . ($accepting ? 'yes' : 'no'));
+        $this->logger->notice("{$request->getClientIp()} - statement - {$journal->getUuid()} - {$deposit->getDepositUuid()} - accepting: " . ($accepting ? 'yes' : 'no'));
         if (!$accepting && !$this->isGranted('ROLE_USER')) {
             throw new BadRequestHttpException('Not authorized to request statements.', null, 400);
         }
@@ -310,7 +310,7 @@ class SwordController extends Controller {
      */
     public function editAction(Request $request, Journal $journal, Deposit $deposit, DepositBuilder $builder) {
         $accepting = $this->checkAccess($journal->getUuid());
-        $this->logger->notice("{$request->getClientIp()} - edit deposit - {$journal->getUuid} - {$deposit->getDepositUuid()} - accepting: " . ($accepting ? 'yes' : 'no'));
+        $this->logger->notice("{$request->getClientIp()} - edit deposit - {$journal->getUuid()} - {$deposit->getDepositUuid()} - accepting: " . ($accepting ? 'yes' : 'no'));
         if (!$accepting) {
             throw new BadRequestHttpException('Not authorized to create deposits.', null, 400);
         }

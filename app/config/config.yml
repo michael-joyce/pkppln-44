@@ -16,14 +16,13 @@ monolog:
             level: notice
             type: rotating_file
             path: '%kernel.logs_dir%/lockss-%kernel.environment%.log'
-            channels: [ lockss ]
+            channels: [ 'lockss' ]
             # max_files: 0
-    handlers:
         sword:
             level: notice
             type: rotating_file
             path: '%kernel.logs_dir%/sword-%kernel.environment%.log'
-            channels: [ sword ]
+            channels: [ 'sword' ]
             # max_files: 0
 
 framework:

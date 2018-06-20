@@ -24,7 +24,7 @@ monolog:
             type: console
             process_psr_3_messages: false
             level: warning
-            channels: ['!event', '!doctrine', '!console', '!translation']
+            channels: ['!sword', '!lockss', '!event', '!doctrine', '!console', '!translation']
         # To follow logs in real time, execute the following command:
         # `bin/console server:log -vv`
 #        server_log:
