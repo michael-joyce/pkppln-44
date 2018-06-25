@@ -21,7 +21,7 @@ class LoadDeposit extends Fixture implements DependentFixtureInterface {
     );
 
     /**
-     * {@inheritDoc}.
+     * {@inheritdoc}.
      */
     public function load(ObjectManager $em) {
         for ($i = 0; $i < 4; $i++) {

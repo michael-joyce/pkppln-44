@@ -32,11 +32,10 @@ class StatusCommand extends AbstractProcessingCmd {
     }
 
     protected function processDeposit(Deposit $deposit) {
-        print $deposit->getDepositUuid() . "\n";
         $statusXml = $this->client->statement($deposit);
         $term = (string) $statusXml->xpath('//atom:category[@label="State"]/@term')[0];
         $deposit->setPlnState($term);
-        if($term === 'agreement') {
+        if ($term === 'agreement') {
             return true;
         }
         return null;

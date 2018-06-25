@@ -19,7 +19,7 @@ class LoadBlacklist extends Fixture {
     );
     
     /**
-     * {@inheritDoc}.
+     * {@inheritdoc}.
      */
     public function load(ObjectManager $em) {
         for ($i = 0; $i < 4; $i++) {
