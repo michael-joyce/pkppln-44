@@ -110,7 +110,7 @@ class UpgradeCommand extends ContainerAwareCommand {
      * Configure the command.
      */
     public function configure() {
-        $this->setName('lom:upgrade');
+        $this->setName('pln:upgrade');
         $this->addOption('force', null, InputOption::VALUE_NONE, 'Actually make the database changes.');
     }
 
