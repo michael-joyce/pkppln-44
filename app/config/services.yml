@@ -84,7 +84,7 @@ services:
         arguments:
             $socketPath: '%pln.clamd_socket%'
 
-    AppBundle\Services\StatusChecker:
+    AppBundle\Services\Processing\StatusChecker:
         arguments:
             $cleanup: '%pln.remove_completed_deposits%'
 

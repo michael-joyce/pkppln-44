@@ -45,13 +45,21 @@ class StatusChecker {
      */
     private $cleanup;
 
-    public function __construct($cleanup, SwordClient $client) {
+    /**
+     * Construct the status checker.
+     *
+     * @param SwordClient $client
+     * @param bool $cleanup
+     */
+    public function __construct(SwordClient $client, $cleanup) {
         $this->cleanup = $cleanup;
         $this->client = $client;
     }
 
     /**
-     * Remove a directory and its contents recursively. Use with caution.
+     * Remove a directory and its contents recursively.
+     *
+     * Use with caution.
      */
     private function delTree($path) {
         $directoryIterator = new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS);

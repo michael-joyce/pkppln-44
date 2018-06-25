@@ -12,7 +12,7 @@ services:
     Nines\UserBundle\Menu\Builder:
         tags:
             - { name: knp_menu.menu_builder, method: userNavMenu, alias: user}
-            
+
     AppBundle\Services\:
         resource: '../../src/AppBundle/Services'
         public: true
@@ -22,19 +22,23 @@ services:
         arguments:
             $root: '%pln.data_dir%'
             $projectDir: '%kernel.project_dir%'
-            
+
     AppBundle\Services\Ping:
         arguments:
             $minOjsVersion: '%pln.min_ojs_version%'
 
     AppBundle\Services\Processing\Depositor:
-        arguments: 
-            $heldVersions: '%pln.held_versions%'            
-            
+        arguments:
+            $heldVersions: '%pln.held_versions%'
+
     AppBundle\Services\Processing\Harvester:
-        arguments: 
+        arguments:
             $maxHarvestAttempts: '%pln.max_harvest_attepmts%'
-            
+
+    AppBundle\Services\Processing\StatusChecker:
+        arguments:
+            $cleanup: '%pln.remove_completed_deposits%'
+
     AppBundle\Services\Processing\VirusScanner:
         arguments:
             $socketPath: '%pln.clamd_socket%'
