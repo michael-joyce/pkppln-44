@@ -13,12 +13,16 @@ use AppBundle\Services\SwordClient;
 class Depositor {
 
     /**
+     * Sword client to talk to LOCKSSOMatic.
+     *
      * @var SwordClient
      */
     private $client;
 
     /**
-     * @var string
+     * Maximum OJS version or null.
+     *
+     * @var string|null
      */
     private $heldVersions;
 
@@ -36,7 +40,7 @@ class Depositor {
     /**
      * Process one deposit.
      *
-     * @param Deposit deposit
+     * @param Deposit $deposit
      *
      * @return bool|null|string
      */

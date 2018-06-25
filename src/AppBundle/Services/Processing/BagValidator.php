@@ -13,11 +13,15 @@ use Exception;
 class BagValidator {
 
     /**
+     * File path service.
+     *
      * @var FilePaths
      */
     private $filePaths;
-    
+
     /**
+     * Bag reader service.
+     *
      * @var BagReader
      */
     private $bagReader;
@@ -31,7 +35,7 @@ class BagValidator {
         $this->filePaths = $fp;
         $this->bagReader = new BagReader();
     }
-    
+
     /**
      * Overridet the bag reader.
      */
@@ -45,7 +49,7 @@ class BagValidator {
     public function processDeposit(Deposit $deposit) {
         $harvestedPath = $this->filePaths->getHarvestFile($deposit);
         $bag = $this->bagReader->readBag($harvestedPath);
-        
+
         $errors = $bag->validate();
 
         if (count($errors) > 0) {

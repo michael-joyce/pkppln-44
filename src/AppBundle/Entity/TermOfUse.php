@@ -22,8 +22,7 @@ class TermOfUse extends AbstractEntity {
     private $weight;
 
     /**
-     * A term key code, something unique to all versions and translations
-     * of a term.
+     * A term key code, something unique to all versions and translations of a term.
      *
      * @var string
      *
@@ -40,12 +39,15 @@ class TermOfUse extends AbstractEntity {
      */
     private $content;
 
+    /**
+     * Construct the term of use.
+     */
     public function __construct() {
         parent::__construct();
     }
 
     /**
-     *
+     * Return the term's content.
      */
     public function __toString() {
         return $this->content;

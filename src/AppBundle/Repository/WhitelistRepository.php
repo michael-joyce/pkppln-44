@@ -10,6 +10,8 @@ use Doctrine\ORM\EntityRepository;
 class WhitelistRepository extends EntityRepository {
 
     /**
+     * Build a query to search for whitelist entries.
+     *
      * @param string $q
      * @return Query
      */

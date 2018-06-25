@@ -35,12 +35,15 @@ class Whitelist extends AbstractEntity {
      */
     private $comment;
 
+    /**
+     * Construct the object.
+     */
     public function __construct() {
         parent::__construct();
     }
 
     /**
-     *
+     * Return the UUID.
      */
     public function __toString() {
         return $this->uuid;

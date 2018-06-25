@@ -17,6 +17,8 @@ use DOMDocument;
 class DtdValidator {
 
     /**
+     * List of errors during validation.
+     *
      * @var array
      */
     private $errors;

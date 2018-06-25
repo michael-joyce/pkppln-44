@@ -30,16 +30,21 @@ use BagIt;
 class BagReserializer {
 
     /**
+     * File path service.
+     *
      * @var FilePaths
      */
     private $filePaths;
 
     /**
+     * Bag reader service.
+     *
      * @var BagReader
      */
     private $bagReader;
 
     /**
+     * Construct the reserializer service.
      *
      * @param FilePaths $fp
      * @param BagReader $bagReader

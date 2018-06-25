@@ -19,31 +19,58 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Upgrade a PKP PLN instance from version 1 to version 2.
+ */
 class UpgradeCommand extends ContainerAwareCommand {
 
     /**
+     * Doctrine connection to the old database.
+     *
      * @var Connection
      */
     private $source;
 
     /**
+     * Entity manager for the new database.
+     *
      * @var EntityManagerInterface
      */
     private $em;
 
     /**
+     * Mapping of old IDs to new IDs based on class names.
+     *
+     * Something like this if the old user ID was three and the new one was 5.
+     * $idMapping[User::class][3] = 5
+     *
      * @var array
      */
     private $idMapping;
 
     /**
+     * If true the changes will be flushed to the new database.
      * @var bool
      */
     private $force;
 
     /**
+     * Construct the command instance.
+     *
+     * $oldEm is a Doctrine connection configured for the previous version
+     * of the database. $em is an entity manager configured for the current
+     * version.
+     *
+     * This file and the corresponding configuration should both be removed
+     * after the upgrade is complete.
+     *
+     * see app/config/config.yml for examples of the configuration.
+     * see app/config/services.yml to configure the dependency injection.
+     *
      * @param Connection $oldEm
      * @param EntityManagerInterface $em
+     *
+     *
      */
     public function __construct(Connection $oldEm, EntityManagerInterface $em) {
         parent::__construct();
@@ -53,10 +80,25 @@ class UpgradeCommand extends ContainerAwareCommand {
         $this->force = false;
     }
 
+    /**
+     * Map an old database ID to a new one.
+     *
+     * @param string $class
+     * @param int $old
+     * @param int $new
+     */
     protected function setIdMap($class, $old, $new) {
         $this->idMapping[$class][$old] = $new;
     }
 
+    /**
+     * Get the new database ID for a $class.
+     *
+     * @param string $class
+     * @param int $old
+     * @param int $default
+     * @return int|null
+     */
     protected function getIdMap($class, $old, $default = null) {
         if (isset($this->idMapping[$class][$old])) {
             return $this->idMapping[$class][$old];
@@ -65,7 +107,7 @@ class UpgradeCommand extends ContainerAwareCommand {
     }
 
     /**
-     *
+     * Configure the command.
      */
     public function configure() {
         $this->setName('lom:upgrade');
@@ -73,10 +115,15 @@ class UpgradeCommand extends ContainerAwareCommand {
     }
 
     /**
+     * Perform an upgrade on one table.
+     *
+     * Processes each row of the table with $callback. If $callback returns an
+     * object it is persisted and flushed, and the old ID is mapped to the new one.
+     *
      * @param string $table
      * @param callable $callback
      */
-    public function upgradeTable($table, $callback) {
+    public function upgradeTable($table, callable $callback) {
         $countQuery = $this->source->query("SELECT count(*) c FROM {$table}");
         $countQuery->execute();
         $countRow = $countQuery->fetch();
@@ -100,6 +147,9 @@ class UpgradeCommand extends ContainerAwareCommand {
         print "\n";
     }
 
+    /**
+     * Upgrade the whitelist table.
+     */
     public function upgradeWhitelist() {
         $callback = function($row) {
             $entry = new Whitelist();
@@ -111,6 +161,9 @@ class UpgradeCommand extends ContainerAwareCommand {
         $this->upgradeTable('whitelist', $callback);
     }
 
+    /**
+     * Upgrade the blacklist table.
+     */
     public function upgradeBlacklist() {
         $callback = function($row) {
             $entry = new Blacklist();
@@ -122,6 +175,9 @@ class UpgradeCommand extends ContainerAwareCommand {
         $this->upgradeTable('blacklist', $callback);
     }
 
+    /**
+     * Upgrade the users table.
+     */
     public function upgradeUsers() {
         $callback = function($row) {
             $entry = new User();
@@ -139,6 +195,11 @@ class UpgradeCommand extends ContainerAwareCommand {
         $this->upgradeTable('appuser', $callback);
     }
 
+    /**
+     * Upgrade the terms of use.
+     *
+     * Term history is upgraded elsewhere.
+     */
     public function upgradeTerms() {
         $callback = function($row) {
             $term = new TermOfUse();
@@ -152,6 +213,11 @@ class UpgradeCommand extends ContainerAwareCommand {
         $this->upgradeTable('term_of_use', $callback);
     }
 
+    /**
+     * Upgrade the terms of use history.
+     *
+     * Terms of Use must be upgraded first.
+     */
     public function upgradeTermHistory() {
         $callback = function($row) {
             $history = new TermOfUseHistory();
@@ -167,6 +233,9 @@ class UpgradeCommand extends ContainerAwareCommand {
         $this->upgradeTable('term_of_use_history', $callback);
     }
 
+    /**
+     * Upgrade the journal table.
+     */
     public function upgradeJournals() {
         $callback = function($row) {
             $journal = new Journal();
@@ -200,6 +269,13 @@ class UpgradeCommand extends ContainerAwareCommand {
         $this->upgradeTable('journal', $callback);
     }
 
+    /**
+     * Upgrade the deposit table.
+     *
+     * Journals must be upgraded first.
+     *
+     * @throws Exception if a deposit came from a journal that cannot be found.
+     */
     public function upgradeDeposits() {
         $callback = function($row) {
             $deposit = new Deposit();
@@ -244,6 +320,9 @@ class UpgradeCommand extends ContainerAwareCommand {
         $this->upgradeTable('deposit', $callback);
     }
 
+    /**
+     * Upgrade the documents table.
+     */
     public function upgradeDocuments() {
         $callback = function($row) {
             $document = new Document();
@@ -256,6 +335,16 @@ class UpgradeCommand extends ContainerAwareCommand {
         $this->ugpradeTable('documents', $callback);
     }
 
+    /**
+     * Execute the command.
+     *
+     * Does all of the upgrades in an appropriate order.
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     *
+     * @throws Exception if an error occurred.
+     */
     public function execute(InputInterface $input, OutputInterface $output) {
         if( ! $input->getOption('force')) {
             $output->writeln("Will not run without --force.");

@@ -108,6 +108,7 @@ class WhitelistController extends Controller {
     /**
      * Finds and displays a Whitelist entity.
      *
+     * @param EntityManagerInterface $em
      * @param Whitelist $whitelist
      *
      * @return array

@@ -54,7 +54,6 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
      * Preprocess the list of deposits.
      *
      * @param Deposit[] $deposits
-     *   List of deposits to process.
      */
     protected function preprocessDeposits(array $deposits = array()) {
         // Do nothing by default.
@@ -66,7 +65,6 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
      * @param Deposit $deposit
      *
      * @return string|bool|null
-     *   True for success, false for fail, null for unknown, string for other.
      */
     abstract protected function processDeposit(Deposit $deposit);
 
@@ -107,11 +105,9 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
      *
      * @param bool $retry
      * @param int[] $depositIds
-     *   Zero or more deposit Ids to filter.
      * @param int $limit
      *
      * @return Deposit[]
-     *   List of deposits for processing.
      */
     public function getDeposits($retry = false, array $depositIds = array(), $limit = null) {
         $repo = $this->em->getRepository(Deposit::class);
@@ -132,10 +128,11 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
     /**
      * Run and process one deposit.
      *
+     * If $dryRun is is true results will not be flushed to the database.
+     *
      * @param Deposit $deposit
      * @param OutputInterface $output
      * @param bool $dryRun
-     *   results are not flushed to the database.
      */
     public function runDeposit(Deposit $deposit, OutputInterface $output, $dryRun = false) {
         try {

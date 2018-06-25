@@ -12,18 +12,23 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  * Doctrine event listener to record term history.
  */
 class TermsOfUseListener {
+
     /**
+     * Token store to get the user making changes.
+     *
      * @var TokenStorageInterface
      */
     private $tokenStorage;
 
     /**
+     * Construct the listener.
      *
+     * @param TokenStorageInterface $tokenStorage
      */
     public function __construct(TokenStorageInterface $tokenStorage) {
         $this->tokenStorage = $tokenStorage;
     }
-    
+
     /**
      * Get an array describing the changes.
      *

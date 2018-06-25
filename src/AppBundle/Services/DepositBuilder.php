@@ -23,17 +23,24 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class DepositBuilder {
 
     /**
+     * Entity manager.
+     *
      * @var EntityManagerInterface
      */
     private $em;
 
     /**
+     * URL generator.
+     *
      * @var UrlGeneratorInterface
      */
     private $generator;
 
     /**
+     * Build the service.
      *
+     * @param EntityManagerInterface $em
+     * @param UrlGeneratorInterface $generator
      */
     public function __construct(EntityManagerInterface $em, UrlGeneratorInterface $generator) {
         $this->em = $em;
@@ -41,6 +48,8 @@ class DepositBuilder {
     }
 
     /**
+     * Find and return the deposit with $uuid or create a new deposit.
+     *
      * @param string $uuid
      * @return Deposit
      */

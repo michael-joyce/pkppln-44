@@ -92,11 +92,11 @@ doctrine:
 
             oldversion:
                 driver: pdo_mysql
-                host: localhost
-                port: ~
-                dbname: pkppln
-                user: pkppln
-                password: abc123
+                host: '%old_database_host%'
+                port: '%old_database_port%'
+                dbname: '%old_database_name%'
+                user: '%old_database_user%'
+                password: '%database_password%'
                 charset: utf8mb4
                 logging: false
                 profiling: false

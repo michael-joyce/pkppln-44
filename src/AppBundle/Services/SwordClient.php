@@ -29,7 +29,7 @@ use function GuzzleHttp\Psr7\str;
 class SwordClient {
 
     /**
-     * Configuration for the harvester client.
+     * Configuration for the http client.
      */
     const CONF = array(
         'allow_redirects' => false,
@@ -40,21 +40,29 @@ class SwordClient {
     );
 
     /**
+     * File system utility.
+     *
      * @var Filesystem
      */
     private $fs;
 
     /**
+     * File path service.
+     *
      * @var FilePaths
      */
     private $fp;
 
     /**
+     * Twig template engine service.
+     *
      * @var EngineInterface
      */
     private $templating;
 
     /**
+     * Guzzle HTTP client,
+     *
      * @var Client
      */
     private $client;
@@ -220,6 +228,13 @@ class SwordClient {
         return true;
     }
 
+    /**
+     * Fetch the deposit receipt for $deposit.
+     *
+     * @param Deposit $deposit
+     *
+     * @return SimpleXMLElement
+     */
     public function receipt(Deposit $deposit) {
         if( ! $deposit->getDepositReceipt()) {
             return null;
@@ -230,6 +245,13 @@ class SwordClient {
         return $xml;
     }
 
+    /**
+     * Fetch the sword statement for $deposit.
+     *
+     * @param Deposit $deposit
+     *
+     * @return SimpleXMLElement
+     */
     public function statement(Deposit $deposit) {
         $receiptXml = $this->receipt($deposit);
         $statementUrl = (string)$receiptXml->xpath('atom:link[@rel="http://purl.org/net/sword/terms/statement"]/@href')[0];
@@ -239,6 +261,15 @@ class SwordClient {
         return $statementXml;
     }
 
+    /**
+     * Fetch the deposit back from LOCKSSOmatic.
+     *
+     * Saves the file to disk and returns the full path to the file.
+     *
+     * @param Deposit $deposit
+     * 
+     * @return string
+     */
     public function fetch(Deposit $deposit){
         $statement = $this->statement($deposit);
         $original = $statement->xpath('//sword:originalDeposit/@href')[0];

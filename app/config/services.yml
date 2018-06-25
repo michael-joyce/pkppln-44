@@ -84,6 +84,10 @@ services:
         arguments:
             $socketPath: '%pln.clamd_socket%'
 
+    AppBundle\Services\StatusChecker:
+        arguments:
+            $cleanup: '%pln.remove_completed_deposits%'
+
     AppBundle\Services\SwordClient:
         arguments:
             $serviceUri: '%pln.service_uri%'

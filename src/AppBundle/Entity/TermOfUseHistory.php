@@ -12,15 +12,21 @@ use Nines\UtilBundle\Entity\AbstractEntity;
  * @ORM\Entity(repositoryClass="AppBundle\Repository\TermOfUseHistoryRepository")
  */
 class TermOfUseHistory extends AbstractEntity {
+
     /**
      * A term ID, similar to the OJS translation keys.
      *
      * @var int
+     *
+     * @todo This is probably wrong. It shouldn't be an integer.
+     *
      * @ORM\Column(type="integer")
      */
     private $termId;
 
     /**
+     * The history action: add, updated, remove.
+     *
      * @var string
      *
      * @ORM\Column(type="string")
@@ -39,17 +45,24 @@ class TermOfUseHistory extends AbstractEntity {
     /**
      * The user who added/edited/deleted the term of use.
      *
+     * This cannot be a foreign key, as the user may be deleted by the history
+     * persists.
+     *
      * @var string
+     *
      * @ORM\Column(type="string")
      */
     private $user;
 
+    /**
+     * Construct the history object.
+     */
     public function __construct() {
         parent::__construct();
     }
 
     /**
-     *
+     * Return the action.
      */
     public function __toString() {
         return $this->action;
@@ -106,7 +119,7 @@ class TermOfUseHistory extends AbstractEntity {
      *
      * @return TermOfUseHistory
      */
-    public function setChangeSet($changeSet) {
+    public function setChangeSet(array $changeSet) {
         $this->changeSet = $changeSet;
 
         return $this;

@@ -44,6 +44,7 @@ class PingResult {
      * Construct a ping result from an HTTP request.
      *
      * @param ResponseInterface $response
+     * @param string $errors
      */
     public function __construct(ResponseInterface $response = null, $errors = null) {
         $this->response = $response;

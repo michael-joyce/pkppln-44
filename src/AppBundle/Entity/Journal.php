@@ -96,8 +96,9 @@ class Journal extends AbstractEntity {
     private $url;
 
     /**
-     * The status of the journal's health. One of new, healthy, unhealthy,
-     * triggered, or abandoned.
+     * The status of the journal's health.
+     *
+     * One of new, healthy, unhealthy, triggered, or abandoned.
      *
      * @var string
      * @ORM\Column(type="string", nullable=false)
@@ -105,8 +106,7 @@ class Journal extends AbstractEntity {
     private $status;
 
     /**
-     * True if a ping reports that the journal manager has accepts the terms of
-     * use.
+     * True if a ping reports that the journal manager has accepts the terms of use.
      *
      * @var bool
      * @ORM\Column(type="boolean", nullable=false)
@@ -148,7 +148,7 @@ class Journal extends AbstractEntity {
     private $deposits;
 
     /**
-     *
+     * Construct a journal.
      */
     public function __construct() {
         parent::__construct();
@@ -158,7 +158,7 @@ class Journal extends AbstractEntity {
     }
 
     /**
-     *
+     * Return the journal's title or UUID if the title is unknown.
      */
     public function __toString() {
         if($this->title) {
@@ -196,7 +196,7 @@ class Journal extends AbstractEntity {
      *
      * @return Journal
      */
-    public function setContacted($contacted) {
+    public function setContacted(DateTime $contacted) {
         $this->contacted = $contacted;
 
         return $this;
@@ -322,7 +322,9 @@ class Journal extends AbstractEntity {
     }
 
     /**
-     *
+     * Return the ping gateway url.
+     * 
+     * @return string
      */
     public function getGatewayUrl() {
         return $this->url . self::GATEWAY_URL_SUFFIX;

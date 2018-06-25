@@ -81,6 +81,7 @@ class TermOfUseController extends Controller {
     /**
      * Finds and displays a TermOfUse entity.
      *
+     * @param EntityManagerInterface $em
      * @param TermOfUse $termOfUse
      *
      * @return array
@@ -90,6 +91,8 @@ class TermOfUseController extends Controller {
      * @Template()
      */
     public function showAction(EntityManagerInterface $em, TermOfUse $termOfUse) {
+        // This can't just be $termOfUse->getHistory() or something because there
+        // is no foreign key relationship - the history is preserved when a term is deleted.
         $repo = $em->getRepository(TermOfUseHistory::class);
         $history = $repo->findBy(array('termId' => $termOfUse->getId()), array('id' => 'ASC'));
         return array(

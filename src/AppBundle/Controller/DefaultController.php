@@ -47,7 +47,9 @@ class DefaultController extends Controller {
     }
 
     /**
+     * Browse deposits across all jouurnals by state.
      *
+     * @param Request $request
      * @param EntityManagerInterface $em
      * @param string $state
      *

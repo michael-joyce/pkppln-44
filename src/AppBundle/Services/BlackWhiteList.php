@@ -20,11 +20,15 @@ use Doctrine\ORM\EntityManagerInterface;
 class BlackWhiteList {
 
     /**
+     * Entity manager.
+     *
      * @var EntityManagerInterface
      */
     private $em;
 
     /**
+     * Build the service.
+     *
      * @param EntityManagerInterface $em
      */
     public function __construct(EntityManagerInterface $em) {
@@ -32,6 +36,8 @@ class BlackWhiteList {
     }
 
     /**
+     * Get an entry for the UUID.
+     *
      * @param ObjectRepository $repo
      * @param string $uuid
      */
@@ -62,12 +68,12 @@ class BlackWhiteList {
         $repo = $this->em->getRepository(Blacklist::class);
         return $this->getEntry($repo, $uuid);
     }
-    
+
     /**
      * Check if a journal is whitelisted or blacklisted.
      */
     public function isListed($uuid) {
         return $this->isWhitelisted($uuid) || $this->isBlacklisted($uuid);
     }
-    
+
 }

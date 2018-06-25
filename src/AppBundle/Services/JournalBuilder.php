@@ -15,17 +15,21 @@ use Doctrine\ORM\EntityManagerInterface;
 use SimpleXMLElement;
 
 /**
- * Description of JournalBuilder.
+ * Journal builder service.
  */
 class JournalBuilder {
 
     /**
+     * Doctrine instance.
+     *
      * @var EntityManagerInterface
      */
     private $em;
 
     /**
+     * Construct the builder.
      *
+     * @param EntityManagerInterface $em
      */
     public function __construct(EntityManagerInterface $em) {
         $this->em = $em;

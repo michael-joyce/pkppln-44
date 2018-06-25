@@ -16,14 +16,15 @@ use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
-use function GuzzleHttp\Psr7\str;
 
 /**
- * Description of Ping.
+ * Ping service.
  */
 class Ping {
 
+    /**
+     * Http client configuration.
+     */
     const CONF = array(
         'allow_redirects' => true,
         'headers' => array(
@@ -33,27 +34,39 @@ class Ping {
     );
 
     /**
+     * Minimum expected OJS version.
+     *
      * @var string
      */
     private $minOjsVersion;
 
     /**
+     * Doctrine instance.
+     *
      * @var EntityManagerInterface
      */
     private $em;
 
     /**
+     * Black and white service.
+     *
      * @var BlackWhiteList
      */
     private $list;
 
     /**
+     * Guzzle http client.
+     *
      * @var Client
      */
     private $client;
 
     /**
+     * Construct the ping service.
      *
+     * @param type $minOjsVersion
+     * @param EntityManagerInterface $em
+     * @param BlackWhiteList $list
      */
     public function __construct($minOjsVersion, EntityManagerInterface $em, BlackWhiteList $list) {
         $this->minOjsVersion = $minOjsVersion;
@@ -63,7 +76,9 @@ class Ping {
     }
 
     /**
+     * Set the HTTP client.
      *
+     * @param Client $client
      */
     public function setClient(Client $client) {
         $this->client = $client;
@@ -74,8 +89,6 @@ class Ping {
      *
      * @param Journal $journal
      * @param PingResult $result
-     *
-     * @return void
      */
     public function process(Journal $journal, PingResult $result) {
         if (!$result->getOjsRelease()) {
@@ -101,11 +114,14 @@ class Ping {
     }
 
     /**
+     * Ping $journal and return the result.
      *
      * @param Journal $journal
      * @return PingResult
      */
+    // @codingStandardsIgnoreStart
     public function ping(Journal $journal) {
+    // @codingStandardsIgnoreEnd
         try {
             $response = $this->client->get($journal->getGatewayUrl(), self::CONF);
             $result = new PingResult($response);

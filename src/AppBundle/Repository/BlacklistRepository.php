@@ -9,8 +9,10 @@ use Doctrine\ORM\Query;
  * Custom blacklist queries for doctrine.
  */
 class BlacklistRepository extends EntityRepository {
-    
+
     /**
+     * Build a query to search for blacklist entries.
+     *
      * @param string $q
      * @return Query
      */
@@ -21,5 +23,5 @@ class BlacklistRepository extends EntityRepository {
         $query = $qb->getQuery();
         return $query;
     }
-    
+
 }

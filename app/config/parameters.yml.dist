@@ -10,6 +10,13 @@ parameters:
     # You should uncomment this if you want to use pdo_sqlite
     #database_path: '%kernel.project_dir%/var/data/data.sqlite'
 
+    # Settings to upgrade an old database to a new one
+    old_database_host: 127.0.0.1
+    old_database_port: ~
+    old_database_name: symfony
+    old_database_user: root
+    old_database_password: ~
+
     mailer_transport: smtp
     mailer_host: 127.0.0.1
     mailer_user: ~
@@ -43,7 +50,7 @@ parameters:
 
     # Maximum file upload size in 1000-byte kb.
     pln.max_upload: 10000
-    
+
     # checksum algorithm to use when verifying integrity.
     pln.checksum_type: SHA-1
 

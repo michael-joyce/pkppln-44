@@ -34,6 +34,13 @@ class FilePaths {
 
     /**
      * Build the service.
+     *
+     * If $root is a relative directory, the service will construct paths
+     * relative to the symfony install director, inside $root.
+     *
+     * @param string $root
+     * @param string $projectDir
+     * @param FileSystem $fs
      */
     public function __construct($root, $projectDir, FileSystem $fs = null) {
         if ($root && $root[0] !== '/') {
@@ -58,7 +65,11 @@ class FilePaths {
     }
 
     /**
+     * Get the directory where a journal's deposits should be saved from LOCKSS.
      *
+     * @param Journal $journal
+     *
+     * @return string
      */
     public function getRestoreDir(Journal $journal) {
         $path = implode('/', array(
@@ -72,9 +83,13 @@ class FilePaths {
 
         return $path;
     }
-    
+
     /**
+     * Get the path to save a deposit from LOCKSS.
      *
+     * @param Deposit $deposit
+     *
+     * @return string
      */
     public function getRestoreFile(Deposit $deposit) {
         $path = implode('/', array(

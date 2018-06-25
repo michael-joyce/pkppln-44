@@ -108,6 +108,7 @@ class BlacklistController extends Controller {
     /**
      * Finds and displays a Blacklist entity.
      *
+     * @param EntityManagerInterface $em
      * @param Blacklist $blacklist
      *
      * @return array

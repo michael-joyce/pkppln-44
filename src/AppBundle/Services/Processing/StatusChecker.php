@@ -20,11 +20,9 @@
 namespace AppBundle\Services\Processing;
 
 use AppBundle\Entity\Deposit;
-use AppBundle\Services\FilePaths;
 use AppBundle\Services\SwordClient;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Check the status of deposits in LOCKSSOMatic.
@@ -32,40 +30,24 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * @see SwordClient
  */
 class StatusChecker {
+
     /**
+     * Sword client to communicate with LOCKSS.
+     *
      * @var SwordClient
      */
     private $client;
 
     /**
+     * If true, completed deposits will be removed from disk.
+     *
      * @var bool
      */
     private $cleanup;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function __construct($name = null) {
-        parent::__construct($name);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function configure() {
-        $this->setName('pln:status');
-        $this->setDescription('Check the status of deposits in LOCKSSOMatic.');
-        parent::configure();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setContainer(ContainerInterface $container = null) {
-        parent::setContainer($container);
-        $this->cleanup = $this->container->getParameter('remove_complete_deposits');
-        $this->client = $container->get('sword_client');
-        $this->client->setLogger($this->logger);
+    public function __construct($cleanup, SwordClient $client) {
+        $this->cleanup = $cleanup;
+        $this->client = $client;
     }
 
     /**
@@ -85,7 +67,8 @@ class StatusChecker {
     }
 
     /**
-     * Process one deposit. Fetch the data and write it to the file system.
+     * Process one deposit.
+     *
      * Updates the deposit status, and may remove the processing files if
      * LOCKSSOatic reports agreement.
      *
@@ -110,41 +93,6 @@ class StatusChecker {
             return true;
         }
         return null;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function nextState() {
-        return 'complete';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function processingState() {
-        return 'deposited';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function failureLogMessage() {
-        return 'Deposit status failed.';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function successLogMessage() {
-        return 'Deposit status succeeded.';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function errorState() {
-        return 'status-error';
     }
 
 }

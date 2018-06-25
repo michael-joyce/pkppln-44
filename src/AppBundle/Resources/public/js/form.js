@@ -1,11 +1,20 @@
 /**
- * @file
+ * @file form.js
+ *
+ * Javascript functions to make the UI a bit nicer.
  */
 
 (function ($, window) {
 
     var hostname = window.location.hostname.replace('www.', '');
 
+    /**
+     * Set up a click handler to show a confirmation dialog and return the result.
+     *
+     * Expects a data-confirm attribute on the element.
+     *
+     * @returns boolean
+     */
     function confirm() {
         var $this = $(this);
         $this.click(function () {
@@ -13,6 +22,12 @@
         });
     }
 
+    /**
+     * Before the user leaves a URL check if there are dirty forms and confirm leaving.
+     *
+     * @param event e
+     * @returns string
+     */
     function windowBeforeUnload(e) {
         var clean = true;
         $('form').each(function () {
@@ -28,6 +43,9 @@
         }
     }
 
+    /**
+     * When a user changes a form this function marks the form as dirty.
+     */
     function formDirty() {
         var $form = $(this);
         $form.data('dirty', false);
@@ -39,12 +57,20 @@
         });
     }
 
+    /**
+     * Open a form button in a popup window.
+     *
+     * @param event e
+     */
     function formPopup(e) {
         e.preventDefault();
         var url = $(this).prop('href');
         window.open(url, "_blank", "toolbar=no,scrollbars=yes,resizable=yes,top=60,left=60,width=500,height=600");
     }
 
+    /**
+     * Apply the select2entity javascript goodness to a text input.
+     */
     function simpleCollection() {
         $('.collection-simple').collection({
             init_with_n_elements: 1,
@@ -61,6 +87,9 @@
         });
     }
 
+    /**
+     * Apply the select2entity javascript goodness to a collection of inputs.
+     */
     function complexCollection() {
         $('.collection-complex').collection({
             allow_up: false,
@@ -76,6 +105,9 @@
         });
     }
 
+    /**
+     * Make off-site links open in a new tab.
+     */
     function link() {
         if (this.hostname.replace('www.', '') === hostname) {
             return;
@@ -83,6 +115,9 @@
         $(this).attr('target', '_blank');
     }
 
+    /**
+     * Do some nice things with the form upload controls.
+     */
     function uploadControls() {
         var $input = $(this);
         $input.change(function () {
@@ -93,6 +128,9 @@
         });
     }
 
+    /**
+     * Get the UI initialized for each page load.
+     */
     $(document).ready(function () {
         $(window).bind('beforeunload', windowBeforeUnload);
         $('form').each(formDirty);
@@ -104,14 +142,6 @@
             simpleCollection();
             complexCollection();
         }
-// $("input, textarea, select").each(function () {
-//            var $this = $(this);
-//            if ($this.attr('type') == 'radio' || $this.attr('type') == 'checkbox') {
-//                $(this).after('<span class="widgetname">' + $(this).attr('name') + '=' + $this.attr('value') + '</span>');
-//            } else {
-//                $(this).after('<span class="widgetname">' + $(this).attr('name') + '</span>');
-//            }
-//        });.
     });
 
 })(jQuery, window);

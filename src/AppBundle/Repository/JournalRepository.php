@@ -36,6 +36,11 @@ class JournalRepository extends EntityRepository {
     }
 
     /**
+     * Build a query to search for journals.
+     *
+     * Search is based on uuid, title, issn, url, email, publisher name, and
+     * publisher url.
+     *
      * @param string $q
      * @return Query
      */
@@ -79,8 +84,9 @@ class JournalRepository extends EntityRepository {
     }
 
     /**
-     * Find journals that have gone silent and that notifications have been sent
-     * for, but they have not been updated yet.
+     * Find journals that have gone silent.
+     *
+     * Excludes journals wehre notifications have been sent.
      *
      * @param int $days
      *
@@ -96,6 +102,8 @@ class JournalRepository extends EntityRepository {
     }
 
     /**
+     * Find the $limit most recent journals to contact the PLN for the first time.
+     *
      * @todo This method should be called findRecent(). It does not find
      * journals with status=new
      *
