@@ -50,6 +50,7 @@ class UpgradeCommand extends ContainerAwareCommand {
 
     /**
      * If true the changes will be flushed to the new database.
+     *
      * @var bool
      */
     private $force;
@@ -69,8 +70,6 @@ class UpgradeCommand extends ContainerAwareCommand {
      *
      * @param Connection $oldEm
      * @param EntityManagerInterface $em
-     *
-     *
      */
     public function __construct(Connection $oldEm, EntityManagerInterface $em) {
         parent::__construct();
@@ -97,6 +96,7 @@ class UpgradeCommand extends ContainerAwareCommand {
      * @param string $class
      * @param int $old
      * @param int $default
+     *
      * @return int|null
      */
     protected function getIdMap($class, $old, $default = null) {
@@ -118,7 +118,8 @@ class UpgradeCommand extends ContainerAwareCommand {
      * Perform an upgrade on one table.
      *
      * Processes each row of the table with $callback. If $callback returns an
-     * object it is persisted and flushed, and the old ID is mapped to the new one.
+     * object it is persisted and flushed, and the old ID is mapped to the
+     * new one.
      *
      * @param string $table
      * @param callable $callback
@@ -151,7 +152,7 @@ class UpgradeCommand extends ContainerAwareCommand {
      * Upgrade the whitelist table.
      */
     public function upgradeWhitelist() {
-        $callback = function($row) {
+        $callback = function ($row) {
             $entry = new Whitelist();
             $entry->setComment($row['comment']);
             $entry->setUuid($row['uuid']);
@@ -165,7 +166,7 @@ class UpgradeCommand extends ContainerAwareCommand {
      * Upgrade the blacklist table.
      */
     public function upgradeBlacklist() {
-        $callback = function($row) {
+        $callback = function ($row) {
             $entry = new Blacklist();
             $entry->setComment($row['comment']);
             $entry->setUuid($row['uuid']);
@@ -179,7 +180,7 @@ class UpgradeCommand extends ContainerAwareCommand {
      * Upgrade the users table.
      */
     public function upgradeUsers() {
-        $callback = function($row) {
+        $callback = function ($row) {
             $entry = new User();
             $entry->setUsername($row['username']);
             $entry->setEmail($row['username']);
@@ -201,7 +202,7 @@ class UpgradeCommand extends ContainerAwareCommand {
      * Term history is upgraded elsewhere.
      */
     public function upgradeTerms() {
-        $callback = function($row) {
+        $callback = function ($row) {
             $term = new TermOfUse();
             $term->setWeight($row['weight']);
             $term->setKeyCode($row['key_code']);
@@ -219,7 +220,7 @@ class UpgradeCommand extends ContainerAwareCommand {
      * Terms of Use must be upgraded first.
      */
     public function upgradeTermHistory() {
-        $callback = function($row) {
+        $callback = function ($row) {
             $history = new TermOfUseHistory();
             $termId = $this->getIdMap(TermOfUse::class, $row['term_id'], $row['term_id']);
             $history->setTermId($termId);
@@ -237,7 +238,7 @@ class UpgradeCommand extends ContainerAwareCommand {
      * Upgrade the journal table.
      */
     public function upgradeJournals() {
-        $callback = function($row) {
+        $callback = function ($row) {
             $journal = new Journal();
             $journal->setUuid($row['uuid']);
             $journal->setContacted(new DateTime($row['contacted']));
@@ -274,10 +275,11 @@ class UpgradeCommand extends ContainerAwareCommand {
      *
      * Journals must be upgraded first.
      *
-     * @throws Exception if a deposit came from a journal that cannot be found.
+     * @throws Exception
+     *    If a deposit came from a journal that cannot be found.
      */
     public function upgradeDeposits() {
-        $callback = function($row) {
+        $callback = function ($row) {
             $deposit = new Deposit();
 
             $journalId = $this->getIdMap(Journal::class, $row['journal_id']);
@@ -304,10 +306,10 @@ class UpgradeCommand extends ContainerAwareCommand {
             $deposit->setPackageSize($row['package_size']);
             $deposit->setPackageChecksumType($row['package_checksum_type']);
             $deposit->setPackageChecksumValue($row['package_checksum_value']);
-            if($row['deposit_date']) {
+            if ($row['deposit_date']) {
                 $deposit->setDepositDate(new DateTime($row['deposit_date']));
             }
-            if( ! preg_match('|^http://pkp-pln|', $row['deposit_receipt'])) {
+            if (!preg_match('|^http://pkp-pln|', $row['deposit_receipt'])) {
                 $deposit->setDepositReceipt($row['deposit_receipt']);
             }
             $deposit->setProcessingLog($row['processing_log']);
@@ -324,7 +326,7 @@ class UpgradeCommand extends ContainerAwareCommand {
      * Upgrade the documents table.
      */
     public function upgradeDocuments() {
-        $callback = function($row) {
+        $callback = function ($row) {
             $document = new Document();
             $document->setTitle($row['title']);
             $document->setPath($row['path']);
@@ -343,10 +345,11 @@ class UpgradeCommand extends ContainerAwareCommand {
      * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @throws Exception if an error occurred.
+     * @throws Exception
+     *   If an error occurred.
      */
     public function execute(InputInterface $input, OutputInterface $output) {
-        if( ! $input->getOption('force')) {
+        if (!$input->getOption('force')) {
             $output->writeln("Will not run without --force.");
             exit;
         }
@@ -359,4 +362,5 @@ class UpgradeCommand extends ContainerAwareCommand {
         $this->upgradeDeposits();
         $this->upgradeDocuments();
     }
+
 }

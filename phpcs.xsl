@@ -31,7 +31,7 @@
           });
         </script>
       </head>
-      <body class="nowarnings">
+      <body class="warnings">
         <div class="container">
           <div class="row">
             <div class="col-md-7">

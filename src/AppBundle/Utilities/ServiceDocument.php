@@ -40,8 +40,9 @@ class ServiceDocument {
      * @param string $xpath
      *
      * @return null|string
-     * 
-     * @throws Exception if the query results in multiple values.
+     *
+     * @throws Exception
+     *   If the query results in multiple values.
      */
     public function getXpathValue($xpath) {
         $result = $this->xml->xpath($xpath);

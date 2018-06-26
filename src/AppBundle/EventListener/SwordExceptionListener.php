@@ -55,8 +55,9 @@ class SwordExceptionListener {
     }
 
     /**
-     * Once the controller has been initialized, this event is fired. Grab
-     * a reference to the active controller.
+     * Once the controller has been initialized, this event is fired.
+     *
+     * Grab a reference to the active controller.
      *
      * @param FilterControllerEvent $event
      */

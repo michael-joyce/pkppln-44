@@ -18,9 +18,9 @@ class LoadJournal extends Fixture {
         'CBF45637-5D69-44C3-AEC0-A906CBC3E27B',
         '9934C273-8319-4816-92DA-6EEADA91DCAC',
     );
-    
+
     /**
-     * {@inheritdoc}.
+     * {@inheritdoc}
      */
     public function load(ObjectManager $em) {
         for ($i = 0; $i < 4; $i++) {

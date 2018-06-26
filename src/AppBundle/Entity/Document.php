@@ -45,6 +45,9 @@ class Document extends AbstractEntity {
      */
     private $content;
 
+    /**
+     * Build the document object.
+     */
     public function __construct() {
         parent::__construct();
     }

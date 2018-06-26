@@ -17,9 +17,9 @@ class LoadBlacklist extends Fixture {
         '2DE4DC03-3E02-43D3-A088-E7536743C083',
         'A13C33E6-CDC4-4D09-BB62-1BE3B0E74A0A',
     );
-    
+
     /**
-     * {@inheritdoc}.
+     * {@inheritdoc}
      */
     public function load(ObjectManager $em) {
         for ($i = 0; $i < 4; $i++) {

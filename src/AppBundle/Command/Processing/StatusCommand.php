@@ -31,6 +31,9 @@ class StatusCommand extends AbstractProcessingCmd {
         parent::configure();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function processDeposit(Deposit $deposit) {
         $statusXml = $this->client->statement($deposit);
         $term = (string) $statusXml->xpath('//atom:category[@label="State"]/@term')[0];
@@ -41,22 +44,37 @@ class StatusCommand extends AbstractProcessingCmd {
         return null;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function errorState() {
         return 'deposited';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function failureLogMessage() {
         return 'Status check with LOCKSSOMatic failed.';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function nextState() {
         return 'complete';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function processingState() {
         return 'deposited';
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function successLogMessage() {
         return 'Status check with LOCKSSOMatic succeeded.';
     }

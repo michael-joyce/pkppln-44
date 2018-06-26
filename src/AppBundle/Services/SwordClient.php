@@ -153,6 +153,8 @@ class SwordClient {
     }
 
     /**
+     * Make a SWORD request.
+     *
      * @param string $method
      * @param string $url
      * @param array $headers
@@ -267,7 +269,7 @@ class SwordClient {
      * Saves the file to disk and returns the full path to the file.
      *
      * @param Deposit $deposit
-     * 
+     *
      * @return string
      */
     public function fetch(Deposit $deposit){

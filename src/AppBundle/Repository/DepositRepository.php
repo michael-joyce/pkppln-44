@@ -52,7 +52,7 @@ class DepositRepository extends EntityRepository {
      *
      * @todo this should be called findRecent
      *
-     * @param type $limit
+     * @param int $limit
      *
      * @return Collection|Deposit[]
      */
