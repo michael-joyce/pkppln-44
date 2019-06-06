@@ -1,6 +1,6 @@
 {
     "name": "michael/pkppln2",
-    "license": "proprietary",
+    "license": "MIT",
     "type": "project",
     "autoload": {
         "psr-4": {

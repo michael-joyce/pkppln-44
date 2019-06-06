@@ -24,13 +24,13 @@ monolog:
             type: rotating_file
             path: '%kernel.logs_dir%/lockss-%kernel.environment%.log'
             channels: [ 'lockss' ]
-            # max_files: 0
+            max_files: 30
         sword:
             level: notice
             type: rotating_file
             path: '%kernel.logs_dir%/sword-%kernel.environment%.log'
             channels: [ 'sword' ]
-            # max_files: 0
+            max_files: 30
 
 framework:
     #esi: ~

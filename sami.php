@@ -11,12 +11,12 @@ $iterator = Finder::create()
         ->name('*.php')
         ->exclude('Resources')
         ->exclude('Tests')
-        ->in($dir . '/src');
+        ->in($dir . '/src/AppBundle');
 
 $options = array(
     // 'theme' => 'symfony',
     'title' => 'PKP PN Internals',
-    'build_dir' => $dir . '/web/docs/sami',
+    'build_dir' => $dir . '/web/docs/api/sami',
     'cache_dir' => $dir . '/var/cache/sami',
     'remote_repository' => new GitHubRemoteRepository('ubermichael/pkppln', $dir),
     'default_opened_level' => 2,
