@@ -30,7 +30,7 @@ class VirusScannerTest extends BaseTestCase {
      */
     private $scanner;
 
-    protected function setUp() {
+    protected function setup() : void {
         parent::setUp();        
         $this->scanner = $this->container->get(VirusScanner::class);
     }

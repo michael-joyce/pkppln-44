@@ -24,7 +24,7 @@ class DepositBuilderTest extends BaseTestCase {
 
     private $deposit;
     
-    protected function setUp() {
+    protected function setup() : void {
         parent::setUp();
         $builder = $this->container->get(DepositBuilder::class);
         $this->deposit = $builder->fromXml($this->getReference('journal.1'), $this->getXml());

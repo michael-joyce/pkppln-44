@@ -19,7 +19,7 @@ class WhitelistTest extends BaseTestCase {
 
     private $whitelist;
     
-    protected function setUp() {
+    protected function setup() : void {
         parent::setUp();
         $this->whitelist = new Whitelist();
     }

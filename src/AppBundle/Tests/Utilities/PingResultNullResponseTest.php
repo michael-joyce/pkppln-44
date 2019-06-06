@@ -23,7 +23,7 @@ class PingResultNullResponseTest extends TestCase {
      */
     private $result;
 
-    protected function setUp() {
+    protected function setup() : void {
         parent::setUp();
         $this->result = new PingResult();
     }

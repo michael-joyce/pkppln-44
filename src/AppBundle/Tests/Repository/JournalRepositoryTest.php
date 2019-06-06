@@ -32,7 +32,7 @@ class JournalRepositoryTest extends BaseTestCase {
         );
     }
 
-    protected function setUp() {
+    protected function setup() : void {
         parent::setUp();
         $this->repo = $this->em->getRepository(Journal::class);
     }

@@ -19,7 +19,7 @@ class DepositTest extends BaseTestCase {
 
     private $deposit;
     
-    protected function setUp() {
+    protected function setup() : void {
         parent::setUp();
         $this->deposit = new Deposit();
     }

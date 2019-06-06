@@ -11,6 +11,7 @@ namespace AppBundle\Tests\Utilities;
 
 use AppBundle\Utilities\ServiceDocument;
 use PHPUnit\Framework\TestCase;
+use Exception;
 
 /**
  * Description of PingResultTest
@@ -22,7 +23,7 @@ class ServiceDocumentTest extends TestCase {
      */
     private $sd;
 
-    protected function setUp() {
+    protected function setup() : void {
         parent::setUp();
         $this->sd = new ServiceDocument($this->getXml());
     }
@@ -46,10 +47,8 @@ class ServiceDocumentTest extends TestCase {
         ];
     }
 
-    /**
-     * @expectedException \Exception
-     */
     public function testGetXpathValueException() {
+        $this->expectException(Exception::class);
         $this->sd->getXpathValue('/app:service/node()');
     }
 
@@ -70,7 +69,7 @@ class ServiceDocumentTest extends TestCase {
 
     public function testToString() {
         $string = (string)$this->sd;
-        $this->assertContains('LOCKSSOMatic', $string);
+        $this->assertStringContainsStringIgnoringCase('LOCKSSOMatic', $string);
     }
 
     private function getXml() {

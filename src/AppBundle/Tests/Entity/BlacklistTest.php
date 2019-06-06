@@ -19,7 +19,7 @@ class BlacklistTest extends BaseTestCase {
 
     private $blacklist;
     
-    protected function setUp() {
+    protected function setup() : void {
         parent::setUp();
         $this->blacklist = new Blacklist();
     }

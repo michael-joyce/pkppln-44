@@ -26,7 +26,7 @@ class JournalBuilderTest extends BaseTestCase {
      */
     private $builder;
 
-    protected function setUp() {
+    protected function setup() : void {
         parent::setUp();
         $this->builder = $this->container->get(JournalBuilder::class);
     }

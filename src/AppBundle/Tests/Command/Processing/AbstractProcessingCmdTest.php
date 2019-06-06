@@ -64,7 +64,7 @@ class AbstractProcessingCmdTest extends BaseTestCase {
         );
     }
     
-    protected function setUp() {
+    protected function setUp() : void {
         parent::setUp();
         $this->output = $this->createMock(OutputInterface::class);
         $this->output->method('writeln')->willReturn(null);

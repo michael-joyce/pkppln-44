@@ -13,7 +13,7 @@ class DtdValidatorTest extends BaseTestCase {
      */
     protected $validator;
 
-    public function setUp() {
+    public function setup() : void {
         parent::setUp();
         $this->validator = $this->container->get(DtdValidator::class);
         $this->validator->clearErrors();

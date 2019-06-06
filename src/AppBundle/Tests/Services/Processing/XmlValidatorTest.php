@@ -22,7 +22,7 @@ class XmlValidatorTest extends BaseTestCase {
      */
     private $validator;
 
-    protected function setUp() {
+    protected function setup() : void {
         parent::setUp();
         $this->validator = $this->container->get(XmlValidator::class);
     }
@@ -39,8 +39,8 @@ class XmlValidatorTest extends BaseTestCase {
 
         $report = '';
         $this->validator->reportErrors($errors, $report);
-        $this->assertContains('On line 1: bad things happend.', $report);
-        $this->assertContains('On line 3: good things happend.', $report);
+        $this->assertStringContainsStringIgnoringCase('On line 1: bad things happend.', $report);
+        $this->assertStringContainsStringIgnoringCase('On line 3: good things happend.', $report);
     }
 
 }

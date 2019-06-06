@@ -38,7 +38,7 @@ class PingTest extends BaseTestCase {
      */
     private $list;
 
-    protected function setUp() {
+    protected function setup() : void {
         parent::setUp();
         $this->ping = $this->container->get(Ping::class);
         $this->list = $this->container->get(BlackWhiteList::class);

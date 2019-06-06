@@ -19,7 +19,7 @@ class TermOfUseHistoryTest extends BaseTestCase {
     
     private $history;
     
-    protected function setUp() {
+    protected function setup() : void {
         parent::setUp();
         $this->history = new TermOfUseHistory();
     }

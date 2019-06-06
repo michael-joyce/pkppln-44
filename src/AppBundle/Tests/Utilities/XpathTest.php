@@ -34,10 +34,8 @@ class XpathTest extends TestCase {
         ];
     }
 
-    /**
-     * @expectedException Exception
-     */
     public function testGetXmlValueException() {
+        $this->expectException(Exception::class);
         $xml = $this->getXml();
         Xpath::getXmlValue($xml, '/root/node()');
     }

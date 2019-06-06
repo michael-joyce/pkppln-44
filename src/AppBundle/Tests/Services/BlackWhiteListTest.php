@@ -14,7 +14,7 @@ class BlackWhiteListTest extends BaseTestCase {
      */
     protected $list;
 
-    public function setUp() {
+    public function setup() : void {
         parent::setUp();
         $this->list = $this->container->get(BlackWhiteList::class);
     }

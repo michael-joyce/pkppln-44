@@ -23,7 +23,7 @@ class PingResultTest extends TestCase {
      */
     private $result;
 
-    protected function setUp() {
+    protected function setup() : void {
         parent::setUp();
         $mock = $this->createMock(ResponseInterface::class);
         $mock->method('getBody')->willReturn($this->getXml());
@@ -59,9 +59,9 @@ class PingResultTest extends TestCase {
     }
 
     public function testGetBody() {
-        $this->assertContains('1.2.0.0', $this->result->getBody());
-        $this->assertContains('1.2.0.0', $this->result->getBody(true));
-        $this->assertContains('1.2.0.0', $this->result->getBody(false));
+        $this->assertStringContainsStringIgnoringCase('1.2.0.0', $this->result->getBody());
+        $this->assertStringContainsStringIgnoringCase('1.2.0.0', $this->result->getBody(true));
+        $this->assertStringContainsStringIgnoringCase('1.2.0.0', $this->result->getBody(false));
     }
 
     public function testXml() {

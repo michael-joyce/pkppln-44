@@ -28,7 +28,7 @@ class HarvesterTest extends BaseTestCase {
 
     private $harvester;
     
-    protected function setUp() {
+    protected function setup() : void {
         parent::setUp();
         $this->harvester = $this->container->get(Harvester::class);
     }
@@ -54,10 +54,8 @@ class HarvesterTest extends BaseTestCase {
         $this->assertEquals('abcdef', $output);
     }
     
-    /**
-     * @expectedException Exception
-     */
     public function testWriteDepositNoBody() {
+        $this->expectException(Exception::class);
         $response = $this->createMock(Response::class);
         $response->method('getBody')->willReturn(null);
         $this->harvester->writeDeposit('', $response);
@@ -76,10 +74,8 @@ class HarvesterTest extends BaseTestCase {
         $this->assertEquals(200, $response->getStatusCode());
     }
     
-    /**
-     * @expectedException Exception
-     */
     public function testDepositException() {
+        $this->expectException(Exception::class);
         $mock = new MockHandler([
             new Response(404),
         ]);
@@ -117,10 +113,8 @@ class HarvesterTest extends BaseTestCase {
         $this->assertNotContains('Expected file size', $deposit->getErrorLog());
     }
     
-    /**
-     * @expectedException Exception
-     */
     public function testCheckSizeBadResponse() {
+        $this->expectException(Exception::class);
         $deposit = new Deposit();
         $deposit->setSize(1);
         $deposit->setUrl('http://example.com/deposit');
@@ -134,10 +128,8 @@ class HarvesterTest extends BaseTestCase {
         $this->harvester->checkSize($deposit);
     }
     
-    /**
-     * @expectedException Exception
-     */
     public function testCheckSizeContentLengthMissing() {
+        $this->expectException(Exception::class);
         $deposit = new Deposit();
         $deposit->setSize(1);
         $deposit->setUrl('http://example.com/deposit');
@@ -152,10 +144,8 @@ class HarvesterTest extends BaseTestCase {
     }
     
     
-    /**
-     * @expectedException Exception
-     */
     public function testCheckSizeContentLengthZero() {
+        $this->expectException(Exception::class);
         $deposit = new Deposit();
         $deposit->setSize(100);
         $deposit->setUrl('http://example.com/deposit');
@@ -169,10 +159,8 @@ class HarvesterTest extends BaseTestCase {
         $this->harvester->checkSize($deposit);
     }
     
-    /**
-     * @expectedException Exception
-     */
     public function testCheckSizeContentLengthMismatch() {
+        $this->expectException(Exception::class);
         $deposit = new Deposit();
         $deposit->setSize(100);
         $deposit->setUrl('http://example.com/deposit');
@@ -230,7 +218,7 @@ class HarvesterTest extends BaseTestCase {
         $journal->setUuid('abc123');
         $deposit->setJournal($journal);
         $result = $this->harvester->processDeposit($deposit);
-        $this->assertContains('Expected file size', $deposit->getProcessingLog());
+        $this->assertStringContainsStringIgnoringCase('Expected file size', $deposit->getProcessingLog());
         $this->assertNull($result);
     }
     

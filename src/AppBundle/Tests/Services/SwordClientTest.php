@@ -34,7 +34,7 @@ class SwordClientTest extends BaseTestCase {
      */
     private $swordClient;
 
-    protected function setUp() {
+    protected function setup() : void {
         parent::setUp();
         $this->swordClient = $this->container->get(SwordClient::class);
     }
@@ -72,10 +72,8 @@ class SwordClientTest extends BaseTestCase {
         );
     }
 
-    /**
-     * @expectedException Exception
-     */
     public function testServiceDocumentException() {
+        $this->expectException(Exception::class);
         $mock = new MockHandler([
             new Response(400, [])
         ]);
@@ -85,11 +83,8 @@ class SwordClientTest extends BaseTestCase {
         $sd = $this->swordClient->serviceDocument();
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage FAILURE WILL ROBINSON
-     */
     public function testServiceDocumentGenericException() {
+        $this->expectException(Exception::class);
         $mock = new MockHandler([
             new Exception("FAILURE WILL ROBINSON"),
         ]);
@@ -99,11 +94,8 @@ class SwordClientTest extends BaseTestCase {
         $sd = $this->swordClient->serviceDocument();
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage NO NO
-     */
     public function testServiceDocumentExceptionResponse() {
+        $this->expectException(Exception::class);
         $mock = new MockHandler([
             new Response(400, [], "NO NO")
         ]);
@@ -139,11 +131,8 @@ class SwordClientTest extends BaseTestCase {
         $this->assertEquals('http://example.com', $deposit->getDepositReceipt());
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage NOT AUTHORIZED
-     */
     public function testCreateDepositException() {
+        $this->expectException(Exception::class);
         $mock = new MockHandler([
             new Response(200, [], $this->serviceDocumentData()),
             new Response(401, [], "NOT AUTHORIZED")
@@ -159,11 +148,8 @@ class SwordClientTest extends BaseTestCase {
         $result = $this->swordClient->createDeposit($deposit);
     }
 
-    /**
-     * @expectedException Exception
-     * @expectedExceptionMessage NO FUN FOR YOU
-     */
     public function testCreateDepositGenericException() {
+        $this->expectException(Exception::class);
         $mock = new MockHandler([
             new Response(200, [], $this->serviceDocumentData()),
             new Exception("NO FUN FOR YOU")

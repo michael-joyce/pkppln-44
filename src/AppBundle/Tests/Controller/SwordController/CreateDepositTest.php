@@ -33,7 +33,7 @@ class CreateDepositTest extends AbstractSwordTestCase {
             $this->getDepositXml()
 		);
 		$this->assertEquals(400, $this->testClient->getResponse()->getStatusCode());
-		$this->assertContains('Not authorized to create deposits.', $this->testClient->getResponse()->getContent());
+		$this->assertStringContainsStringIgnoringCase('Not authorized to create deposits.', $this->testClient->getResponse()->getContent());
 		$this->assertEquals($depositCount, count($this->em->getRepository('AppBundle:Deposit')->findAll()));
 	}
 

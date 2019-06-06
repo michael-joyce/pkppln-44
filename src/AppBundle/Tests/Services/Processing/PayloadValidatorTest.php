@@ -33,7 +33,7 @@ class PayloadValidatorTest extends BaseTestCase {
      */
     private $root;
     
-    protected function setUp() {
+    protected function setup() : void {
         parent::setUp();        
         $this->validator = $this->container->get(PayloadValidator::class);       
         $this->root = vfsStream::setup();
@@ -61,10 +61,8 @@ class PayloadValidatorTest extends BaseTestCase {
         );
     }
     
-    /**
-     * @expectedException Exception
-     */
     public function testHashFileException() {
+        $this->expectException(Exception::class);
         $file = vfsStream::newFile('deposit.zip')->withContent('some data.')->at($this->root);
         $this->validator->hashFile('cheese', $file->url());
     }
@@ -106,7 +104,7 @@ class PayloadValidatorTest extends BaseTestCase {
         
         $result = $this->validator->processDeposit($deposit);
         $this->assertFalse($result);
-        $this->assertContains('Deposit checksum does not match', $deposit->getProcessingLog());
+        $this->assertStringContainsStringIgnoringCase('Deposit checksum does not match', $deposit->getProcessingLog());
     }
     
     public function testProcessDepositChecksumUnknown() {        
@@ -126,6 +124,6 @@ class PayloadValidatorTest extends BaseTestCase {
         
         $result = $this->validator->processDeposit($deposit);
         $this->assertFalse($result);
-        $this->assertContains('Unknown hash algorithm cheese', $deposit->getProcessingLog());
+        $this->assertStringContainsStringIgnoringCase('Unknown hash algorithm cheese', $deposit->getProcessingLog());
     }
 }

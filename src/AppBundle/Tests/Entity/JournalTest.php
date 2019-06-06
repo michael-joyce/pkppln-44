@@ -20,7 +20,7 @@ class JournalTest extends BaseTestCase {
 
     private $journal;
     
-    protected function setUp() {
+    protected function setup() : void {
         parent::setUp();
         $this->journal = new Journal();
     }

@@ -32,7 +32,7 @@
         "guzzlehttp/guzzle": "^6.3",
         "incenteev/composer-parameter-handler": "^2.0",
         "knplabs/knp-menu-bundle": "^2.2",
-        "knplabs/knp-paginator-bundle": "^2.7",
+        "knplabs/knp-paginator-bundle": "^3.0",
         "ninsuo/symfony-collection": "^2.1",
         "ramsey/uuid": "^3.7",
         "scholarslab/bagit": "^0.3.0",
@@ -53,7 +53,7 @@
         "drupal/coder": "^8.2",
         "liip/functional-test-bundle": "~2.0@alpha",
         "mikey179/vfsstream": "^1.6",
-        "phpunit/phpunit": "^7.3",
+        "phpunit/phpunit": "^8.1",
         "sensio/generator-bundle": "^3.0",
         "squizlabs/php_codesniffer": "^3.3",
         "symfony/phpunit-bridge": "^4.1"

@@ -34,7 +34,7 @@ class BagValidatorTest extends BaseTestCase {
         );
     }
     
-    protected function setUp() {
+    protected function setup() : void {
         parent::setUp(); 
         $this->validator = $this->container->get(BagValidator::class);
     }
@@ -72,10 +72,8 @@ class BagValidatorTest extends BaseTestCase {
         $this->assertStringStartsWith('Bag journal version tag', $deposit->getErrorLog()[0]);
     }
     
-    /**
-     * @expectedException Exception
-     */
     public function testValidateFail() {
+        $this->expectException(Exception::class);
         $deposit = $this->getReference('deposit.1');
         
         $bag = $this->createMock(BagIt::class);

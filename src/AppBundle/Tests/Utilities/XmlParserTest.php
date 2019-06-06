@@ -30,7 +30,7 @@ class XmlParserTest extends TestCase {
      */
     private $root;
 
-    protected function setUp() {
+    protected function setup() : void {
         parent::setUp();
         $this->parser = new XmlParser();
         $this->root = vfsStream::setup();
@@ -61,10 +61,8 @@ class XmlParserTest extends TestCase {
         }
     }
 
-    /**
-     * @expectedException Exception
-     */
     public function testInvalidXml() {
+        $this->expectException(Exception::class);
         $sourceFile = vfsStream::newFile('bad.xml')
                 ->withContent("<a>chicanery</b>")
                 ->at($this->root);
@@ -72,10 +70,8 @@ class XmlParserTest extends TestCase {
         $this->fail();
     }
 
-    /**
-     * @expectedException Exception
-     */
     public function testInvalidXmlAndUtf8() {
+        $this->expectException(Exception::class);
         $sourceFile = vfsStream::newFile('bad.xml')
                 ->withContent("<a>chic\xc3\x28nery</b>")
                 ->at($this->root);
@@ -86,11 +82,9 @@ class XmlParserTest extends TestCase {
     /**
      * Yes, that's really a valid 6 octet sequence that isn't unicode.
      * Yes, we've really seen stuff like this.
-     *
-     * @expectedException Exception
-     * @expectedExceptionMessage Filtered XML cannot be parsed.
      */
     public function testSuperInvalidUtf8() {
+        $this->expectException(Exception::class);
         $sourceFile = vfsStream::newFile('bad.xml')
                 ->withContent("<a>chic\xfc\xa1\xa1\xa1\xa1\xa1nery</a>")
                 ->at($this->root);

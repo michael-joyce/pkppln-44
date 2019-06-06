@@ -30,16 +30,14 @@ class BagReaderTest extends TestCase {
      */
     private $reader;
 
-    protected function setUp() {
+    protected function setup() : void {
         parent::setUp();
         $this->root = vfsStream::setup();
         $this->reader = new BagReader();
     }
 
-    /**
-     * @expectedException Exception
-     */
     public function testReadBagException() {
+        $this->expectException(Exception::class);
         $this->reader->readBag($this->root->url() . '/doesnotexist');
     }
 
