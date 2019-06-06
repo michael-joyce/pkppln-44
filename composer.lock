@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "567330e908d672d773eb8edc8ab9ae96",
+    "content-hash": "e8f091954e15a89bec87b8bdc6700011",
     "packages": [
         {
             "name": "beberlei/doctrineextensions",
@@ -2273,6 +2273,39 @@
                 "psr-3"
             ],
             "time": "2018-11-05T09:00:11+00:00"
+        },
+        {
+            "name": "ninsuo/symfony-collection",
+            "version": "2.1.30",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ninsuo/symfony-collection.git",
+                "reference": "88db2caea7bba13cd7a7beb938fa706a340b38e9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ninsuo/symfony-collection/zipball/88db2caea7bba13cd7a7beb938fa706a340b38e9",
+                "reference": "88db2caea7bba13cd7a7beb938fa706a340b38e9",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "ScriptHandler.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alain Tiemblo",
+                    "email": "ninsuo@gmail.com"
+                }
+            ],
+            "description": "A jQuery plugin that manages adding, deleting and moving elements from a Symfony collection",
+            "time": "2018-07-01T15:06:12+00:00"
         },
         {
             "name": "ocramius/package-versions",
@@ -6159,16 +6192,16 @@
         },
         {
             "name": "symfony/phpunit-bridge",
-            "version": "v4.3.0",
+            "version": "v4.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/phpunit-bridge.git",
-                "reference": "7bfc1b57d1ac9513703391498aa8da4764388bc6"
+                "reference": "4c02cf116370da969b88bb607563f614e2450f73"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/phpunit-bridge/zipball/7bfc1b57d1ac9513703391498aa8da4764388bc6",
-                "reference": "7bfc1b57d1ac9513703391498aa8da4764388bc6",
+                "url": "https://api.github.com/repos/symfony/phpunit-bridge/zipball/4c02cf116370da969b88bb607563f614e2450f73",
+                "reference": "4c02cf116370da969b88bb607563f614e2450f73",
                 "shasum": ""
             },
             "require": {
@@ -6220,7 +6253,7 @@
             ],
             "description": "Symfony PHPUnit Bridge",
             "homepage": "https://symfony.com",
-            "time": "2019-05-08T13:47:25+00:00"
+            "time": "2019-05-30T08:57:55+00:00"
         },
         {
             "name": "theseer/tokenizer",

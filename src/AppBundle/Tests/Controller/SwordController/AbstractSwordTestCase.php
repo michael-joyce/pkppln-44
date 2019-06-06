@@ -18,11 +18,11 @@ abstract class AbstractSwordTestCase extends BaseTestCase {
     /**
      * @var Client
      */
-    protected $client;
+    protected $testClient;
 
     public function setUp() {
         parent::setUp();
-        $this->client = static::createClient();
+        $this->testClient = static::createClient();
     }
 
     public function getFixtures() {
@@ -40,7 +40,7 @@ abstract class AbstractSwordTestCase extends BaseTestCase {
      * @param Client $client
      */
     protected function getXml() {
-        $xml = new SimpleXMLElement($this->client->getResponse()->getContent());
+        $xml = new SimpleXMLElement($this->testClient->getResponse()->getContent());
         Namespaces::registerNamespaces($xml);
         return $xml;
     }

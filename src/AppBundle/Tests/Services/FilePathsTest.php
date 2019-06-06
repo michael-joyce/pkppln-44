@@ -11,14 +11,14 @@ use Symfony\Component\Filesystem\Filesystem;
 class FilePathsTest extends TestCase {
 
     /**
-     * @dataProvider testRootDirData
+     * @dataProvider rootDirData
      */
     public function testRootDir($expected, $rootDir, $projectDir) {
         $fp = new FilePaths($rootDir, $projectDir);
         $this->assertEquals($expected, $fp->getRootPath());
     }
 
-    public function testRootDirData() {
+    public function rootDirData() {
         return [
             ['', '', ''],
             ['/path/to/data', '/path/to/data', '/path/to/project'],

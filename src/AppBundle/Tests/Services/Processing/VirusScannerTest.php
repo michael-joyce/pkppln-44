@@ -29,11 +29,10 @@ class VirusScannerTest extends BaseTestCase {
      * @var VirusScanner
      */
     private $scanner;
-        
+
     protected function setUp() {
         parent::setUp();        
         $this->scanner = $this->container->get(VirusScanner::class);
-        $this->socketPath = $this->container->getParameter('pln.clamd_socket');
     }
     
     public function testInstance() {
@@ -91,7 +90,7 @@ class VirusScannerTest extends BaseTestCase {
         $embed = new DOMElement('unused');
         $xp = $this->createMock(DOMXPath::class);
         $xp->method('evaluate')->will($this->onConsecutiveCalls(10, base64_encode("We're fine. We're all fine here, now, thank you. How are you?")));
-        
+
         $result = $this->scanner->scanEmbed($embed, $xp, $this->scanner->getClient());
         $this->assertEquals([
             'id' => '1',

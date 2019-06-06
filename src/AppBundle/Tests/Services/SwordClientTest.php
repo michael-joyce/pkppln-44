@@ -32,11 +32,11 @@ class SwordClientTest extends BaseTestCase {
     /**
      * @var SwordClient
      */
-    private $client;
+    private $swordClient;
 
     protected function setUp() {
         parent::setUp();
-        $this->client = $this->container->get(SwordClient::class);
+        $this->swordClient = $this->container->get(SwordClient::class);
     }
 
     protected function getFixtures() {
@@ -47,7 +47,7 @@ class SwordClientTest extends BaseTestCase {
     }
 
     public function testSanity() {
-        $this->assertInstanceOf(SwordClient::class, $this->client);
+        $this->assertInstanceOf(SwordClient::class, $this->swordClient);
     }
 
     public function testServiceDocument() {
@@ -60,8 +60,8 @@ class SwordClientTest extends BaseTestCase {
         $stack->push($history);
 
         $guzzle = new Client(['handler' => $stack]);
-        $this->client->setClient($guzzle);
-        $sd = $this->client->serviceDocument();
+        $this->swordClient->setClient($guzzle);
+        $sd = $this->swordClient->serviceDocument();
         $this->assertInstanceOf(ServiceDocument::class, $sd);
 
         $this->assertEquals(1, count($container));
@@ -81,8 +81,8 @@ class SwordClientTest extends BaseTestCase {
         ]);
         $stack = HandlerStack::create($mock);
         $guzzle = new Client(['handler' => $stack]);
-        $this->client->setClient($guzzle);
-        $sd = $this->client->serviceDocument();
+        $this->swordClient->setClient($guzzle);
+        $sd = $this->swordClient->serviceDocument();
     }
 
     /**
@@ -95,8 +95,8 @@ class SwordClientTest extends BaseTestCase {
         ]);
         $stack = HandlerStack::create($mock);
         $guzzle = new Client(['handler' => $stack]);
-        $this->client->setClient($guzzle);
-        $sd = $this->client->serviceDocument();
+        $this->swordClient->setClient($guzzle);
+        $sd = $this->swordClient->serviceDocument();
     }
 
     /**
@@ -109,8 +109,8 @@ class SwordClientTest extends BaseTestCase {
         ]);
         $stack = HandlerStack::create($mock);
         $guzzle = new Client(['handler' => $stack]);
-        $this->client->setClient($guzzle);
-        $sd = $this->client->serviceDocument();
+        $this->swordClient->setClient($guzzle);
+        $sd = $this->swordClient->serviceDocument();
     }
 
     public function testCreateDeposit() {
@@ -124,9 +124,9 @@ class SwordClientTest extends BaseTestCase {
         $stack->push($history);
 
         $guzzle = new Client(['handler' => $stack]);
-        $this->client->setClient($guzzle);
+        $this->swordClient->setClient($guzzle);
         $deposit = $this->getReference('deposit.1');
-        $result = $this->client->createDeposit($deposit);
+        $result = $this->swordClient->createDeposit($deposit);
         $this->assertTrue($result);
 
         $this->assertEquals(2, count($container));
@@ -154,9 +154,9 @@ class SwordClientTest extends BaseTestCase {
         $stack->push($history);
 
         $guzzle = new Client(['handler' => $stack]);
-        $this->client->setClient($guzzle);
+        $this->swordClient->setClient($guzzle);
         $deposit = $this->getReference('deposit.1');
-        $result = $this->client->createDeposit($deposit);
+        $result = $this->swordClient->createDeposit($deposit);
     }
 
     /**
@@ -174,9 +174,9 @@ class SwordClientTest extends BaseTestCase {
         $stack->push($history);
 
         $guzzle = new Client(['handler' => $stack]);
-        $this->client->setClient($guzzle);
+        $this->swordClient->setClient($guzzle);
         $deposit = $this->getReference('deposit.1');
-        $result = $this->client->createDeposit($deposit);
+        $result = $this->swordClient->createDeposit($deposit);
         $this->assertContains("NO FUN FOR YOU", $deposit->getErrorLog("\n"));
     }
 
@@ -190,10 +190,10 @@ class SwordClientTest extends BaseTestCase {
         $stack->push($history);
 
         $guzzle = new Client(['handler' => $stack]);
-        $this->client->setClient($guzzle);
+        $this->swordClient->setClient($guzzle);
         $deposit = $this->getReference('deposit.1');
         $deposit->setDepositReceipt(null);
-        $result = $this->client->receipt($deposit);
+        $result = $this->swordClient->receipt($deposit);
         $this->assertNull($result);
         $this->assertEquals(0, count($container));
     }
@@ -208,9 +208,9 @@ class SwordClientTest extends BaseTestCase {
         $stack->push($history);
 
         $guzzle = new Client(['handler' => $stack]);
-        $this->client->setClient($guzzle);
+        $this->swordClient->setClient($guzzle);
         $deposit = $this->getReference('deposit.1');
-        $result = $this->client->receipt($deposit);
+        $result = $this->swordClient->receipt($deposit);
         $this->assertInstanceOf(SimpleXMLElement::class, $result);
 
         $this->assertEquals(1, count($container));
@@ -230,9 +230,9 @@ class SwordClientTest extends BaseTestCase {
         $stack->push($history);
 
         $guzzle = new Client(['handler' => $stack]);
-        $this->client->setClient($guzzle);
+        $this->swordClient->setClient($guzzle);
         $deposit = $this->getReference('deposit.1');
-        $result = $this->client->statement($deposit);
+        $result = $this->swordClient->statement($deposit);
         $this->assertInstanceOf(SimpleXMLElement::class, $result);
 
         $this->assertEquals(2, count($container));
@@ -246,7 +246,7 @@ class SwordClientTest extends BaseTestCase {
 
         $fp = $this->createMock(FilePaths::class);
         $fp->method('getRestoreFile')->willReturn('vfs://root/path.zip');
-        $this->client->setFilePaths($fp);
+        $this->swordClient->setFilePaths($fp);
 
         $mock = new MockHandler([
             new Response(200, [], $this->receiptData()),
@@ -259,9 +259,9 @@ class SwordClientTest extends BaseTestCase {
         $stack->push($history);
 
         $guzzle = new Client(['handler' => $stack]);
-        $this->client->setClient($guzzle);
+        $this->swordClient->setClient($guzzle);
         $deposit = $this->getReference('deposit.1');
-        $result = $this->client->fetch($deposit);
+        $result = $this->swordClient->fetch($deposit);
         $this->assertEquals('vfs://root/path.zip', $result);
 
         $this->assertEquals(3, count($container));

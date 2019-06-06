@@ -66,3 +66,6 @@ parameters:
     pln.remove_completed_deposits: false
     pln.journalTitle: 'PKP PLN Deposits'
     pln.uuid: ~
+
+    # Text trimming length
+    nines_text.trim_length: 50

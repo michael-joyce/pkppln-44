@@ -33,6 +33,7 @@
         "incenteev/composer-parameter-handler": "^2.0",
         "knplabs/knp-menu-bundle": "^2.2",
         "knplabs/knp-paginator-bundle": "^2.7",
+        "ninsuo/symfony-collection": "^2.1",
         "ramsey/uuid": "^3.7",
         "scholarslab/bagit": "^0.3.0",
         "sensio/distribution-bundle": "^5.0.19",
@@ -67,10 +68,12 @@
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget"
         ],
         "post-install-cmd": [
-            "@symfony-scripts"
+            "@symfony-scripts",
+            "Fuz\\Symfony\\Collection\\ScriptHandler::postInstall"
         ],
         "post-update-cmd": [
-            "@symfony-scripts"
+            "@symfony-scripts",
+            "Fuz\\Symfony\\Collection\\ScriptHandler::postInstall"
         ]
     },
     "config": {

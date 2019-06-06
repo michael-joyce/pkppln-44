@@ -9,7 +9,7 @@ class EditDepositTest extends AbstractSwordTestCase {
 
     public function testEditDepositNotWhitelisted() {
 		$depositCount = count($this->em->getRepository('AppBundle:Deposit')->findAll());
-		$this->client->request(
+		$this->testClient->request(
             'PUT',
             '/api/sword/2.0/cont-iri/04F2C06E-35B8-43C1-B60C-1934271B0B7E/F93A8108-B705-4763-A592-B718B00BD4EA/edit',
             array(),
@@ -18,14 +18,14 @@ class EditDepositTest extends AbstractSwordTestCase {
             $this->getEditXml()
 		);
         $this->em->clear();
-        $response = $this->client->getResponse();
+        $response = $this->testClient->getResponse();
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
         $this->assertEquals($depositCount, count($this->em->getRepository('AppBundle:Deposit')->findAll()));
 	}
 
     public function testEditDepositDepositMissing() {
 		$depositCount = count($this->em->getRepository('AppBundle:Deposit')->findAll());
-		$this->client->request(
+		$this->testClient->request(
             'PUT',
             '/api/sword/2.0/cont-iri/44428B12-CDC4-453E-8157-319004CD8CE6/c0a65967-32bd-4ee8-96de-c469743e563a/edit',
             array(),
@@ -34,14 +34,14 @@ class EditDepositTest extends AbstractSwordTestCase {
             $this->getEditXml()
 		);
         $this->em->clear();
-        $response = $this->client->getResponse();
+        $response = $this->testClient->getResponse();
         $this->assertEquals(Response::HTTP_NOT_FOUND, $response->getStatusCode());
         $this->assertEquals($depositCount, count($this->em->getRepository('AppBundle:Deposit')->findAll()));
 	}
 
     public function testEditDepositJournalMismatch() {
 		$depositCount = count($this->em->getRepository('AppBundle:Deposit')->findAll());
-		$this->client->request(
+		$this->testClient->request(
             'PUT',
             '/api/sword/2.0/cont-iri/44428B12-CDC4-453E-8157-319004CD8CE6/4ECC5D8B-ECC9-435C-A072-6DCF198ACD6D/edit',
             array(),
@@ -50,7 +50,7 @@ class EditDepositTest extends AbstractSwordTestCase {
             $this->getEditXml()
 		);
         $this->em->clear();
-        $response = $this->client->getResponse();
+        $response = $this->testClient->getResponse();
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
         $this->assertEquals($depositCount, count($this->em->getRepository('AppBundle:Deposit')->findAll()));
     }
@@ -64,7 +64,7 @@ class EditDepositTest extends AbstractSwordTestCase {
         $this->em->clear();
 
 		$depositCount = count($this->em->getRepository('AppBundle:Deposit')->findAll());
-		$this->client->request(
+		$this->testClient->request(
             'PUT',
             '/api/sword/2.0/cont-iri/04F2C06E-35B8-43C1-B60C-1934271B0B7E/F93A8108-B705-4763-A592-B718B00BD4EA/edit',
             array(),
@@ -73,7 +73,7 @@ class EditDepositTest extends AbstractSwordTestCase {
             $this->getEditXml()
 		);
         $this->em->clear();
-        $response = $this->client->getResponse();
+        $response = $this->testClient->getResponse();
         $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode());
         $this->assertEquals($depositCount+1, count($this->em->getRepository('AppBundle:Deposit')->findAll()));
 
