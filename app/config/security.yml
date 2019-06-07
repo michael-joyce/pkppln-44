@@ -28,6 +28,13 @@ security:
             logout_on_user_change: true            
             logout: true
 
+            remember_me:
+                secret: '%secret%'
+                lifetime: 2419200 # 28 days in seconds.
+                path: '%router.request_context.base_url%'
+                domain: '%router.request_context.host%'
+                secure: '%secure_cookies%'
+
     access_control:
         - { path: ^/api, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
