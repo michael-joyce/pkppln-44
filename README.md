@@ -17,6 +17,11 @@ may work with various Nginx setups, but they are untested and unsupported. These
 instructions do not include steps for installing or configuring the 
 prerequisites listed above.
 
+You may also consider this Vagrant setup, which will create a complete working 
+application environment in a Centos 7 virtual machine.
+
+https://git.lib.sfu.ca/mjoyce/pkppn-v2-vagrant
+
 Install
 -------
 
