@@ -20,7 +20,7 @@ abstract class AbstractSwordTestCase extends BaseTestCase {
      */
     protected $testClient;
 
-    public function setUp() : void  {
+    protected function setUp() : void  {
         parent::setUp();
         $this->testClient = static::createClient();
     }
