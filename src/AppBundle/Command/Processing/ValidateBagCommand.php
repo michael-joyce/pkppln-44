@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace AppBundle\Command\Processing;
 
 use AppBundle\Entity\Deposit;
@@ -10,29 +18,25 @@ use Doctrine\ORM\EntityManagerInterface;
  * Validate a bag metadata and checksums.
  */
 class ValidateBagCommand extends AbstractProcessingCmd {
-    
     /**
      * Bag validator service.
      *
      * @var BagValidator
      */
     private $bagValidator;
-    
+
     /**
      * Build the command.
-     *
-     * @param EntityManagerInterface $em
-     * @param BagValidator $bagValidator
      */
     public function __construct(EntityManagerInterface $em, BagValidator $bagValidator) {
         parent::__construct($em);
         $this->bagValidator = $bagValidator;
     }
-    
+
     /**
      * {@inheritdoc}
      */
-    protected function configure() {
+    protected function configure() : void {
         $this->setName('pln:validate:bag');
         $this->setDescription('Validate PLN deposit packages.');
         parent::configure();
@@ -79,5 +83,4 @@ class ValidateBagCommand extends AbstractProcessingCmd {
     public function errorState() {
         return 'bag-error';
     }
-
 }

@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- *  This file is licensed under the MIT License version 3 or
- *  later. See the LICENSE file for details.
- *
- *  Copyright 2018 Michael Joyce <ubermichael@gmail.com>.
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace AppBundle\Tests\Services;
@@ -23,131 +24,21 @@ use GuzzleHttp\Psr7\Response;
 use Nines\UtilBundle\Tests\Util\BaseTestCase;
 
 /**
- * Description of PingTest
+ * Description of PingTest.
  */
 class PingTest extends BaseTestCase {
-
     /**
      * @var Ping
      */
     private $ping;
 
     /**
-     *
      * @var BlackWhiteList
      */
     private $list;
 
-    protected function setup() : void {
-        parent::setUp();
-        $this->ping = $this->container->get(Ping::class);
-        $this->list = $this->container->get(BlackWhiteList::class);
-    }
-
-    protected function getFixtures() {
-        return array(
-            LoadJournal::class,
-        );
-    }
-
-    public function testInstance() {
-        $this->assertInstanceOf(Ping::class, $this->ping);
-    }
-
-    public function testProcessFail() {
-        $result = $this->createMock(PingResult::class);
-        $result->method('getHttpstatus')->willReturn(404);
-        $journal = $this->getReference('journal.1');
-        $this->ping->process($journal, $result);
-        $this->assertEquals('ping-error', $journal->getStatus());
-    }
-
-    public function testProcessMissingRelease() {
-        $result = $this->createMock(PingResult::class);
-        $result->method('getHttpstatus')->willReturn(200);
-        $result->method('getOjsRelease')->willReturn(false);
-        $journal = $this->getReference('journal.1');
-        $this->ping->process($journal, $result);
-        $this->assertEquals('ping-error', $journal->getStatus());
-    }
-
-    public function testProcessOldVersion() {
-        $result = $this->createMock(PingResult::class);
-        $result->method('getHttpstatus')->willReturn(200);
-        $result->method('getOjsRelease')->willReturn('2.4.0');
-        $result->method('getJournalTitle')->willReturn('Yes Minister');
-        $result->method('areTermsAccepted')->willReturn('Yes');
-
-        $journal = $this->getReference('journal.1');
-        $this->ping->process($journal, $result);
-        $this->em->flush();
-        $this->assertEquals('healthy', $journal->getStatus());
-        $this->assertFalse($this->list->isListed($journal->getUuid()));
-    }
-
-    public function testProcessListed() {
-        $result = $this->createMock(PingResult::class);
-        $result->method('getHttpstatus')->willReturn(200);
-        $result->method('getOjsRelease')->willReturn('2.4.9');
-        $result->method('getJournalTitle')->willReturn('Yes Minister');
-        $result->method('areTermsAccepted')->willReturn('Yes');
-
-        $journal = $this->getReference('journal.1');
-        $whitelist = new Whitelist();
-        $whitelist->setUuid($journal->getUuid());
-        $whitelist->setComment("testing.");
-        $this->em->persist($whitelist);
-        $this->em->flush();
-
-        $this->ping->process($journal, $result);
-        $this->em->flush();
-        $this->assertEquals('healthy', $journal->getStatus());
-    }
-
-    public function testProcessSuccess() {
-        $result = $this->createMock(PingResult::class);
-        $result->method('getHttpstatus')->willReturn(200);
-        $result->method('getOjsRelease')->willReturn('2.4.9');
-        $result->method('getJournalTitle')->willReturn('Yes Minister');
-        $result->method('areTermsAccepted')->willReturn('Yes');
-
-        $journal = $this->getReference('journal.1');
-        $this->ping->process($journal, $result);
-        $this->em->flush();
-        $this->assertEquals('healthy', $journal->getStatus());
-        $this->assertTrue($this->list->isListed($journal->getUuid()));
-    }
-
-    public function testPingFail() {
-        $mock = new MockHandler([
-            new RequestException("Bad mojo.", new Request('GET', 'http://example.com')),
-        ]);
-        $handler = HandlerStack::create($mock);
-        $client = new Client(['handler' => $handler]);
-
-        $this->ping->setClient($client);
-        $journal = $this->getReference('journal.1');
-        $this->ping->ping($journal);
-        $this->assertEquals('ping-error', $journal->getStatus());
-    }
-
-    public function testPingSuccess() {
-        $mock = new MockHandler([
-            new Response(200, [], $this->getXml()),
-        ]);
-        $handler = HandlerStack::create($mock);
-        $client = new Client(['handler' => $handler]);
-
-        $this->ping->setClient($client);
-        $journal = $this->getReference('journal.1');
-        $this->ping->ping($journal);
-        $this->em->flush();
-        $this->assertEquals('healthy', $journal->getStatus());
-        $this->assertTrue($this->list->isListed($journal->getUuid()));
-    }
-
     private function getXml() {
-        $data = <<<'ENDXML'
+        return <<<'ENDXML'
 <?xml version="1.0" ?> 
 <plnplugin>
   <ojsInfo>
@@ -184,7 +75,113 @@ class PingTest extends BaseTestCase {
   </journalInfo>
 </plnplugin>
 ENDXML;
-        return $data;
     }
 
+    protected function getFixtures() {
+        return [
+            LoadJournal::class,
+        ];
+    }
+
+    public function testInstance() : void {
+        $this->assertInstanceOf(Ping::class, $this->ping);
+    }
+
+    public function testProcessFail() : void {
+        $result = $this->createMock(PingResult::class);
+        $result->method('getHttpstatus')->willReturn(404);
+        $journal = $this->getReference('journal.1');
+        $this->ping->process($journal, $result);
+        $this->assertSame('ping-error', $journal->getStatus());
+    }
+
+    public function testProcessMissingRelease() : void {
+        $result = $this->createMock(PingResult::class);
+        $result->method('getHttpstatus')->willReturn(200);
+        $result->method('getOjsRelease')->willReturn(false);
+        $journal = $this->getReference('journal.1');
+        $this->ping->process($journal, $result);
+        $this->assertSame('ping-error', $journal->getStatus());
+    }
+
+    public function testProcessOldVersion() : void {
+        $result = $this->createMock(PingResult::class);
+        $result->method('getHttpstatus')->willReturn(200);
+        $result->method('getOjsRelease')->willReturn('2.4.0');
+        $result->method('getJournalTitle')->willReturn('Yes Minister');
+        $result->method('areTermsAccepted')->willReturn('Yes');
+
+        $journal = $this->getReference('journal.1');
+        $this->ping->process($journal, $result);
+        $this->em->flush();
+        $this->assertSame('healthy', $journal->getStatus());
+        $this->assertFalse($this->list->isListed($journal->getUuid()));
+    }
+
+    public function testProcessListed() : void {
+        $result = $this->createMock(PingResult::class);
+        $result->method('getHttpstatus')->willReturn(200);
+        $result->method('getOjsRelease')->willReturn('2.4.9');
+        $result->method('getJournalTitle')->willReturn('Yes Minister');
+        $result->method('areTermsAccepted')->willReturn('Yes');
+
+        $journal = $this->getReference('journal.1');
+        $whitelist = new Whitelist();
+        $whitelist->setUuid($journal->getUuid());
+        $whitelist->setComment('testing.');
+        $this->em->persist($whitelist);
+        $this->em->flush();
+
+        $this->ping->process($journal, $result);
+        $this->em->flush();
+        $this->assertSame('healthy', $journal->getStatus());
+    }
+
+    public function testProcessSuccess() : void {
+        $result = $this->createMock(PingResult::class);
+        $result->method('getHttpstatus')->willReturn(200);
+        $result->method('getOjsRelease')->willReturn('2.4.9');
+        $result->method('getJournalTitle')->willReturn('Yes Minister');
+        $result->method('areTermsAccepted')->willReturn('Yes');
+
+        $journal = $this->getReference('journal.1');
+        $this->ping->process($journal, $result);
+        $this->em->flush();
+        $this->assertSame('healthy', $journal->getStatus());
+        $this->assertTrue($this->list->isListed($journal->getUuid()));
+    }
+
+    public function testPingFail() : void {
+        $mock = new MockHandler([
+            new RequestException('Bad mojo.', new Request('GET', 'http://example.com')),
+        ]);
+        $handler = HandlerStack::create($mock);
+        $client = new Client(['handler' => $handler]);
+
+        $this->ping->setClient($client);
+        $journal = $this->getReference('journal.1');
+        $this->ping->ping($journal);
+        $this->assertSame('ping-error', $journal->getStatus());
+    }
+
+    public function testPingSuccess() : void {
+        $mock = new MockHandler([
+            new Response(200, [], $this->getXml()),
+        ]);
+        $handler = HandlerStack::create($mock);
+        $client = new Client(['handler' => $handler]);
+
+        $this->ping->setClient($client);
+        $journal = $this->getReference('journal.1');
+        $this->ping->ping($journal);
+        $this->em->flush();
+        $this->assertSame('healthy', $journal->getStatus());
+        $this->assertTrue($this->list->isListed($journal->getUuid()));
+    }
+
+    protected function setup() : void {
+        parent::setUp();
+        $this->ping = $this->container->get(Ping::class);
+        $this->list = $this->container->get(BlackWhiteList::class);
+    }
 }

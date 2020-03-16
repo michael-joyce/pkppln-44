@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace AppBundle\Tests\Controller\SwordController;
 
 use AppBundle\DataFixtures\ORM\LoadBlacklist;
@@ -14,54 +22,56 @@ use SimpleXMLElement;
 use Symfony\Component\BrowserKit\Client;
 
 abstract class AbstractSwordTestCase extends BaseTestCase {
-
     /**
      * @var Client
      */
     protected $testClient;
 
-    protected function setUp() : void  {
-        parent::setUp();
-        $this->testClient = static::createClient();
+    /**
+     * @param Client $client
+     *
+     * @return SimpleXMLElement
+     */
+    protected function getXml() {
+        $xml = new SimpleXMLElement($this->testClient->getResponse()->getContent());
+        Namespaces::registerNamespaces($xml);
+
+        return $xml;
     }
 
     public function getFixtures() {
-        return array(
+        return [
             LoadJournal::class,
             LoadDeposit::class,
             LoadTermOfUse::class,
             LoadWhitelist::class,
             LoadBlacklist::class,
-        );
-    }
-
-    /**
-     * @return SimpleXMLElement
-     * @param Client $client
-     */
-    protected function getXml() {
-        $xml = new SimpleXMLElement($this->testClient->getResponse()->getContent());
-        Namespaces::registerNamespaces($xml);
-        return $xml;
+        ];
     }
 
     /**
      * Get a single XML value as a string.
      *
-     * @param SimpleXMLElement $xml
      * @param type $xpath
-     * @return string
+     *
      * @throws Exception
+     *
+     * @return string
      */
     public function getXmlValue(SimpleXMLElement $xml, $xpath) {
         $data = $xml->xpath($xpath);
-        if (count($data) === 1) {
+        if (1 === count($data)) {
             return trim((string) $data[0]);
         }
-        if (count($data) === 0) {
-            return null;
+        if (0 === count($data)) {
+            return;
         }
+
         throw new Exception("Too many elements for '{$xpath}'");
     }
 
+    protected function setUp() : void {
+        parent::setUp();
+        $this->testClient = static::createClient();
+    }
 }

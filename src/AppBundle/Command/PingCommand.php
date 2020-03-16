@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace AppBundle\Command;
 
 use AppBundle\Entity\Journal;
@@ -15,7 +23,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Ping the journals to make sure they're up and running.
  */
 class PingCommand extends ContainerAwareCommand {
-
     /**
      * Fully configured ping service.
      *
@@ -32,9 +39,6 @@ class PingCommand extends ContainerAwareCommand {
 
     /**
      * Build the command.
-     *
-     * @param EntityManagerInterface $em
-     * @param Ping $ping
      */
     public function __construct(EntityManagerInterface $em, Ping $ping) {
         parent::__construct();
@@ -45,12 +49,25 @@ class PingCommand extends ContainerAwareCommand {
     /**
      * {@inheritdoc}
      */
-    protected function configure() {
+    protected function configure() : void {
         $this->setName('pln:ping-whitelist');
         $this->setDescription('Find journals running a sufficiently new version of OJS and whitelist them.');
         $this->addArgument('minVersion', InputArgument::OPTIONAL, 'Minimum version required to whitelist.');
         $this->addOption('dry-run', 'd', InputOption::VALUE_NONE, 'Do not update the whitelist - report only.');
         $this->addOption('all', 'a', InputOption::VALUE_NONE, 'Ping all journals, including whitelisted/blacklisted.');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function execute(InputInterface $input, OutputInterface $output) : void {
+        $all = $input->getOption('all');
+        $journals = $this->findJournals($all);
+        foreach ($journals as $journal) {
+            $output->writeln($journal->getUuid());
+            $result = $this->ping->ping($journal);
+            $this->em->flush();
+        }
     }
 
     /**
@@ -63,20 +80,7 @@ class PingCommand extends ContainerAwareCommand {
         if ($all) {
             return $repo->findAll();
         }
+
         return $repo->getJournalsToPing();
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output) {
-        $all = $input->getOption('all');
-        $journals = $this->findJournals($all);
-        foreach ($journals as $journal) {
-            $output->writeln($journal->getUuid());
-            $result = $this->ping->ping($journal);
-            $this->em->flush();
-        }
-    }
-
 }

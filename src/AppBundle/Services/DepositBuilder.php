@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- *  This file is licensed under the MIT License version 3 or
- *  later. See the LICENSE file for details.
- *
- *  Copyright 2018 Michael Joyce <ubermichael@gmail.com>.
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace AppBundle\Services;
@@ -21,7 +22,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * Description of DepositBuilder.
  */
 class DepositBuilder {
-
     /**
      * Entity manager.
      *
@@ -38,9 +38,6 @@ class DepositBuilder {
 
     /**
      * Build the service.
-     *
-     * @param EntityManagerInterface $em
-     * @param UrlGeneratorInterface $generator
      */
     public function __construct(EntityManagerInterface $em, UrlGeneratorInterface $generator) {
         $this->em = $em;
@@ -51,32 +48,31 @@ class DepositBuilder {
      * Find and return the deposit with $uuid or create a new deposit.
      *
      * @param string $uuid
+     *
      * @return Deposit
      */
     protected function findDeposit($uuid) {
-        $deposit = $this->em->getRepository(Deposit::class)->findOneBy(array(
-        'depositUuid' => strtoupper($uuid),
-        ));
+        $deposit = $this->em->getRepository(Deposit::class)->findOneBy([
+            'depositUuid' => strtoupper($uuid),
+        ]);
         $action = 'edit';
-        if (!$deposit) {
+        if ( ! $deposit) {
             $action = 'add';
             $deposit = new Deposit();
             $deposit->setDepositUuid($uuid);
         }
-        if ($action === 'add') {
+        if ('add' === $action) {
             $deposit->addToProcessingLog('Deposit received.');
         } else {
             $deposit->addToProcessingLog('Deposit edited or reset by journal manager.');
         }
         $deposit->setAction($action);
+
         return $deposit;
     }
 
     /**
      * Build a deposit from XML.
-     *
-     * @param Journal $journal
-     * @param SimpleXMLElement $xml
      *
      * @return Deposit
      */
@@ -99,7 +95,7 @@ class DepositBuilder {
             $deposit->addLicense($node->getName(), (string) $node);
         }
         $this->em->persist($deposit);
+
         return $deposit;
     }
-
 }

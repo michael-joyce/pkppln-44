@@ -1,16 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- *  This file is licensed under the MIT License version 3 or
- *  later. See the LICENSE file for details.
- *
- *  Copyright 2018 Michael Joyce <ubermichael@gmail.com>.
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace AppBundle\Utilities;
 
 use AppBundle\Entity\Deposit;
-use Exception;
 use Psr\Http\Message\ResponseInterface;
 use SimpleXMLElement;
 
@@ -18,7 +18,6 @@ use SimpleXMLElement;
  * Description of PingResult.
  */
 class PingResult {
-
     /**
      * HTTP request response.
      *
@@ -48,16 +47,16 @@ class PingResult {
      */
     public function __construct(ResponseInterface $response = null, $errors = null) {
         $this->response = $response;
-        $this->errors = array();
-        if($errors) {
+        $this->errors = [];
+        if ($errors) {
             $this->errors[] = $errors;
         }
         $this->xml = null;
 
-        if($response) {
+        if ($response) {
             $oldErrors = libxml_use_internal_errors(true);
             $this->xml = simplexml_load_string($response->getBody());
-            if ($this->xml === false) {
+            if (false === $this->xml) {
                 foreach (libxml_get_errors() as $error) {
                     $this->errors[] = "{$error->line}:{$error->column}:{$error->code}:{$error->message}";
                 }
@@ -72,9 +71,10 @@ class PingResult {
      * @return int
      */
     public function getHttpStatus() {
-        if($this->response) {
+        if ($this->response) {
             return $this->response->getStatusCode();
         }
+
         return 500;
     }
 
@@ -87,7 +87,7 @@ class PingResult {
         return count($this->errors) > 0;
     }
 
-    public function addError($error) {
+    public function addError($error) : void {
         $this->errors[] = $error;
     }
 
@@ -110,12 +110,13 @@ class PingResult {
      * @return string
      */
     public function getBody($stripTags = true) {
-        if( ! $this->response) {
+        if ( ! $this->response) {
             return '';
         }
         if ($stripTags) {
             return strip_tags($this->response->getBody());
         }
+
         return $this->response->getBody();
     }
 
@@ -125,7 +126,7 @@ class PingResult {
      * @return bool
      */
     public function hasXml() {
-        return (bool)$this->xml;
+        return (bool) $this->xml;
     }
 
     /**
@@ -145,9 +146,10 @@ class PingResult {
      * @return string
      */
     public function getHeader($name) {
-        if( ! $this->response) {
+        if ( ! $this->response) {
             return '';
         }
+
         return $this->response->getHeader($name);
     }
 
@@ -157,9 +159,10 @@ class PingResult {
      * @return string
      */
     public function getOjsRelease() {
-        if(!$this->xml) {
+        if ( ! $this->xml) {
             return '';
         }
+
         return Xpath::getXmlValue($this->xml, '//ojsInfo/release', Deposit::DEFAULT_JOURNAL_VERSION);
     }
 
@@ -169,9 +172,10 @@ class PingResult {
      * @return string
      */
     public function getPluginReleaseVersion() {
-        if(!$this->xml) {
+        if ( ! $this->xml) {
             return '';
         }
+
         return Xpath::getXmlValue($this->xml, '//pluginInfo/release');
     }
 
@@ -181,9 +185,10 @@ class PingResult {
      * @return string
      */
     public function getPluginReleaseDate() {
-        if(!$this->xml) {
+        if ( ! $this->xml) {
             return '';
         }
+
         return Xpath::getXmlValue($this->xml, '//pluginInfo/releaseDate');
     }
 
@@ -193,9 +198,10 @@ class PingResult {
      * @return string
      */
     public function isPluginCurrent() {
-        if(!$this->xml) {
+        if ( ! $this->xml) {
             return '';
         }
+
         return Xpath::getXmlValue($this->xml, '//pluginInfo/current');
     }
 
@@ -205,21 +211,25 @@ class PingResult {
      * @return string
      */
     public function areTermsAccepted() {
-        if(!$this->xml) {
+        if ( ! $this->xml) {
             return '';
         }
+
         return Xpath::getXmlValue($this->xml, '//terms/@termsAccepted');
     }
 
     /**
      * Get the journal title from the response.
      *
+     * @param null|mixed $default
+     *
      * @return string
      */
     public function getJournalTitle($default = null) {
-        if(!$this->xml) {
+        if ( ! $this->xml) {
             return '';
         }
+
         return Xpath::getXmlValue($this->xml, '//journalInfo/title', $default);
     }
 
@@ -229,9 +239,10 @@ class PingResult {
      * @return int
      */
     public function getArticleCount() {
-        if(!$this->xml) {
+        if ( ! $this->xml) {
             return '';
         }
+
         return Xpath::getXmlValue($this->xml, '//articles/@count');
     }
 
@@ -239,20 +250,20 @@ class PingResult {
      * Get a list of article titles reported in the response.
      *
      * @return array[]
-     *   Array of associative array data.
+     *                 Array of associative array data.
      */
     public function getArticleTitles() {
-        if(!$this->xml) {
+        if ( ! $this->xml) {
             return [];
         }
-        $articles = array();
+        $articles = [];
         foreach (Xpath::query($this->xml, '//articles/article') as $node) {
-            $articles[] = array(
-            'date' => (string) $node['pubDate'],
-            'title' => trim((string) $node),
-            );
+            $articles[] = [
+                'date' => (string) $node['pubDate'],
+                'title' => trim((string) $node),
+            ];
         }
+
         return $articles;
     }
-
 }

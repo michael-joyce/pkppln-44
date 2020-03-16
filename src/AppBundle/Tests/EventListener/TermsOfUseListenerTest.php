@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- *  This file is licensed under the MIT License version 3 or
- *  later. See the LICENSE file for details.
- *
- *  Copyright 2018 Michael Joyce <ubermichael@gmail.com>.
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace AppBundle\Tests\EventListener;
@@ -14,89 +15,86 @@ use AppBundle\Entity\TermOfUseHistory;
 use Nines\UtilBundle\Tests\Util\BaseTestCase;
 
 /**
- * Description of TermsOfUseListenerTest
+ * Description of TermsOfUseListenerTest.
  */
 class TermsOfUseListenerTest extends BaseTestCase {
-
     protected function getFixtures() {
         return [];
     }
-    
-    public function testCreate() {
+
+    public function testCreate() : void {
         $term = new TermOfUse();
         $term->setContent('test 1');
         $term->setKeyCode('t1');
         $term->setWeight(1);
-        
+
         $this->em->persist($term);
         $this->em->flush();
-        
-        $history = $this->em->getRepository(TermOfUseHistory::class)->findOneBy(array(
+
+        $history = $this->em->getRepository(TermOfUseHistory::class)->findOneBy([
             'termId' => $term->getId(),
-        ));
+        ]);
         $this->assertNotNull($history);
-        $this->assertEquals('create', $history->getAction());
+        $this->assertSame('create', $history->getAction());
         $changeset = $history->getChangeSet();
-        $this->assertEquals([null, 1], $changeset['id']);
-        $this->assertEquals([null, 1], $changeset['weight']);
-        $this->assertEquals([null, 't1'], $changeset['keyCode']);
-        $this->assertEquals([null, 'test 1'], $changeset['content']);
+        $this->assertSame([null, 1], $changeset['id']);
+        $this->assertSame([null, 1], $changeset['weight']);
+        $this->assertSame([null, 't1'], $changeset['keyCode']);
+        $this->assertSame([null, 'test 1'], $changeset['content']);
     }
-    
-    public function testUpdate() {
+
+    public function testUpdate() : void {
         $term = new TermOfUse();
         $term->setContent('test 1');
         $term->setKeyCode('t1');
         $term->setWeight(1);
-        
+
         $this->em->persist($term);
         $this->em->flush();
-        
+
         $term->setContent('updated');
         $term->setKeyCode('u1');
         $term->setWeight(3);
         $this->em->flush();
-        
-        $history = $this->em->getRepository(TermOfUseHistory::class)->findOneBy(array(
+
+        $history = $this->em->getRepository(TermOfUseHistory::class)->findOneBy([
             'termId' => $term->getId(),
             'action' => 'update',
-        ));
+        ]);
         $this->assertNotNull($history);
-        $this->assertEquals('update', $history->getAction());
-        
+        $this->assertSame('update', $history->getAction());
+
         $changeset = $history->getChangeSet();
-        $this->assertEquals([1, 3], $changeset['weight']);
-        $this->assertEquals(['t1', 'u1'], $changeset['keyCode']);
-        $this->assertEquals(['test 1', 'updated'], $changeset['content']);
-        
+        $this->assertSame([1, 3], $changeset['weight']);
+        $this->assertSame(['t1', 'u1'], $changeset['keyCode']);
+        $this->assertSame(['test 1', 'updated'], $changeset['content']);
     }
-    
-    public function testDelete() {
+
+    public function testDelete() : void {
         $term = new TermOfUse();
         $term->setContent('test 1');
         $term->setKeyCode('t1');
         $term->setWeight(1);
-        
+
         $this->em->persist($term);
         $this->em->flush();
 
         // save for later.
         $termId = $term->getId();
-        
+
         $this->em->remove($term);
         $this->em->flush();
-        
-        $history = $this->em->getRepository(TermOfUseHistory::class)->findOneBy(array(
+
+        $history = $this->em->getRepository(TermOfUseHistory::class)->findOneBy([
             'termId' => $termId,
             'action' => 'delete',
-        ));
+        ]);
         $this->assertNotNull($history);
-        $this->assertEquals('delete', $history->getAction());
-        
+        $this->assertSame('delete', $history->getAction());
+
         $changeset = $history->getChangeSet();
-        $this->assertEquals([1, null], $changeset['weight']);
-        $this->assertEquals(['t1', null], $changeset['keyCode']);
-        $this->assertEquals(['test 1', null], $changeset['content']);
-        
+        $this->assertSame([1, null], $changeset['weight']);
+        $this->assertSame(['t1', null], $changeset['keyCode']);
+        $this->assertSame(['test 1', null], $changeset['content']);
     }
 }

@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace AppBundle\Command\Processing;
 
 use AppBundle\Entity\Deposit;
@@ -10,12 +18,8 @@ use Doctrine\ORM\EntityManagerInterface;
  * PlnStatusCommand command.
  */
 class StatusCommand extends AbstractProcessingCmd {
-
     /**
      * {@inheritdoc}
-     *
-     * @param EntityManagerInterface $em
-     * @param SwordClient $client
      */
     public function __construct(EntityManagerInterface $em, SwordClient $client) {
         parent::__construct($em);
@@ -25,7 +29,7 @@ class StatusCommand extends AbstractProcessingCmd {
     /**
      * Configure the command.
      */
-    protected function configure() {
+    protected function configure() : void {
         $this->setName('pln:status');
         $this->setDescription('Check status of deposits.');
         parent::configure();
@@ -38,10 +42,9 @@ class StatusCommand extends AbstractProcessingCmd {
         $statusXml = $this->client->statement($deposit);
         $term = (string) $statusXml->xpath('//atom:category[@label="State"]/@term')[0];
         $deposit->setPlnState($term);
-        if ($term === 'agreement') {
+        if ('agreement' === $term) {
             return true;
         }
-        return null;
     }
 
     /**
@@ -78,5 +81,4 @@ class StatusCommand extends AbstractProcessingCmd {
     public function successLogMessage() {
         return 'Status check with LOCKSSOMatic succeeded.';
     }
-
 }

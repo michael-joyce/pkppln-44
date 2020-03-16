@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace AppBundle\Command;
 
 use AppBundle\Entity\Blacklist;
@@ -23,7 +31,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Upgrade a PKP PLN instance from version 1 to version 2.
  */
 class UpgradeCommand extends ContainerAwareCommand {
-
     /**
      * Doctrine connection to the old database.
      *
@@ -67,15 +74,12 @@ class UpgradeCommand extends ContainerAwareCommand {
      *
      * see app/config/config.yml for examples of the configuration.
      * see app/config/services.yml to configure the dependency injection.
-     *
-     * @param Connection $oldEm
-     * @param EntityManagerInterface $em
      */
     public function __construct(Connection $oldEm, EntityManagerInterface $em) {
         parent::__construct();
         $this->source = $oldEm;
         $this->em = $em;
-        $this->idMapping = array();
+        $this->idMapping = [];
         $this->force = false;
     }
 
@@ -86,7 +90,7 @@ class UpgradeCommand extends ContainerAwareCommand {
      * @param int $old
      * @param int $new
      */
-    protected function setIdMap($class, $old, $new) {
+    protected function setIdMap($class, $old, $new) : void {
         $this->idMapping[$class][$old] = $new;
     }
 
@@ -97,19 +101,20 @@ class UpgradeCommand extends ContainerAwareCommand {
      * @param int $old
      * @param int $default
      *
-     * @return int|null
+     * @return null|int
      */
     protected function getIdMap($class, $old, $default = null) {
         if (isset($this->idMapping[$class][$old])) {
             return $this->idMapping[$class][$old];
         }
+
         return $default;
     }
 
     /**
      * Configure the command.
      */
-    public function configure() {
+    public function configure() : void {
         $this->setName('pln:upgrade');
         $this->addOption('force', null, InputOption::VALUE_NONE, 'Actually make the database changes.');
     }
@@ -122,18 +127,17 @@ class UpgradeCommand extends ContainerAwareCommand {
      * new one.
      *
      * @param string $table
-     * @param callable $callback
      */
-    public function upgradeTable($table, callable $callback) {
+    public function upgradeTable($table, callable $callback) : void {
         $countQuery = $this->source->query("SELECT count(*) c FROM {$table}");
         $countQuery->execute();
         $countRow = $countQuery->fetch();
-        print "upgrading {$countRow['c']} entities in {$table}.\n";
+        echo "upgrading {$countRow['c']} entities in {$table}.\n";
 
         $query = $this->source->query("SELECT * FROM {$table}");
         $n = 0;
         $query->execute();
-        print "$n\r";
+        echo "{$n}\r";
         while ($row = $query->fetch()) {
             $entity = $callback($row);
             if ($entity) {
@@ -143,20 +147,21 @@ class UpgradeCommand extends ContainerAwareCommand {
                 $this->em->detach($entity);
             }
             $n++;
-            print "$n\r";
+            echo "{$n}\r";
         }
-        print "\n";
+        echo "\n";
     }
 
     /**
      * Upgrade the whitelist table.
      */
-    public function upgradeWhitelist() {
+    public function upgradeWhitelist() : void {
         $callback = function ($row) {
             $entry = new Whitelist();
             $entry->setComment($row['comment']);
             $entry->setUuid($row['uuid']);
             $entry->setCreated(new DateTime($row['created']));
+
             return $entry;
         };
         $this->upgradeTable('whitelist', $callback);
@@ -165,12 +170,13 @@ class UpgradeCommand extends ContainerAwareCommand {
     /**
      * Upgrade the blacklist table.
      */
-    public function upgradeBlacklist() {
+    public function upgradeBlacklist() : void {
         $callback = function ($row) {
             $entry = new Blacklist();
             $entry->setComment($row['comment']);
             $entry->setUuid($row['uuid']);
             $entry->setCreated(new DateTime($row['created']));
+
             return $entry;
         };
         $this->upgradeTable('blacklist', $callback);
@@ -179,7 +185,7 @@ class UpgradeCommand extends ContainerAwareCommand {
     /**
      * Upgrade the users table.
      */
-    public function upgradeUsers() {
+    public function upgradeUsers() : void {
         $callback = function ($row) {
             $entry = new User();
             $entry->setUsername($row['username']);
@@ -191,6 +197,7 @@ class UpgradeCommand extends ContainerAwareCommand {
             $entry->setRoles(unserialize($row['roles']));
             $entry->setFullname($row['fullname']);
             $entry->setInstitution($row['institution']);
+
             return $entry;
         };
         $this->upgradeTable('appuser', $callback);
@@ -201,7 +208,7 @@ class UpgradeCommand extends ContainerAwareCommand {
      *
      * Term history is upgraded elsewhere.
      */
-    public function upgradeTerms() {
+    public function upgradeTerms() : void {
         $callback = function ($row) {
             $term = new TermOfUse();
             $term->setWeight($row['weight']);
@@ -209,6 +216,7 @@ class UpgradeCommand extends ContainerAwareCommand {
             $term->setContent($row['content']);
             $term->setCreated(new DateTime($row['created']));
             $term->setUpdated(new DateTime($row['updated']));
+
             return $term;
         };
         $this->upgradeTable('term_of_use', $callback);
@@ -219,7 +227,7 @@ class UpgradeCommand extends ContainerAwareCommand {
      *
      * Terms of Use must be upgraded first.
      */
-    public function upgradeTermHistory() {
+    public function upgradeTermHistory() : void {
         $callback = function ($row) {
             $history = new TermOfUseHistory();
             $termId = $this->getIdMap(TermOfUse::class, $row['term_id'], $row['term_id']);
@@ -229,6 +237,7 @@ class UpgradeCommand extends ContainerAwareCommand {
             $history->setChangeSet($row['change_set']);
             $history->setCreated(new DateTime($row['created']));
             $history->setUpdated(new DateTime($row['created']));
+
             return $history;
         };
         $this->upgradeTable('term_of_use_history', $callback);
@@ -237,7 +246,7 @@ class UpgradeCommand extends ContainerAwareCommand {
     /**
      * Upgrade the journal table.
      */
-    public function upgradeJournals() {
+    public function upgradeJournals() : void {
         $callback = function ($row) {
             $journal = new Journal();
             $journal->setUuid($row['uuid']);
@@ -246,12 +255,12 @@ class UpgradeCommand extends ContainerAwareCommand {
                 $journal->setNotified(new DateTime($row['notified']));
             }
             $journal->setTitle($row['title']);
-            if ($row['issn'] !== 'unknown') {
+            if ('unknown' !== $row['issn']) {
                 $journal->setIssn($row['issn']);
             }
             $journal->setUrl($row['url']);
             $journal->setStatus($row['status']);
-            if ($row['email'] !== 'unknown@unknown.com') {
+            if ('unknown@unknown.com' !== $row['email']) {
                 $journal->setEmail($row['email']);
             }
             if ($row['publisher_name']) {
@@ -263,7 +272,7 @@ class UpgradeCommand extends ContainerAwareCommand {
             if ($row['ojs_version']) {
                 $journal->setOjsVersion($row['ojs_version']);
             }
-            $journal->setTermsAccepted($row['terms_accepted'] == 1);
+            $journal->setTermsAccepted(1 === $row['terms_accepted']);
 
             return $journal;
         };
@@ -276,15 +285,15 @@ class UpgradeCommand extends ContainerAwareCommand {
      * Journals must be upgraded first.
      *
      * @throws Exception
-     *    If a deposit came from a journal that cannot be found.
+     *                   If a deposit came from a journal that cannot be found.
      */
-    public function upgradeDeposits() {
+    public function upgradeDeposits() : void {
         $callback = function ($row) {
             $deposit = new Deposit();
 
             $journalId = $this->getIdMap(Journal::class, $row['journal_id']);
             $journal = $this->em->find(Journal::class, $journalId);
-            if (!$journal) {
+            if ( ! $journal) {
                 throw new Exception("Journal {$row['journal_id']} not found.");
             }
             $deposit->setJournal($journal);
@@ -309,7 +318,7 @@ class UpgradeCommand extends ContainerAwareCommand {
             if ($row['deposit_date']) {
                 $deposit->setDepositDate(new DateTime($row['deposit_date']));
             }
-            if (!preg_match('|^http://pkp-pln|', $row['deposit_receipt'])) {
+            if ( ! preg_match('|^http://pkp-pln|', $row['deposit_receipt'])) {
                 $deposit->setDepositReceipt($row['deposit_receipt']);
             }
             $deposit->setProcessingLog($row['processing_log']);
@@ -317,6 +326,7 @@ class UpgradeCommand extends ContainerAwareCommand {
             $deposit->setErrorLog(unserialize($row['error_log']));
             $deposit->setHarvestAttempts($row['harvest_attempts']);
             $deposit->setJournalVersion($row['journal_version']);
+
             return $deposit;
         };
         $this->upgradeTable('deposit', $callback);
@@ -325,13 +335,14 @@ class UpgradeCommand extends ContainerAwareCommand {
     /**
      * Upgrade the documents table.
      */
-    public function upgradeDocuments() {
+    public function upgradeDocuments() : void {
         $callback = function ($row) {
             $document = new Document();
             $document->setTitle($row['title']);
             $document->setPath($row['path']);
             $document->setSummary($row['summary']);
             $document->setContent($row['content']);
+
             return $document;
         };
         $this->ugpradeTable('documents', $callback);
@@ -342,15 +353,12 @@ class UpgradeCommand extends ContainerAwareCommand {
      *
      * Does all of the upgrades in an appropriate order.
      *
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     *
      * @throws Exception
-     *   If an error occurred.
+     *                   If an error occurred.
      */
-    public function execute(InputInterface $input, OutputInterface $output) {
-        if (!$input->getOption('force')) {
-            $output->writeln("Will not run without --force.");
+    public function execute(InputInterface $input, OutputInterface $output) : void {
+        if ( ! $input->getOption('force')) {
+            $output->writeln('Will not run without --force.');
             exit;
         }
         $this->upgradeWhitelist();
@@ -362,5 +370,4 @@ class UpgradeCommand extends ContainerAwareCommand {
         $this->upgradeDeposits();
         $this->upgradeDocuments();
     }
-
 }

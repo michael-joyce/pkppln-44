@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- *  This file is licensed under the MIT License version 3 or
- *  later. See the LICENSE file for details.
- *
- *  Copyright 2018 Michael Joyce <ubermichael@gmail.com>.
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace AppBundle\Tests\Services;
@@ -17,88 +18,13 @@ use DateTime;
 use Nines\UtilBundle\Tests\Util\BaseTestCase;
 
 /**
- * Description of JournalBuilderTest
+ * Description of JournalBuilderTest.
  */
 class JournalBuilderTest extends BaseTestCase {
-
     /**
      * @var JournalBuilder
      */
     private $builder;
-
-    protected function setup() : void {
-        parent::setUp();
-        $this->builder = $this->container->get(JournalBuilder::class);
-    }
-
-    public function testInstance() {
-        $this->assertInstanceOf(JournalBuilder::class,  $this->container->get(JournalBuilder::class));
-    }
-
-    public function testResultInstance() {
-        $this->journal = $this->builder->fromXml($this->getXml(), 'B99FE131-48B5-440A-A552-4F1BF2BFDE82');
-        $this->assertInstanceOf(Journal::class, $this->journal);
-    }
-
-    public function testGetContacted() {
-        $this->journal = $this->builder->fromXml($this->getXml(), 'B99FE131-48B5-440A-A552-4F1BF2BFDE82');
-        $this->assertInstanceOf(DateTime::class, $this->journal->getContacted());
-    }
-
-    /**
-     * @dataProvider journalXmlData
-     */
-    public function testFromXml($expected, $method) {
-        $this->journal = $this->builder->fromXml($this->getXml(), 'B99FE131-48B5-440A-A552-4F1BF2BFDE82');
-        $this->assertEquals($expected, $this->journal->$method());
-    }
-
-    public function journalXmlData() {
-        return [
-            ['B99FE131-48B5-440A-A552-4F1BF2BFDE82', 'getUuid'],
-            [null, 'getOjsVersion'],
-            [null, 'getNotified'],
-            ['Intl J Test', 'getTitle'],
-            ['0000-0000', 'getIssn'],
-            ['http://example.com/ijt', 'getUrl'],
-            ['healthy', 'getStatus'],
-            [null, 'getTermsAccepted'],
-            ['user@example.com', 'getEmail'],
-            ['Publisher institution', 'getPublisherName'],
-            ['http://publisher.example.com', 'getPublisherUrl'],
-        ];
-    }
-
-    /**
-     * @dataProvider journalRequestData
-     */
-    public function testFromRequest($expected, $method) {
-        $this->journal = $this->builder->fromRequest('B99FE131-48B5-440A-A552-4F1BF2BFDE82', 'http://example.com/journal');
-        $this->assertEquals($expected, $this->journal->$method());
-    }
-
-    public function journalRequestData() {
-        return [
-            ['B99FE131-48B5-440A-A552-4F1BF2BFDE82', 'getUuid'],
-            [null, 'getOjsVersion'],
-            [null, 'getNotified'],
-            [null, 'getTitle'],
-            [null, 'getIssn'],
-            ['http://example.com/journal', 'getUrl'],
-            ['new', 'getStatus'],
-            [null, 'getTermsAccepted'],
-            ['unknown@unknown.com', 'getEmail'],
-            [null, 'getPublisherName'],
-            [null, 'getPublisherUrl'],
-        ];
-    }
-
-    public function testFromRequestExisting() {
-        $this->journal = $this->builder->fromRequest(LoadJournal::UUIDS[1], 'http://example.com/journal');
-        $this->assertEquals('healthy', $this->journal->getStatus());
-    }
-
-
 
     private function getXml() {
         $data = <<<'ENDXML'
@@ -130,7 +56,85 @@ class JournalBuilderTest extends BaseTestCase {
 ENDXML;
         $xml = simplexml_load_string($data);
         Namespaces::registerNamespaces($xml);
+
         return $xml;
     }
 
+    public function testInstance() : void {
+        $this->assertInstanceOf(JournalBuilder::class, $this->container->get(JournalBuilder::class));
+    }
+
+    public function testResultInstance() : void {
+        $this->journal = $this->builder->fromXml($this->getXml(), 'B99FE131-48B5-440A-A552-4F1BF2BFDE82');
+        $this->assertInstanceOf(Journal::class, $this->journal);
+    }
+
+    public function testGetContacted() : void {
+        $this->journal = $this->builder->fromXml($this->getXml(), 'B99FE131-48B5-440A-A552-4F1BF2BFDE82');
+        $this->assertInstanceOf(DateTime::class, $this->journal->getContacted());
+    }
+
+    /**
+     * @dataProvider journalXmlData
+     *
+     * @param mixed $expected
+     * @param mixed $method
+     */
+    public function testFromXml($expected, $method) : void {
+        $this->journal = $this->builder->fromXml($this->getXml(), 'B99FE131-48B5-440A-A552-4F1BF2BFDE82');
+        $this->assertSame($expected, $this->journal->{$method}());
+    }
+
+    public function journalXmlData() {
+        return [
+            ['B99FE131-48B5-440A-A552-4F1BF2BFDE82', 'getUuid'],
+            [null, 'getOjsVersion'],
+            [null, 'getNotified'],
+            ['Intl J Test', 'getTitle'],
+            ['0000-0000', 'getIssn'],
+            ['http://example.com/ijt', 'getUrl'],
+            ['healthy', 'getStatus'],
+            [null, 'getTermsAccepted'],
+            ['user@example.com', 'getEmail'],
+            ['Publisher institution', 'getPublisherName'],
+            ['http://publisher.example.com', 'getPublisherUrl'],
+        ];
+    }
+
+    /**
+     * @dataProvider journalRequestData
+     *
+     * @param mixed $expected
+     * @param mixed $method
+     */
+    public function testFromRequest($expected, $method) : void {
+        $this->journal = $this->builder->fromRequest('B99FE131-48B5-440A-A552-4F1BF2BFDE82', 'http://example.com/journal');
+        $this->assertSame($expected, $this->journal->{$method}());
+    }
+
+    public function journalRequestData() {
+        return [
+            ['B99FE131-48B5-440A-A552-4F1BF2BFDE82', 'getUuid'],
+            [null, 'getOjsVersion'],
+            [null, 'getNotified'],
+            [null, 'getTitle'],
+            [null, 'getIssn'],
+            ['http://example.com/journal', 'getUrl'],
+            ['new', 'getStatus'],
+            [null, 'getTermsAccepted'],
+            ['unknown@unknown.com', 'getEmail'],
+            [null, 'getPublisherName'],
+            [null, 'getPublisherUrl'],
+        ];
+    }
+
+    public function testFromRequestExisting() : void {
+        $this->journal = $this->builder->fromRequest(LoadJournal::UUIDS[1], 'http://example.com/journal');
+        $this->assertSame('healthy', $this->journal->getStatus());
+    }
+
+    protected function setup() : void {
+        parent::setUp();
+        $this->builder = $this->container->get(JournalBuilder::class);
+    }
 }

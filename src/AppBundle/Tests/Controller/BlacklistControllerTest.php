@@ -1,182 +1,188 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace AppBundle\Tests\Controller;
 
-use AppBundle\Entity\Blacklist;
 use AppBundle\DataFixtures\ORM\LoadBlacklist;
+use AppBundle\Entity\Blacklist;
 use Nines\UserBundle\DataFixtures\ORM\LoadUser;
 use Nines\UtilBundle\Tests\Util\BaseTestCase;
 
 class BlacklistControllerTest extends BaseTestCase {
-
     protected function getFixtures() {
         return [
             LoadUser::class,
-            LoadBlacklist::class
+            LoadBlacklist::class,
         ];
     }
 
-    public function testAnonIndex() {
+    public function testAnonIndex() : void {
         $client = $this->makeClient();
         $crawler = $client->request('GET', '/blacklist/');
-        $this->assertEquals(302, $client->getResponse()->getStatusCode());
-        $this->assertEquals(0, $crawler->selectLink('New')->count());
+        $this->assertSame(302, $client->getResponse()->getStatusCode());
+        $this->assertSame(0, $crawler->selectLink('New')->count());
     }
 
-    public function testUserIndex() {
+    public function testUserIndex() : void {
         $client = $this->makeClient(LoadUser::USER);
         $crawler = $client->request('GET', '/blacklist/');
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
-        $this->assertEquals(0, $crawler->selectLink('New')->count());
+        $this->assertSame(200, $client->getResponse()->getStatusCode());
+        $this->assertSame(0, $crawler->selectLink('New')->count());
     }
 
-    public function testAdminIndex() {
+    public function testAdminIndex() : void {
         $client = $this->makeClient(LoadUser::ADMIN);
         $crawler = $client->request('GET', '/blacklist/');
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
-        $this->assertEquals(1, $crawler->selectLink('New')->count());
+        $this->assertSame(200, $client->getResponse()->getStatusCode());
+        $this->assertSame(1, $crawler->selectLink('New')->count());
     }
 
-    public function testAnonShow() {
+    public function testAnonShow() : void {
         $client = $this->makeClient();
         $crawler = $client->request('GET', '/blacklist/1');
-        $this->assertEquals(302, $client->getResponse()->getStatusCode());
-        $this->assertEquals(0, $crawler->selectLink('Edit')->count());
-        $this->assertEquals(0, $crawler->selectLink('Delete')->count());
+        $this->assertSame(302, $client->getResponse()->getStatusCode());
+        $this->assertSame(0, $crawler->selectLink('Edit')->count());
+        $this->assertSame(0, $crawler->selectLink('Delete')->count());
     }
 
-    public function testUserShow() {
+    public function testUserShow() : void {
         $client = $this->makeClient(LoadUser::USER);
         $crawler = $client->request('GET', '/blacklist/1');
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
-        $this->assertEquals(0, $crawler->selectLink('Edit')->count());
-        $this->assertEquals(0, $crawler->selectLink('Delete')->count());
+        $this->assertSame(200, $client->getResponse()->getStatusCode());
+        $this->assertSame(0, $crawler->selectLink('Edit')->count());
+        $this->assertSame(0, $crawler->selectLink('Delete')->count());
     }
 
-    public function testAdminShow() {
+    public function testAdminShow() : void {
         $client = $this->makeClient(LoadUser::ADMIN);
         $crawler = $client->request('GET', '/blacklist/1');
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
-        $this->assertEquals(1, $crawler->selectLink('Edit')->count());
-        $this->assertEquals(1, $crawler->selectLink('Delete')->count());
+        $this->assertSame(200, $client->getResponse()->getStatusCode());
+        $this->assertSame(1, $crawler->selectLink('Edit')->count());
+        $this->assertSame(1, $crawler->selectLink('Delete')->count());
     }
 
-    public function testAnonSearch() {
+    public function testAnonSearch() : void {
         $client = $this->makeClient();
         $formCrawler = $client->request('GET', '/blacklist/search');
-        $this->assertEquals(302, $client->getResponse()->getStatusCode());
+        $this->assertSame(302, $client->getResponse()->getStatusCode());
         $this->assertTrue($client->getResponse()->isRedirect());
     }
-    
-    public function testUserSearch() {
+
+    public function testUserSearch() : void {
         $client = $this->makeClient(LoadUser::USER);
         $formCrawler = $client->request('GET', '/blacklist/search');
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        $this->assertSame(200, $client->getResponse()->getStatusCode());
         $form = $formCrawler->selectButton('Search')->form([
             'q' => '4EED',
         ]);
         $client->submit($form);
-        $this->assertEquals(200, $client->getresponse()->getStatusCode());
-        $this->assertEquals(1, $client->getCrawler()->filter('td:contains("AC54ED1A-9795-4EED-94FD-D80CB62E0C84")')->count());
+        $this->assertSame(200, $client->getresponse()->getStatusCode());
+        $this->assertSame(1, $client->getCrawler()->filter('td:contains("AC54ED1A-9795-4EED-94FD-D80CB62E0C84")')->count());
     }
-    
-    public function testAdminSearch() {
+
+    public function testAdminSearch() : void {
         $client = $this->makeClient(LoadUser::ADMIN);
         $formCrawler = $client->request('GET', '/blacklist/search');
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        $this->assertSame(200, $client->getResponse()->getStatusCode());
         $form = $formCrawler->selectButton('Search')->form([
             'q' => '4EED',
         ]);
         $client->submit($form);
-        $this->assertEquals(200, $client->getresponse()->getStatusCode());
-        $this->assertEquals(1, $client->getCrawler()->filter('td:contains("AC54ED1A-9795-4EED-94FD-D80CB62E0C84")')->count());
+        $this->assertSame(200, $client->getresponse()->getStatusCode());
+        $this->assertSame(1, $client->getCrawler()->filter('td:contains("AC54ED1A-9795-4EED-94FD-D80CB62E0C84")')->count());
     }
-    
-    public function testAnonEdit() {
+
+    public function testAnonEdit() : void {
         $client = $this->makeClient();
         $crawler = $client->request('GET', '/blacklist/1/edit');
-        $this->assertEquals(302, $client->getResponse()->getStatusCode());
+        $this->assertSame(302, $client->getResponse()->getStatusCode());
         $this->assertTrue($client->getResponse()->isRedirect('http://localhost/login'));
     }
 
-    public function testUserEdit() {
+    public function testUserEdit() : void {
         $client = $this->makeClient(LoadUser::USER);
         $crawler = $client->request('GET', '/blacklist/1/edit');
-        $this->assertEquals(403, $client->getResponse()->getStatusCode());
+        $this->assertSame(403, $client->getResponse()->getStatusCode());
     }
 
-    public function testAdminEdit() {
+    public function testAdminEdit() : void {
         $client = $this->makeClient(LoadUser::ADMIN);
         $formCrawler = $client->request('GET', '/blacklist/1/edit');
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        $this->assertSame(200, $client->getResponse()->getStatusCode());
 
         $form = $formCrawler->selectButton('Update')->form([
             'blacklist[uuid]' => '77E72F60-67B0-43AE-95FF-14F16BBF4B30',
-            'blacklist[comment]' => 'Testing.'
+            'blacklist[comment]' => 'Testing.',
         ]);
 
         $client->submit($form);
         $this->assertTrue($client->getResponse()->isRedirect('/blacklist/1'));
         $responseCrawler = $client->followRedirect();
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
-        $this->assertEquals(1, $responseCrawler->filter('td:contains("77E72F60-67B0-43AE-95FF-14F16BBF4B30")')->count());
+        $this->assertSame(200, $client->getResponse()->getStatusCode());
+        $this->assertSame(1, $responseCrawler->filter('td:contains("77E72F60-67B0-43AE-95FF-14F16BBF4B30")')->count());
     }
 
-    public function testAnonNew() {
+    public function testAnonNew() : void {
         $client = $this->makeClient();
         $crawler = $client->request('GET', '/blacklist/new');
-        $this->assertEquals(302, $client->getResponse()->getStatusCode());
+        $this->assertSame(302, $client->getResponse()->getStatusCode());
         $this->assertTrue($client->getResponse()->isRedirect('http://localhost/login'));
     }
 
-    public function testUserNew() {
+    public function testUserNew() : void {
         $client = $this->makeClient(LoadUser::USER);
         $crawler = $client->request('GET', '/blacklist/new');
-        $this->assertEquals(403, $client->getResponse()->getStatusCode());
+        $this->assertSame(403, $client->getResponse()->getStatusCode());
     }
 
-    public function testAdminNew() {
+    public function testAdminNew() : void {
         $client = $this->makeClient(LoadUser::ADMIN);
         $formCrawler = $client->request('GET', '/blacklist/new');
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        $this->assertSame(200, $client->getResponse()->getStatusCode());
 
         $form = $formCrawler->selectButton('Create')->form([
             'blacklist[uuid]' => '77E72F60-67B0-43AE-95FF-14F16BBF4B30',
-            'blacklist[comment]' => 'Testing.'
+            'blacklist[comment]' => 'Testing.',
         ]);
 
         $client->submit($form);
         $this->assertTrue($client->getResponse()->isRedirect());
         $responseCrawler = $client->followRedirect();
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
-        $this->assertEquals(1, $responseCrawler->filter('td:contains("77E72F60-67B0-43AE-95FF-14F16BBF4B30")')->count());
+        $this->assertSame(200, $client->getResponse()->getStatusCode());
+        $this->assertSame(1, $responseCrawler->filter('td:contains("77E72F60-67B0-43AE-95FF-14F16BBF4B30")')->count());
     }
 
-    public function testAnonDelete() {
+    public function testAnonDelete() : void {
         $client = $this->makeClient();
         $crawler = $client->request('GET', '/blacklist/1/delete');
-        $this->assertEquals(302, $client->getResponse()->getStatusCode());
+        $this->assertSame(302, $client->getResponse()->getStatusCode());
         $this->assertTrue($client->getResponse()->isRedirect('http://localhost/login'));
     }
 
-    public function testUserDelete() {
+    public function testUserDelete() : void {
         $client = $this->makeClient(LoadUser::USER);
         $crawler = $client->request('GET', '/blacklist/1/delete');
-        $this->assertEquals(403, $client->getResponse()->getStatusCode());
+        $this->assertSame(403, $client->getResponse()->getStatusCode());
     }
 
-    public function testAdminDelete() {
+    public function testAdminDelete() : void {
         $preCount = count($this->em->getRepository(Blacklist::class)->findAll());
         $client = $this->makeClient(LoadUser::ADMIN);
         $crawler = $client->request('GET', '/blacklist/1/delete');
-        $this->assertEquals(302, $client->getResponse()->getStatusCode());
+        $this->assertSame(302, $client->getResponse()->getStatusCode());
         $this->assertTrue($client->getResponse()->isRedirect());
         $responseCrawler = $client->followRedirect();
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        $this->assertSame(200, $client->getResponse()->getStatusCode());
 
         $this->em->clear();
         $postCount = count($this->em->getRepository(Blacklist::class)->findAll());
-        $this->assertEquals($preCount - 1, $postCount);
+        $this->assertSame($preCount - 1, $postCount);
     }
-
 }

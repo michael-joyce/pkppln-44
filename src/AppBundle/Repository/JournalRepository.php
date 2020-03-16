@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace AppBundle\Repository;
 
 use AppBundle\Entity\Blacklist;
@@ -10,28 +18,29 @@ use Doctrine\ORM\EntityRepository;
  * Custom journal queries for doctrine.
  */
 class JournalRepository extends EntityRepository {
-
     /**
      * Get a list of journals that need to be pinged.
      *
      * @return Collection|Journal[]
-     *   List of journals.
+     *                              List of journals.
      */
     public function getJournalsToPing() {
-
         $blacklist = $this->getEntityManager()->getRepository(Blacklist::class)
             ->createQueryBuilder('bl')
-            ->select('bl.uuid');
+            ->select('bl.uuid')
+        ;
 
         $whitelist = $this->getEntityManager()->getRepository(Whitelist::class)
             ->createQueryBuilder('wl')
-            ->select('wl.uuid');
+            ->select('wl.uuid')
+        ;
 
         $qb = $this->createQueryBuilder('j');
         $qb->andWhere('j.status != :status');
         $qb->setParameter('status', 'ping-error');
         $qb->andWhere($qb->expr()->notIn('j.uuid', $blacklist->getDQL()));
         $qb->andWhere($qb->expr()->notIn('j.uuid', $whitelist->getDQL()));
+
         return $qb->getQuery()->execute();
     }
 
@@ -42,14 +51,15 @@ class JournalRepository extends EntityRepository {
      * publisher url.
      *
      * @param string $q
+     *
      * @return Query
      */
     public function searchQuery($q) {
         $qb = $this->createQueryBuilder('j');
         $qb->where('CONCAT(j.uuid, j.title, j.issn, j.url, j.email, j.publisherName, j.publisherUrl) LIKE :q');
         $qb->setParameter('q', '%' . $q . '%');
-        $query = $qb->getQuery();
-        return $query;
+
+        return $qb->getQuery();
     }
 
     /**
@@ -61,7 +71,8 @@ class JournalRepository extends EntityRepository {
         $qb = $this->createQueryBuilder('e');
         $qb->select('e.status, count(e) as ct')
             ->groupBy('e.status')
-            ->orderBy('e.status');
+            ->orderBy('e.status')
+        ;
 
         return $qb->getQuery()->getResult();
     }
@@ -118,5 +129,4 @@ class JournalRepository extends EntityRepository {
 
         return $qb->getQuery()->getResult();
     }
-
 }

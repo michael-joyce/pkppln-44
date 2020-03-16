@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace AppBundle\Entity;
 
 use DateTime;
@@ -16,14 +24,13 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="AppBundle\Repository\DepositRepository")
  */
 class Deposit extends AbstractEntity {
-
     /**
      * Default OJS version.
      *
      * The journal version was added to the PKP PLN plugin in OJS version 3. If
      * a deposit doesn't have a version attribute, then assume it is OJS 2.4.8.
      */
-    const DEFAULT_JOURNAL_VERSION = '2.4.8';
+    public const DEFAULT_JOURNAL_VERSION = '2.4.8';
 
     /**
      * The journal that sent this deposit.
@@ -34,6 +41,16 @@ class Deposit extends AbstractEntity {
      * @ORM\JoinColumn(name="journal_id", referencedColumnName="id")
      */
     private $journal;
+
+    /**
+     * The AuContainer that holds this deposit.
+     *
+     * @var AuContainer
+     *
+     * @ORM\ManyToOne(targetEntity="AuContainer", inversedBy="deposits")
+     * @ORM\JoinColumn(name="au_container_id", referencedColumnName="id", nullable=true)
+     */
+    private $auContainer;
 
     /**
      * The version of OJS that made the deposit and created the export file.
@@ -96,7 +113,7 @@ class Deposit extends AbstractEntity {
      * The issue volume number.
      *
      * @var int
-     * @ORM\Column(type="integer", nullable=false)
+     * @ORM\Column(type="string", nullable=false)
      */
     private $volume;
 
@@ -105,7 +122,7 @@ class Deposit extends AbstractEntity {
      *
      * @var int
      *
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string")
      */
     private $issue;
 
@@ -229,6 +246,7 @@ class Deposit extends AbstractEntity {
 
     /**
      * Number of times the the server has attempted to harvest the deposit.
+     *
      * @var int
      * @ORM\Column(type="integer")
      */
@@ -239,11 +257,11 @@ class Deposit extends AbstractEntity {
      */
     public function __construct() {
         parent::__construct();
-        $this->license = array();
+        $this->license = [];
         $this->received = new DateTime();
         $this->processingLog = '';
         $this->state = 'depositedByJournal';
-        $this->errorLog = array();
+        $this->errorLog = [];
         $this->harvestAttempts = 0;
         $this->journalVersion = self::DEFAULT_JOURNAL_VERSION;
     }
@@ -282,8 +300,6 @@ class Deposit extends AbstractEntity {
     /**
      * Set license.
      *
-     * @param array $license
-     *
      * @return Deposit
      */
     public function setLicense(array $license) {
@@ -304,6 +320,7 @@ class Deposit extends AbstractEntity {
         if (trim($value)) {
             $this->license[$key] = trim($value);
         }
+
         return $this;
     }
 
@@ -364,8 +381,6 @@ class Deposit extends AbstractEntity {
 
     /**
      * Set received.
-     *
-     * @param DateTime $received
      *
      * @return Deposit
      */
@@ -452,8 +467,6 @@ class Deposit extends AbstractEntity {
 
     /**
      * Set pubDate.
-     *
-     * @param DateTime $pubDate
      *
      * @return Deposit
      */
@@ -585,8 +598,6 @@ class Deposit extends AbstractEntity {
     /**
      * Set errorLog.
      *
-     * @param array $errorLog
-     *
      * @return Deposit
      */
     public function setErrorLog(array $errorLog) {
@@ -598,13 +609,16 @@ class Deposit extends AbstractEntity {
     /**
      * Get errorLog.
      *
+     * @param null|mixed $delim
+     *
      * @return array|string
-     *   Errors encountered during processing, either as a string or list.
+     *                      Errors encountered during processing, either as a string or list.
      */
     public function getErrorLog($delim = null) {
         if ($delim) {
             return implode($delim, $this->errorLog);
         }
+
         return $this->errorLog;
     }
 
@@ -617,6 +631,7 @@ class Deposit extends AbstractEntity {
      */
     public function addErrorLog($error) {
         $this->errorLog[] = $error;
+
         return $this;
     }
 
@@ -711,8 +726,6 @@ class Deposit extends AbstractEntity {
     /**
      * Set depositDate.
      *
-     * @param DateTime $depositDate
-     *
      * @return Deposit
      */
     public function setDepositDate(DateTime $depositDate) {
@@ -779,7 +792,7 @@ class Deposit extends AbstractEntity {
      *
      * @param string $content
      */
-    public function addToProcessingLog($content) {
+    public function addToProcessingLog($content) : void {
         $date = date(DateTime::ATOM);
         $this->processingLog .= "{$date}\n{$content}\n\n";
     }
@@ -828,4 +841,25 @@ class Deposit extends AbstractEntity {
         return $this->journal;
     }
 
+    /**
+     * Set auContainer.
+     *
+     * @param AuContainer $auContainer
+     *
+     * @return Deposit
+     */
+    public function setAuContainer(AuContainer $auContainer = null) {
+        $this->auContainer = $auContainer;
+
+        return $this;
+    }
+
+    /**
+     * Get auContainer.
+     *
+     * @return AuContainer
+     */
+    public function getAuContainer() {
+        return $this->auContainer;
+    }
 }

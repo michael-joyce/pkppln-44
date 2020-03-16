@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace AppBundle\Command\Processing;
 
 use AppBundle\Entity\Deposit;
@@ -10,7 +18,6 @@ use Doctrine\ORM\EntityManagerInterface;
  * Send pending deposits to LOCKSS.
  */
 class DepositCommand extends AbstractProcessingCmd {
-
     /**
      * Depositor service.
      *
@@ -20,9 +27,6 @@ class DepositCommand extends AbstractProcessingCmd {
 
     /**
      * {@inheritdoc}
-     *
-     * @param EntityManagerInterface $em
-     * @param Depositor $depositor
      */
     public function __construct(EntityManagerInterface $em, Depositor $depositor) {
         parent::__construct($em);
@@ -32,7 +36,7 @@ class DepositCommand extends AbstractProcessingCmd {
     /**
      * {@inheritdoc}
      */
-    protected function configure() {
+    protected function configure() : void {
         $this->setName('pln:deposit');
         $this->setDescription('Send deposits to LockssOMatic.');
         parent::configure();
@@ -79,5 +83,4 @@ class DepositCommand extends AbstractProcessingCmd {
     public function errorState() {
         return 'deposit-error';
     }
-
 }

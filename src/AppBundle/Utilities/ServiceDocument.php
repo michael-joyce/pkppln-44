@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- *  This file is licensed under the MIT License version 3 or
- *  later. See the LICENSE file for details.
- *
- *  Copyright 2018 Michael Joyce <ubermichael@gmail.com>.
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace AppBundle\Utilities;
@@ -16,7 +17,6 @@ use SimpleXMLElement;
  * Wrapper around a SWORD service document.
  */
 class ServiceDocument {
-
     /**
      * XML from the document.
      *
@@ -35,23 +35,33 @@ class ServiceDocument {
     }
 
     /**
+     * Return the XML for the document.
+     *
+     * @return string
+     */
+    public function __toString() {
+        return $this->xml->asXML();
+    }
+
+    /**
      * Get a single value from the document based on the XPath query $xpath.
      *
      * @param string $xpath
      *
-     * @return null|string
-     *
      * @throws Exception
-     *   If the query results in multiple values.
+     *                   If the query results in multiple values.
+     *
+     * @return null|string
      */
     public function getXpathValue($xpath) {
         $result = $this->xml->xpath($xpath);
-        if (count($result) === 0) {
-            return null;
+        if (0 === count($result)) {
+            return;
         }
         if (count($result) > 1) {
-            throw new Exception("Too many values returned by xpath query.");
+            throw new Exception('Too many values returned by xpath query.');
         }
+
         return (string) $result[0];
     }
 
@@ -81,14 +91,4 @@ class ServiceDocument {
     public function getCollectionUri() {
         return $this->getXpathValue('.//app:collection/@href');
     }
-
-    /**
-     * Return the XML for the document.
-     *
-     * @return string
-     */
-    public function __toString() {
-        return $this->xml->asXML();
-    }
-
 }

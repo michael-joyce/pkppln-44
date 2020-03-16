@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- *  This file is licensed under the MIT License version 3 or
- *  later. See the LICENSE file for details.
- *
- *  Copyright 2018 Michael Joyce <ubermichael@gmail.com>.
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace AppBundle\Tests\Repository;
@@ -16,55 +17,53 @@ use AppBundle\Repository\DepositRepository;
 use Nines\UtilBundle\Tests\Util\BaseTestCase;
 
 /**
- * Description of DepositRepositoryTest
+ * Description of DepositRepositoryTest.
  */
 class DepositRepositoryTest extends BaseTestCase {
-
     /**
      * @return DepositRepository
      */
     private $repo;
 
     protected function getFixtures() {
-        return array(
+        return [
             LoadDeposit::class,
             LoadJournal::class,
-        );
+        ];
+    }
+
+    public function testSearchQueryUuid() : void {
+        $result = $this->repo->searchQuery('A584');
+        $this->assertSame(1, count($result->execute()));
+    }
+
+    public function testSearchQueryUrl() : void {
+        $result = $this->repo->searchQuery('1.zip');
+        $this->assertSame(1, count($result->execute()));
+    }
+
+    public function testSearchQueryUuidWithJournal() : void {
+        $result = $this->repo->searchQuery('A584', $this->getReference('journal.1'));
+        $this->assertSame(1, count($result->execute()));
+    }
+
+    public function testSearchQueryUrlWithJorunal() : void {
+        $result = $this->repo->searchQuery('1.zip', $this->getReference('journal.1'));
+        $this->assertSame(1, count($result->execute()));
+    }
+
+    public function testSearchQueryUuidWithOtherJournal() : void {
+        $result = $this->repo->searchQuery('A584', $this->getReference('journal.2'));
+        $this->assertSame(0, count($result->execute()));
+    }
+
+    public function testSearchQueryUrlWithOtherJorunal() : void {
+        $result = $this->repo->searchQuery('1.zip', $this->getReference('journal.2'));
+        $this->assertSame(0, count($result->execute()));
     }
 
     protected function setup() : void {
         parent::setUp();
         $this->repo = $this->em->getRepository(Deposit::class);
     }
-
-    public function testSearchQueryUuid() {
-        $result = $this->repo->searchQuery('A584');
-        $this->assertEquals(1, count($result->execute()));
-    }
-    
-    public function testSearchQueryUrl() {
-        $result = $this->repo->searchQuery('1.zip');
-        $this->assertEquals(1, count($result->execute()));
-    }
-    
-    public function testSearchQueryUuidWithJournal() {
-        $result = $this->repo->searchQuery('A584', $this->getReference('journal.1'));
-        $this->assertEquals(1, count($result->execute()));
-    }
-    
-    public function testSearchQueryUrlWithJorunal() {
-        $result = $this->repo->searchQuery('1.zip', $this->getReference('journal.1'));
-        $this->assertEquals(1, count($result->execute()));
-    }
-    
-    public function testSearchQueryUuidWithOtherJournal() {
-        $result = $this->repo->searchQuery('A584', $this->getReference('journal.2'));
-        $this->assertEquals(0, count($result->execute()));
-    }
-    
-    public function testSearchQueryUrlWithOtherJorunal() {
-        $result = $this->repo->searchQuery('1.zip', $this->getReference('journal.2'));
-        $this->assertEquals(0, count($result->execute()));
-    }
-    
 }

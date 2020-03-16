@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Journal;
@@ -20,11 +28,8 @@ use Symfony\Component\HttpFoundation\Request;
  * @Route("/journal")
  */
 class JournalController extends Controller {
-
     /**
      * Lists all Journal entities.
-     *
-     * @param Request $request
      *
      * @return array
      *
@@ -36,7 +41,7 @@ class JournalController extends Controller {
         $em = $this->getDoctrine()->getManager();
         $qb = $em->createQueryBuilder();
         $qb->select('e')->from(Journal::class, 'e')->orderBy('e.id', 'ASC');
-        if($request->query->get('status', null)) {
+        if ($request->query->get('status', null)) {
             $qb->andWhere('e.status = :status');
             $qb->setParameter('status', $request->query->get('status'));
         }
@@ -44,15 +49,13 @@ class JournalController extends Controller {
         $paginator = $this->get('knp_paginator');
         $journals = $paginator->paginate($query, $request->query->getint('page', 1), 25);
 
-        return array(
+        return [
             'journals' => $journals,
-        );
+        ];
     }
 
     /**
      * Search for Journal entities.
-     *
-     * @param Request $request
      *
      * @Route("/search", name="journal_search")
      * @Method("GET")
@@ -67,20 +70,17 @@ class JournalController extends Controller {
             $query = $repo->searchQuery($q);
             $journals = $paginator->paginate($query, $request->query->getInt('page', 1), 25);
         } else {
-            $journals = $paginator->paginate(array(), $request->query->getInt('page', 1), 25);
+            $journals = $paginator->paginate([], $request->query->getInt('page', 1), 25);
         }
 
-        return array(
+        return [
             'journals' => $journals,
             'q' => $q,
-        );
+        ];
     }
 
     /**
      * Finds and displays a Journal entity.
-     *
-     * @param Journal $journal
-     * @param BlackWhiteList $list
      *
      * @return array
      *
@@ -89,19 +89,14 @@ class JournalController extends Controller {
      * @Template()
      */
     public function showAction(Journal $journal, BlackWhiteList $list) {
-
-        return array(
+        return [
             'journal' => $journal,
             'list' => $list,
-        );
+        ];
     }
 
     /**
      * Pings a journal and displays the result.
-     *
-     * @param Journal $journal
-     * @param Ping $ping
-     * @param EntityManagerInterface $em
      *
      * @return array
      *
@@ -113,10 +108,9 @@ class JournalController extends Controller {
         $result = $ping->ping($journal);
         $em->flush();
 
-        return array(
+        return [
             'journal' => $journal,
             'result' => $result,
-        );
+        ];
     }
-
 }

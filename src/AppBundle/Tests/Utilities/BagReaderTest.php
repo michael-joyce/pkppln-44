@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- *  This file is licensed under the MIT License version 3 or
- *  later. See the LICENSE file for details.
- *
- *  Copyright 2018 Michael Joyce <ubermichael@gmail.com>.
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace AppBundle\Tests\Utilities;
@@ -16,10 +17,9 @@ use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Description of XpathTest
+ * Description of XpathTest.
  */
 class BagReaderTest extends TestCase {
-
     /**
      * @var vfsStreamDirectory
      */
@@ -30,15 +30,14 @@ class BagReaderTest extends TestCase {
      */
     private $reader;
 
+    public function testReadBagException() : void {
+        $this->expectException(Exception::class);
+        $this->reader->readBag($this->root->url() . '/doesnotexist');
+    }
+
     protected function setup() : void {
         parent::setUp();
         $this->root = vfsStream::setup();
         $this->reader = new BagReader();
     }
-
-    public function testReadBagException() {
-        $this->expectException(Exception::class);
-        $this->reader->readBag($this->root->url() . '/doesnotexist');
-    }
-
 }

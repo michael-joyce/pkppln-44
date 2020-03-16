@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Document;
@@ -18,11 +26,8 @@ use Symfony\Component\HttpFoundation\Request;
  * @Route("/document")
  */
 class DocumentController extends Controller {
-
     /**
      * Lists all Document entities.
-     *
-     * @param Request $request
      *
      * @return array
      *
@@ -38,18 +43,16 @@ class DocumentController extends Controller {
         $paginator = $this->get('knp_paginator');
         $documents = $paginator->paginate($query, $request->query->getint('page', 1), 25);
 
-        return array(
+        return [
             'documents' => $documents,
-        );
+        ];
     }
 
     /**
      * Creates a new Document entity.
      *
-     * @param Request $request
-     *
      * @return array|RedirectResponse
-     *   Array data for the template processor or a redirect to the Document.
+     *                                Array data for the template processor or a redirect to the Document.
      *
      * @Security("has_role('ROLE_ADMIN')")
      * @Route("/new", name="document_new")
@@ -67,19 +70,18 @@ class DocumentController extends Controller {
             $em->flush();
 
             $this->addFlash('success', 'The new document was created.');
-            return $this->redirectToRoute('document_show', array('id' => $document->getId()));
+
+            return $this->redirectToRoute('document_show', ['id' => $document->getId()]);
         }
 
-        return array(
+        return [
             'document' => $document,
             'form' => $form->createView(),
-        );
+        ];
     }
 
     /**
      * Finds and displays a Document entity.
-     *
-     * @param Document $document
      *
      * @return array
      *
@@ -88,20 +90,16 @@ class DocumentController extends Controller {
      * @Template()
      */
     public function showAction(Document $document) {
-
-        return array(
+        return [
             'document' => $document,
-        );
+        ];
     }
 
     /**
      * Displays a form to edit an existing Document entity.
      *
-     * @param Request $request
-     * @param Document $document
-     *
      * @return array|RedirectResponse
-     *   Array data for the template processor or a redirect to the Document.
+     *                                Array data for the template processor or a redirect to the Document.
      *
      * @Security("has_role('ROLE_ADMIN')")
      * @Route("/{id}/edit", name="document_edit")
@@ -116,23 +114,21 @@ class DocumentController extends Controller {
             $em = $this->getDoctrine()->getManager();
             $em->flush();
             $this->addFlash('success', 'The document has been updated.');
-            return $this->redirectToRoute('document_show', array('id' => $document->getId()));
+
+            return $this->redirectToRoute('document_show', ['id' => $document->getId()]);
         }
 
-        return array(
+        return [
             'document' => $document,
             'edit_form' => $editForm->createView(),
-        );
+        ];
     }
 
     /**
      * Deletes a Document entity.
      *
-     * @param Request $request
-     * @param Document $document
-     *
      * @return array|RedirectResponse
-     *   A redirect to the document_index.
+     *                                A redirect to the document_index.
      *
      * @Security("has_role('ROLE_ADMIN')")
      * @Route("/{id}/delete", name="document_delete")
@@ -146,5 +142,4 @@ class DocumentController extends Controller {
 
         return $this->redirectToRoute('document_index');
     }
-
 }

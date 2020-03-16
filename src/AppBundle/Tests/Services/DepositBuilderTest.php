@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- *  This file is licensed under the MIT License version 3 or
- *  later. See the LICENSE file for details.
- *
- *  Copyright 2018 Michael Joyce <ubermichael@gmail.com>.
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace AppBundle\Tests\Services;
@@ -18,73 +19,11 @@ use DateTime;
 use Nines\UtilBundle\Tests\Util\BaseTestCase;
 
 /**
- * Description of DepositBuilderTest
+ * Description of DepositBuilderTest.
  */
 class DepositBuilderTest extends BaseTestCase {
-
     private $deposit;
-    
-    protected function setup() : void {
-        parent::setUp();
-        $builder = $this->container->get(DepositBuilder::class);
-        $this->deposit = $builder->fromXml($this->getReference('journal.1'), $this->getXml());
-    }
-    
-    public function getFixtures() {
-        return array(
-            LoadJournal::class,
-            LoadDeposit::class,
-        );
-    }
 
-    public function testInstance() {
-        $this->assertInstanceOf(DepositBuilder::class, $this->container->get(DepositBuilder::class));
-    }
-    
-    public function testBuildInstance() {
-        $this->assertInstanceOf(Deposit::class, $this->deposit);
-    }
-        
-    public function testReceived() {
-        $this->assertInstanceOf(DateTime::class, $this->deposit->getReceived());        
-    }
-    
-    public function testProcessingLog() {
-        $this->assertStringEndsWith("Deposit received.\n\n", $this->deposit->getProcessingLog());        
-    }
-    
-    /**
-     * @dataProvider depositData
-     */
-    public function testNewDeposit($expected, $method) {
-        $this->assertEquals($expected, $this->deposit->$method());
-    }
-    
-    public function depositData() {
-        return [
-            ['2.4.8', 'getJournalVersion'],
-            [['publishingMode' => 'Open'], 'getLicense'],
-            ['', 'getFileType'],
-            ['00FD6D96-0155-43A4-97F7-2C6EE8EBFF09', 'getDepositUuid'],
-            ['add', 'getAction'],
-            [44, 'getVolume'],
-            [4, 'getIssue'],
-            [new DateTime('2015-07-14'), 'getPubDate'],
-            ['sha-1', 'getChecksumType'],
-            ['25B0BD51BB05C145672617FCED484C9E71EC553B', 'getChecksumValue'],
-            ['http://example.com//00FD6D96-0155-43A4-97F7-2C6EE8EBFF09', 'getUrl'],
-            [3613, 'getSize'],
-            ['depositedByJournal', 'getState'],
-            [[], 'getErrorLog'],
-            [null, 'getPlnState'],
-            [null, 'getPackageChecksumType'],
-            [null, 'getPackageChecksumValue'],
-            [null, 'getDepositDate'],
-            [null, 'getDepositReceipt'],
-            [0, 'getHarvestAttempts'],
-        ];
-    }
-    
     private function getXml() {
         $data = <<<'ENDXML'
 <?xml version="1.0" encoding="utf-8"?>
@@ -110,7 +49,71 @@ class DepositBuilderTest extends BaseTestCase {
 ENDXML;
         $xml = simplexml_load_string($data);
         Namespaces::registerNamespaces($xml);
+
         return $xml;
     }
-            
+
+    public function getFixtures() {
+        return [
+            LoadJournal::class,
+            LoadDeposit::class,
+        ];
+    }
+
+    public function testInstance() : void {
+        $this->assertInstanceOf(DepositBuilder::class, $this->container->get(DepositBuilder::class));
+    }
+
+    public function testBuildInstance() : void {
+        $this->assertInstanceOf(Deposit::class, $this->deposit);
+    }
+
+    public function testReceived() : void {
+        $this->assertInstanceOf(DateTime::class, $this->deposit->getReceived());
+    }
+
+    public function testProcessingLog() : void {
+        $this->assertStringEndsWith("Deposit received.\n\n", $this->deposit->getProcessingLog());
+    }
+
+    /**
+     * @dataProvider depositData
+     *
+     * @param mixed $expected
+     * @param mixed $method
+     */
+    public function testNewDeposit($expected, $method) : void {
+        $this->assertSame($expected, $this->deposit->{$method}());
+    }
+
+    public function depositData() {
+        return [
+            ['2.4.8', 'getJournalVersion'],
+            [['publishingMode' => 'Open'], 'getLicense'],
+            ['', 'getFileType'],
+            ['00FD6D96-0155-43A4-97F7-2C6EE8EBFF09', 'getDepositUuid'],
+            ['add', 'getAction'],
+            [44, 'getVolume'],
+            [4, 'getIssue'],
+            [new DateTime('2015-07-14'), 'getPubDate'],
+            ['sha-1', 'getChecksumType'],
+            ['25B0BD51BB05C145672617FCED484C9E71EC553B', 'getChecksumValue'],
+            ['http://example.com//00FD6D96-0155-43A4-97F7-2C6EE8EBFF09', 'getUrl'],
+            [3613, 'getSize'],
+            ['depositedByJournal', 'getState'],
+            [[], 'getErrorLog'],
+            [null, 'getPlnState'],
+            [null, 'getPackageChecksumType'],
+            [null, 'getPackageChecksumValue'],
+            [null, 'getDepositDate'],
+            [null, 'getDepositReceipt'],
+            [0, 'getHarvestAttempts'],
+        ];
+    }
+
+    protected function setup() : void {
+        parent::setUp();
+        $builder = $this->container->get(DepositBuilder::class);
+        $this->deposit = $builder->fromXml($this->getReference('journal.1'), $this->getXml());
+    }
 }

@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace AppBundle\Services\Processing;
 
 use AppBundle\Entity\Deposit;
@@ -10,12 +18,11 @@ use Exception;
  * Validate the size and checksum of a downloaded deposit.
  */
 class PayloadValidator {
-
     /**
      * Buffer size for the hashing.
      */
-    const BUFFER_SIZE = 64 * 1024;
-    
+    public const BUFFER_SIZE = 64 * 1024;
+
     /**
      * File path service.
      *
@@ -25,8 +32,6 @@ class PayloadValidator {
 
     /**
      * Construct the validator.
-     *
-     * @param FilePaths $fp
      */
     public function __construct(FilePaths $fp) {
         $this->fp = $fp;
@@ -34,37 +39,35 @@ class PayloadValidator {
 
     /**
      * Override the file path service.
-     *
-     * @param FilePaths $filePaths
      */
-    public function setFilePaths(FilePaths $filePaths) {
+    public function setFilePaths(FilePaths $filePaths) : void {
         $this->fp = $filePaths;
     }
-    
+
     /**
      * Hash a file.
      *
      * @param string $algorithm
      * @param string $filepath
      *
-     * @return string
-     *
      * @throws Exception
-     *   If the algorithm is unknown.
+     *                   If the algorithm is unknown.
+     *
+     * @return string
      */
     public function hashFile($algorithm, $filepath) {
-        $handle = fopen($filepath, "r");
+        $handle = fopen($filepath, 'r');
         $context = null;
         switch (strtolower($algorithm)) {
             case 'sha-1':
             case 'sha1':
                 $context = hash_init('sha1');
-                break;
 
+                break;
             case 'md5':
                 $context = hash_init('md5');
-                break;
 
+                break;
             default:
                 throw new Exception("Unknown hash algorithm {$algorithm}");
         }
@@ -73,13 +76,12 @@ class PayloadValidator {
         }
         $hash = hash_final($context);
         fclose($handle);
+
         return strtoupper($hash);
     }
 
     /**
      * Process one deposit.
-     *
-     * @param Deposit $deposit
      *
      * @return bool
      */
@@ -88,15 +90,16 @@ class PayloadValidator {
             $depositPath = $this->fp->getHarvestFile($deposit);
             $checksumValue = $this->hashFile($deposit->getChecksumType(), $depositPath);
             if ($checksumValue !== $deposit->getChecksumValue()) {
-                throw new Exception("Deposit checksum does not match. "
+                throw new Exception('Deposit checksum does not match. '
                         . "Expected {$deposit->getChecksumValue()} != "
                         . "Actual {$checksumValue}");
             }
+
             return true;
         } catch (Exception $e) {
             $deposit->addToProcessingLog($e->getMessage());
+
             return false;
         }
     }
-
 }

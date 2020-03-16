@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace AppBundle\Command\Processing;
 
 use AppBundle\Entity\Deposit;
@@ -10,7 +18,6 @@ use Doctrine\ORM\EntityManagerInterface;
  * Harvest deposits from journals.
  */
 class HarvestCommand extends AbstractProcessingCmd {
-
     /**
      * Harvester service.
      *
@@ -20,9 +27,6 @@ class HarvestCommand extends AbstractProcessingCmd {
 
     /**
      * Build the command.
-     *
-     * @param EntityManagerInterface $em
-     * @param Harvester $harvester
      */
     public function __construct(EntityManagerInterface $em, Harvester $harvester) {
         parent::__construct($em);
@@ -32,7 +36,7 @@ class HarvestCommand extends AbstractProcessingCmd {
     /**
      * {@inheritdoc}
      */
-    protected function configure() {
+    protected function configure() : void {
         $this->setName('pln:harvest');
         $this->setDescription('Harvest OJS deposits.');
         parent::configure();
@@ -79,5 +83,4 @@ class HarvestCommand extends AbstractProcessingCmd {
     public function successLogMessage() {
         return 'Deposit harvest succeeded.';
     }
-
 }

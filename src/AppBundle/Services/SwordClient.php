@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- *  This file is licensed under the MIT License version 3 or
- *  later. See the LICENSE file for details.
- *
- *  Copyright 2018 Michael Joyce <ubermichael@gmail.com>.
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace AppBundle\Services;
@@ -18,26 +19,25 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use function GuzzleHttp\Psr7\str;
 use SimpleXMLElement;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Templating\EngineInterface;
-use function GuzzleHttp\Psr7\str;
 
 /**
  * Description of SwordClient.
  */
 class SwordClient {
-
     /**
      * Configuration for the http client.
      */
-    const CONF = array(
+    public const CONF = [
         'allow_redirects' => false,
-        'headers' => array(
+        'headers' => [
             'User-Agent' => 'PkpPlnBot 1.0; http://pkp.sfu.ca',
-        ),
+        ],
         'decode_content' => false,
-    );
+    ];
 
     /**
      * File system utility.
@@ -61,7 +61,7 @@ class SwordClient {
     private $templating;
 
     /**
-     * Guzzle HTTP client,
+     * Guzzle HTTP client,.
      *
      * @var Client
      */
@@ -94,8 +94,6 @@ class SwordClient {
      * @param string $serviceUri
      * @param string $uuid
      * @param bool $saveXml
-     * @param FilePaths $filePaths
-     * @param EngineInterface $templating
      */
     public function __construct($serviceUri, $uuid, $saveXml, FilePaths $filePaths, EngineInterface $templating) {
         $this->serviceUri = $serviceUri;
@@ -109,28 +107,22 @@ class SwordClient {
 
     /**
      * Set or override the HTTP client, usually based on Guzzle.
-     *
-     * @param Client $client
      */
-    public function setClient(Client $client) {
+    public function setClient(Client $client) : void {
         $this->client = $client;
     }
 
     /**
      * Set or override  the file system client.
-     *
-     * @param Filesystem $fs
      */
-    public function setFilesystem(Filesystem $fs) {
+    public function setFilesystem(Filesystem $fs) : void {
         $this->fs = $fs;
     }
 
     /**
      * Set or override the file path service.
-     *
-     * @param FilePaths $fp
      */
-    public function setFilePaths(FilePaths $fp) {
+    public function setFilePaths(FilePaths $fp) : void {
         $this->fp = $fp;
     }
 
@@ -139,7 +131,7 @@ class SwordClient {
      *
      * @param string $serviceUri
      */
-    public function setServiceUri($serviceUri) {
+    public function setServiceUri($serviceUri) : void {
         $this->serviceUri = $serviceUri;
     }
 
@@ -148,7 +140,7 @@ class SwordClient {
      *
      * @param string $uuid
      */
-    public function setUuid($uuid) {
+    public function setUuid($uuid) : void {
         $this->uuid = $uuid;
     }
 
@@ -157,34 +149,34 @@ class SwordClient {
      *
      * @param string $method
      * @param string $url
-     * @param array $headers
      * @param mixed $xml
      * @param Deposit $deposit
-     * @param array $options
-     *
-     * @return Response
      *
      * @throws Exception
+     *
+     * @return Response
      */
     public function request($method, $url, array $headers = [], $xml = null, Deposit $deposit = null, array $options = []) {
         try {
             $request = new Request($method, $url, $headers, $xml);
-            $response = $this->client->send($request, $options);
-            return $response;
+
+            return $this->client->send($request, $options);
         } catch (RequestException $e) {
             $message = str($e->getRequest());
             if ($e->hasResponse()) {
                 $message .= "\n\n" . str($e->getResponse());
             }
-            if($deposit) {
+            if ($deposit) {
                 $deposit->addErrorLog($message);
             }
+
             throw new Exception($message);
         } catch (Exception $e) {
             $message = $e->getMessage();
-            if($deposit) {
+            if ($deposit) {
                 $deposit->addErrorLog($message);
             }
+
             throw new Exception($message);
         }
     }
@@ -192,74 +184,72 @@ class SwordClient {
     /**
      * Fetch the service document.
      *
-     * @return ServiceDocument
-     *
      * @throws Exception
+     *
+     * @return ServiceDocument
      */
     public function serviceDocument() {
-        $response = $this->request('GET', $this->serviceUri, array(
+        $response = $this->request('GET', $this->serviceUri, [
             'On-Behalf-Of' => $this->uuid,
-        ));
+        ]);
+
         return new ServiceDocument($response->getBody());
     }
 
     /**
      * Create a deposit in LOCKSSOMatic.
      *
-     * @param Deposit $deposit
+     * @throws Exception
      *
      * @return bool
-     *
-     * @throws Exception
      */
     public function createDeposit(Deposit $deposit) {
         $sd = $this->serviceDocument();
-        $xml = $this->templating->render('AppBundle:sword:deposit.xml.twig', array(
+        $xml = $this->templating->render('AppBundle:sword:deposit.xml.twig', [
             'deposit' => $deposit,
-        ));
+        ]);
         if ($this->saveXml) {
             $path = $this->fp->getStagingBagPath($deposit) . '.xml';
             $this->fs->dumpFile($path, $xml);
         }
-        $response = $this->request('POST', $sd->getCollectionUri(), array(), $xml, $deposit);
+        $response = $this->request('POST', $sd->getCollectionUri(), [], $xml, $deposit);
         $locationHeader = $response->getHeader('Location');
         if (count($locationHeader) > 0) {
             $deposit->setDepositReceipt($locationHeader[0]);
         }
         $deposit->setDepositDate(new DateTime());
+
         return true;
     }
 
     /**
      * Fetch the deposit receipt for $deposit.
      *
-     * @param Deposit $deposit
-     *
      * @return SimpleXMLElement
      */
     public function receipt(Deposit $deposit) {
-        if( ! $deposit->getDepositReceipt()) {
-            return null;
+        if ( ! $deposit->getDepositReceipt()) {
+            return;
         }
-        $response = $this->request('GET', $deposit->getDepositReceipt(), array(), null, $deposit);
+        $response = $this->request('GET', $deposit->getDepositReceipt(), [], null, $deposit);
         $xml = new SimpleXMLElement($response->getBody());
         Namespaces::registerNamespaces($xml);
+
         return $xml;
     }
 
     /**
      * Fetch the sword statement for $deposit.
      *
-     * @param Deposit $deposit
-     *
      * @return SimpleXMLElement
      */
     public function statement(Deposit $deposit) {
         $receiptXml = $this->receipt($deposit);
-        $statementUrl = (string)$receiptXml->xpath('atom:link[@rel="http://purl.org/net/sword/terms/statement"]/@href')[0];
-        $response = $this->request('GET', $statementUrl, array(), null, $deposit);
+        $statementUrl = (string) $receiptXml->xpath('atom:link[@rel="http://purl.org/net/sword/terms/statement"]/@href')[0];
+        $response = $this->request('GET', $statementUrl, [], null, $deposit);
         $statementXml = new SimpleXMLElement($response->getBody());
         Namespaces::registerNamespaces($statementXml);
+
         return $statementXml;
     }
 
@@ -268,21 +258,19 @@ class SwordClient {
      *
      * Saves the file to disk and returns the full path to the file.
      *
-     * @param Deposit $deposit
-     *
      * @return string
      */
-    public function fetch(Deposit $deposit){
+    public function fetch(Deposit $deposit) {
         $statement = $this->statement($deposit);
         $original = $statement->xpath('//sword:originalDeposit/@href')[0];
         $filepath = $this->fp->getRestoreFile($deposit);
 
-        $this->request('GET', $original, array(), null, $deposit, array(
+        $this->request('GET', $original, [], null, $deposit, [
             'allow_redirects' => false,
             'decode_content' => false,
             'save_to' => $filepath,
-        ));
+        ]);
+
         return $filepath;
     }
-
 }

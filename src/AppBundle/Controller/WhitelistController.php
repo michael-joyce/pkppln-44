@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Journal;
@@ -20,11 +28,8 @@ use Symfony\Component\HttpFoundation\Request;
  * @Route("/whitelist")
  */
 class WhitelistController extends Controller {
-
     /**
      * Lists all Whitelist entities.
-     *
-     * @param Request $request
      *
      * @return array
      *
@@ -40,15 +45,13 @@ class WhitelistController extends Controller {
         $paginator = $this->get('knp_paginator');
         $whitelists = $paginator->paginate($query, $request->query->getint('page', 1), 25);
 
-        return array(
+        return [
             'whitelists' => $whitelists,
-        );
+        ];
     }
 
     /**
      * Search for Whitelist entities.
-     *
-     * @param Request $request
      *
      * @Route("/search", name="whitelist_search")
      * @Method("GET")
@@ -63,22 +66,20 @@ class WhitelistController extends Controller {
             $query = $repo->searchQuery($q);
             $whitelists = $paginator->paginate($query, $request->query->getInt('page', 1), 25);
         } else {
-            $whitelists = $paginator->paginate(array(), $request->query->getInt('page', 1), 25);
+            $whitelists = $paginator->paginate([], $request->query->getInt('page', 1), 25);
         }
 
-        return array(
+        return [
             'whitelists' => $whitelists,
             'q' => $q,
-        );
+        ];
     }
 
     /**
      * Creates a new Whitelist entity.
      *
-     * @param Request $request
-     *
      * @return array|RedirectResponse
-     *   Array data for the template processor or a redirect to the Whitelist.
+     *                                Array data for the template processor or a redirect to the Whitelist.
      *
      * @Security("has_role('ROLE_ADMIN')")
      * @Route("/new", name="whitelist_new")
@@ -96,20 +97,18 @@ class WhitelistController extends Controller {
             $em->flush();
 
             $this->addFlash('success', 'The new whitelist was created.');
-            return $this->redirectToRoute('whitelist_show', array('id' => $whitelist->getId()));
+
+            return $this->redirectToRoute('whitelist_show', ['id' => $whitelist->getId()]);
         }
 
-        return array(
+        return [
             'whitelist' => $whitelist,
             'form' => $form->createView(),
-        );
+        ];
     }
 
     /**
      * Finds and displays a Whitelist entity.
-     *
-     * @param EntityManagerInterface $em
-     * @param Whitelist $whitelist
      *
      * @return array
      *
@@ -119,22 +118,19 @@ class WhitelistController extends Controller {
      */
     public function showAction(EntityManagerInterface $em, Whitelist $whitelist) {
         $repo = $em->getRepository(Journal::class);
-        $journal = $repo->findOneBy(array('uuid' => $whitelist->getUuid()));
+        $journal = $repo->findOneBy(['uuid' => $whitelist->getUuid()]);
 
-        return array(
+        return [
             'whitelist' => $whitelist,
             'journal' => $journal,
-        );
+        ];
     }
 
     /**
      * Displays a form to edit an existing Whitelist entity.
      *
-     * @param Request $request
-     * @param Whitelist $whitelist
-     *
      * @return array|RedirectResponse
-     *   Array data for the template processor or a redirect to the Whitelist.
+     *                                Array data for the template processor or a redirect to the Whitelist.
      *
      * @Security("has_role('ROLE_ADMIN')")
      * @Route("/{id}/edit", name="whitelist_edit")
@@ -149,23 +145,21 @@ class WhitelistController extends Controller {
             $em = $this->getDoctrine()->getManager();
             $em->flush();
             $this->addFlash('success', 'The whitelist has been updated.');
-            return $this->redirectToRoute('whitelist_show', array('id' => $whitelist->getId()));
+
+            return $this->redirectToRoute('whitelist_show', ['id' => $whitelist->getId()]);
         }
 
-        return array(
+        return [
             'whitelist' => $whitelist,
             'edit_form' => $editForm->createView(),
-        );
+        ];
     }
 
     /**
      * Deletes a Whitelist entity.
      *
-     * @param Request $request
-     * @param Whitelist $whitelist
-     *
      * @return array|RedirectResponse
-     *   A redirect to the whitelist_index.
+     *                                A redirect to the whitelist_index.
      *
      * @Security("has_role('ROLE_ADMIN')")
      * @Route("/{id}/delete", name="whitelist_delete")
@@ -179,5 +173,4 @@ class WhitelistController extends Controller {
 
         return $this->redirectToRoute('whitelist_index');
     }
-
 }

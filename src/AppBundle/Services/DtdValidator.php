@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- *  This file is licensed under the MIT License version 3 or
- *  later. See the LICENSE file for details.
- *
- *  Copyright 2018 Michael Joyce <ubermichael@gmail.com>.
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace AppBundle\Services;
@@ -15,7 +16,6 @@ use DOMDocument;
  * Simple wrapper around around DOMDocument->validate().
  */
 class DtdValidator {
-
     /**
      * List of errors during validation.
      *
@@ -27,7 +27,7 @@ class DtdValidator {
      * Construct a validator.
      */
     public function __construct() {
-        $this->errors = array();
+        $this->errors = [];
     }
 
     /**
@@ -39,20 +39,20 @@ class DtdValidator {
      * @param string $line
      * @param string $context
      */
-    public function validationError($n, $message, $file, $line, $context) {
+    public function validationError($n, $message, $file, $line, $context) : void {
         $lxml = libxml_get_last_error();
-        $error = array(
+        $error = [
             'message' => $message,
             'file' => $file,
             'line' => $line,
-        );
+        ];
 
         if ($lxml) {
-            $error = array(
+            $error = [
                 'message' => $lxml->message,
                 'file' => $lxml->file,
                 'line' => $lxml->line,
-            );
+            ];
         }
         $this->errors[] = $error;
     }
@@ -60,17 +60,16 @@ class DtdValidator {
     /**
      * Validate a DOM document.
      *
-     * @param DOMDocument $dom
      * @param bool $clearErrors
      */
-    public function validate(DOMDocument $dom, $clearErrors = true) {
+    public function validate(DOMDocument $dom, $clearErrors = true) : void {
         if ($clearErrors) {
             $this->clearErrors();
         }
-        if ($dom->doctype === null) {
+        if (null === $dom->doctype) {
             return;
         }
-        $oldHandler = set_error_handler(array($this, 'validationError'));
+        $oldHandler = set_error_handler([$this, 'validationError']);
         $dom->validate();
         set_error_handler($oldHandler);
     }
@@ -105,8 +104,7 @@ class DtdValidator {
     /**
      * Clear out the errors and start fresh.
      */
-    public function clearErrors() {
-        $this->errors = array();
+    public function clearErrors() : void {
+        $this->errors = [];
     }
-
 }

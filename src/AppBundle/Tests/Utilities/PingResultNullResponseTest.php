@@ -1,85 +1,83 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- *  This file is licensed under the MIT License version 3 or
- *  later. See the LICENSE file for details.
- *
- *  Copyright 2018 Michael Joyce <ubermichael@gmail.com>.
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace AppBundle\Tests\Utilities;
 
 use AppBundle\Utilities\PingResult;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\ResponseInterface;
 
 /**
- * Description of PingResultTest
+ * Description of PingResultTest.
  */
 class PingResultNullResponseTest extends TestCase {
-
     /**
      * @var PingResult
      */
     private $result;
 
-    protected function setup() : void {
-        parent::setUp();
-        $this->result = new PingResult();
-    }
-
-    public function testInstance() {
+    public function testInstance() : void {
         $this->assertInstanceOf(PingResult::class, $this->result);
     }
 
-    public function testHttpStatus() {
-        $this->assertEquals(500, $this->result->getHttpStatus());
+    public function testHttpStatus() : void {
+        $this->assertSame(500, $this->result->getHttpStatus());
     }
 
-    public function testGetBody() {
-        $this->assertEquals('', $this->result->getBody());
+    public function testGetBody() : void {
+        $this->assertSame('', $this->result->getBody());
     }
 
-    public function testHasXml() {
+    public function testHasXml() : void {
         $this->assertFalse($this->result->hasXml());
         $this->assertNull($this->result->getXml());
     }
 
-    public function testGetHeader() {
-        $this->assertEquals('', $this->result->getHeader('foo'));
+    public function testGetHeader() : void {
+        $this->assertSame('', $this->result->getHeader('foo'));
     }
 
-    public function testGetOjsRelease() {
-        $this->assertEquals('', $this->result->getOjsRelease());
+    public function testGetOjsRelease() : void {
+        $this->assertSame('', $this->result->getOjsRelease());
     }
 
-    public function testGetPluginReleaseVersion() {
-        $this->assertEquals('', $this->result->getPluginReleaseVersion());
+    public function testGetPluginReleaseVersion() : void {
+        $this->assertSame('', $this->result->getPluginReleaseVersion());
     }
 
-    public function testPluginReleaseDate() {
-        $this->assertEquals('', $this->result->getPluginReleaseDate());
+    public function testPluginReleaseDate() : void {
+        $this->assertSame('', $this->result->getPluginReleaseDate());
     }
 
-    public function testPluginCurrent() {
-        $this->assertEquals('', $this->result->isPluginCurrent());
+    public function testPluginCurrent() : void {
+        $this->assertSame('', $this->result->isPluginCurrent());
     }
 
-    public function testTermsAccepted() {
-        $this->assertEquals('', $this->result->areTermsAccepted());
+    public function testTermsAccepted() : void {
+        $this->assertSame('', $this->result->areTermsAccepted());
     }
 
-    public function testJournalTitle() {
-        $this->assertEquals('', $this->result->getJournalTitle());
+    public function testJournalTitle() : void {
+        $this->assertSame('', $this->result->getJournalTitle());
     }
 
-    public function testArticleCount() {
-        $this->assertEquals('', $this->result->getArticleCount());
+    public function testArticleCount() : void {
+        $this->assertSame('', $this->result->getArticleCount());
     }
 
-    public function testArticleTitles() {
+    public function testArticleTitles() : void {
         $expected = [];
-        $this->assertEquals($expected, $this->result->getArticleTitles());
+        $this->assertSame($expected, $this->result->getArticleTitles());
     }
 
+    protected function setup() : void {
+        parent::setUp();
+        $this->result = new PingResult();
+    }
 }

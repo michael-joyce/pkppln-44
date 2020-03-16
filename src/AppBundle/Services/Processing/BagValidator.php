@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace AppBundle\Services\Processing;
 
 use AppBundle\Entity\Deposit;
@@ -11,7 +19,6 @@ use Exception;
  * Validate a bag, according to the bagit spec.
  */
 class BagValidator {
-
     /**
      * File path service.
      *
@@ -28,8 +35,6 @@ class BagValidator {
 
     /**
      * Build the validator.
-     *
-     * @param FilePaths $fp
      */
     public function __construct(FilePaths $fp) {
         $this->filePaths = $fp;
@@ -39,13 +44,10 @@ class BagValidator {
     /**
      * Overridet the bag reader.
      */
-    public function setBagReader(BagReader $bagReader) {
+    public function setBagReader(BagReader $bagReader) : void {
         $this->bagReader = $bagReader;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function processDeposit(Deposit $deposit) {
         $harvestedPath = $this->filePaths->getHarvestFile($deposit);
         $bag = $this->bagReader->readBag($harvestedPath);
@@ -56,6 +58,7 @@ class BagValidator {
             foreach ($errors as $error) {
                 $deposit->addErrorLog("Bagit validation error for {$error[0]} - {$error[1]}");
             }
+
             throw new Exception("BagIt validation failed for {$deposit->getDepositUuid()}");
         }
         $journalVersion = $bag->getBagInfoData('PKP-PLN-OJS-Version');
@@ -65,5 +68,4 @@ class BagValidator {
 
         return true;
     }
-
 }

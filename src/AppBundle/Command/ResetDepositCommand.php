@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- *  This file is licensed under the MIT License version 3 or
- *  later. See the LICENSE file for details.
- *
- *  Copyright 2018 Michael Joyce <ubermichael@gmail.com>.
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace AppBundle\Command;
@@ -20,11 +21,10 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Reset the processing status on one or more deposits.
  */
 class ResetDepositCommand extends ContainerAwareCommand {
-
     /**
      * Number of deposits to process in one batch.
      */
-    const BATCH_SIZE = 100;
+    public const BATCH_SIZE = 100;
 
     /**
      * Database interface.
@@ -35,8 +35,6 @@ class ResetDepositCommand extends ContainerAwareCommand {
 
     /**
      * Build the command.
-     *
-     * @param EntityManagerInterface $em
      */
     public function __construct(EntityManagerInterface $em) {
         parent::__construct();
@@ -46,42 +44,12 @@ class ResetDepositCommand extends ContainerAwareCommand {
     /**
      * {@inheritdoc}
      */
-    public function configure() {
-        $this->setName('pln:reset');
-        $this->setDescription('Reset the processing status on one or more deposits.');
-        $this->addOption('all', null, InputOption::VALUE_NONE, 'Update all deposits. Use with caution.');
-        $this->addOption('clear', null, InputOption::VALUE_NONE, 'Clear the error and processing log for the deposits Use with caution.');
-        $this->addArgument('state', InputArgument::REQUIRED, 'One or more deposit database IDs to process');
-        $this->addArgument('deposit-id', InputArgument::IS_ARRAY, 'One or more deposit database IDs to process');
-    }
-
-    /**
-     * Create an iterator for the deposits.
-     *
-     * @param int[] $ids
-     *   Optional list of deposit database ids.
-     *
-     * @return IterableResult|Deposit[]
-     *   Iterator for all the deposits to reset.
-     */
-    public function getDepositIterator(array $ids = null) {
-        $qb = $this->em->createQueryBuilder();
-        $qb->select('d')->from('AppBundle:Deposit', 'd');
-        if ($ids && count($ids)) {
-            $qb->andWhere('d.depositUuid IN :ids');
-            $qb->setParameter('ids', $ids);
-        }
-        return $qb->getQuery()->iterate();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output) {
+    protected function execute(InputInterface $input, OutputInterface $output) : void {
         $ids = $input->getArgument('deposit-id');
         $clear = $input->getOption('clear');
-        if (count($ids) === 0 && !$input->getOption('all')) {
+        if (0 === count($ids) && ! $input->getOption('all')) {
             $output->writeln('Either --all or one or more deposit UUIDs are required.');
+
             return;
         }
         $state = $input->getArgument('state');
@@ -96,7 +64,7 @@ class ResetDepositCommand extends ContainerAwareCommand {
                 $deposit->setProcessingLog('');
             }
             $deposit->addToProcessingLog('Deposit state reset to ' . $state);
-            if (($i % self::BATCH_SIZE) === 0) {
+            if (0 === ($i % self::BATCH_SIZE)) {
                 $this->em->flush();
                 $this->em->clear();
             }
@@ -105,4 +73,35 @@ class ResetDepositCommand extends ContainerAwareCommand {
         $this->em->clear();
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function configure() : void {
+        $this->setName('pln:reset');
+        $this->setDescription('Reset the processing status on one or more deposits.');
+        $this->addOption('all', null, InputOption::VALUE_NONE, 'Update all deposits. Use with caution.');
+        $this->addOption('clear', null, InputOption::VALUE_NONE, 'Clear the error and processing log for the deposits Use with caution.');
+        $this->addArgument('state', InputArgument::REQUIRED, 'One or more deposit database IDs to process');
+        $this->addArgument('deposit-id', InputArgument::IS_ARRAY, 'One or more deposit database IDs to process');
+    }
+
+    /**
+     * Create an iterator for the deposits.
+     *
+     * @param int[] $ids
+     *                   Optional list of deposit database ids.
+     *
+     * @return Deposit[]|IterableResult
+     *                                  Iterator for all the deposits to reset.
+     */
+    public function getDepositIterator(array $ids = null) {
+        $qb = $this->em->createQueryBuilder();
+        $qb->select('d')->from('AppBundle:Deposit', 'd');
+        if ($ids && count($ids)) {
+            $qb->andWhere('d.depositUuid IN :ids');
+            $qb->setParameter('ids', $ids);
+        }
+
+        return $qb->getQuery()->iterate();
+    }
 }

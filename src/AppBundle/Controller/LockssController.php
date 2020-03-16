@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Deposit;
@@ -21,26 +29,21 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * Lockss Controller for handling all interaction with the LOCKSS network.
  */
 class LockssController extends Controller {
-
     use LoggerAwareTrait;
 
     /**
      * The LOCKSS permision statement.
      */
-    const PERMISSION_STMT = 'LOCKSS system has permission to collect, preserve, and serve this Archival Unit.';
+    public const PERMISSION_STMT = 'LOCKSS system has permission to collect, preserve, and serve this Archival Unit.';
 
     /**
      * Fetch a processed and packaged deposit.
      *
-     * @param Request $request
-     * @param Journal $journal
-     * @param Deposit $deposit
-     * @param FilePaths $fp
+     * @throws BadRequestHttpException
+     * @throws NotFoundHttpException
      *
      * @return BinaryFileResponse
      *
-     * @throws BadRequestHttpException
-     * @throws NotFoundHttpException
      *
      * @Route("/fetch/{journalUuid}/{depositUuid}.zip", name="fetch")
      * @Method("GET")
@@ -54,9 +57,10 @@ class LockssController extends Controller {
         }
         $fs = new Filesystem();
         $path = $fp->getStagingBagPath($deposit);
-        if (!$fs->exists($path)) {
-            throw new NotFoundHttpException("Deposit not found.");
+        if ( ! $fs->exists($path)) {
+            throw new NotFoundHttpException('Deposit not found.');
         }
+
         return new BinaryFileResponse($path);
     }
 
@@ -70,9 +74,9 @@ class LockssController extends Controller {
      */
     public function permissionAction(Request $request) {
         $this->logger->notice("{$request->getClientIp()} - permission");
-        return new Response(self::PERMISSION_STMT, Response::HTTP_OK, array(
-            'content-type' => 'text/plain',
-        ));
-    }
 
+        return new Response(self::PERMISSION_STMT, Response::HTTP_OK, [
+            'content-type' => 'text/plain',
+        ]);
+    }
 }

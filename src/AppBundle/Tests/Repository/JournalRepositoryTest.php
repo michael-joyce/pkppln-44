@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- *  This file is licensed under the MIT License version 3 or
- *  later. See the LICENSE file for details.
- *
- *  Copyright 2018 Michael Joyce <ubermichael@gmail.com>.
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace AppBundle\Tests\Repository;
@@ -17,31 +18,25 @@ use AppBundle\Repository\JournalRepository;
 use Nines\UtilBundle\Tests\Util\BaseTestCase;
 
 /**
- * Description of JournalRepositoryTest
+ * Description of JournalRepositoryTest.
  */
 class JournalRepositoryTest extends BaseTestCase {
-
     /**
      * @return JournalRepository
      */
     private $repo;
 
     protected function getFixtures() {
-        return array(
+        return [
             LoadJournal::class,
-        );
+        ];
     }
 
-    protected function setup() : void {
-        parent::setUp();
-        $this->repo = $this->em->getRepository(Journal::class);
+    public function testGetJournalsToPingNoListed() : void {
+        $this->assertSame(4, count($this->repo->getJournalsToPing()));
     }
 
-    public function testGetJournalsToPingNoListed() {
-        $this->assertEquals(4, count($this->repo->getJournalsToPing()));
-    }
-
-    public function testGetJournalsToPingListed() {
+    public function testGetJournalsToPingListed() : void {
         $whitelist = new Whitelist();
         $whitelist->setUuid(LoadJournal::UUIDS[0]);
         $whitelist->setComment('Test');
@@ -54,28 +49,28 @@ class JournalRepositoryTest extends BaseTestCase {
 
         $this->em->flush();
 
-        $this->assertEquals(2, count($this->repo->getJournalsToPing()));
+        $this->assertSame(2, count($this->repo->getJournalsToPing()));
     }
 
-    public function testGetJournalsToPingPingErrors() {
+    public function testGetJournalsToPingPingErrors() : void {
         $journal = $this->em->find(Journal::class, 1);
-        $journal->setStatus('ping-error');        
+        $journal->setStatus('ping-error');
         $this->em->flush();
 
-        $this->assertEquals(3, count($this->repo->getJournalsToPing()));
+        $this->assertSame(3, count($this->repo->getJournalsToPing()));
     }
 
     /**
      * @dataProvider searchQueryData
      */
-    public function testSearchQuery() {
+    public function testSearchQuery() : void {
         $query = $this->repo->searchQuery('CDC4');
         $result = $query->execute();
-        $this->assertEquals(1, count($result));
+        $this->assertSame(1, count($result));
     }
-    
+
     public function searchQueryData() {
-        return array(
+        return [
             [1, 'CDC4'],
             [1, 'Title 1'],
             [1, '1234-1234'],
@@ -83,6 +78,11 @@ class JournalRepositoryTest extends BaseTestCase {
             [4, 'email@'],
             [4, 'PublisherName'],
             [1, 'publisher/1'],
-        );
+        ];
+    }
+
+    protected function setup() : void {
+        parent::setUp();
+        $this->repo = $this->em->getRepository(Journal::class);
     }
 }

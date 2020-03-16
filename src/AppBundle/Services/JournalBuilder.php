@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- *  This file is licensed under the MIT License version 3 or
- *  later. See the LICENSE file for details.
- *
- *  Copyright 2018 Michael Joyce <ubermichael@gmail.com>.
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace AppBundle\Services;
@@ -18,7 +19,6 @@ use SimpleXMLElement;
  * Journal builder service.
  */
 class JournalBuilder {
-
     /**
      * Doctrine instance.
      *
@@ -28,8 +28,6 @@ class JournalBuilder {
 
     /**
      * Construct the builder.
-     *
-     * @param EntityManagerInterface $em
      */
     public function __construct(EntityManagerInterface $em) {
         $this->em = $em;
@@ -40,16 +38,15 @@ class JournalBuilder {
      *
      * Does not flush the journal to the database.
      *
-     * @param SimpleXMLElement $xml
      * @param string $uuid
      *
      * @return Journal
      */
     public function fromXml(SimpleXMLElement $xml, $uuid) {
-        $journal = $this->em->getRepository('AppBundle:Journal')->findOneBy(array(
-        'uuid' => strtoupper($uuid),
-        ));
-        if ($journal === null) {
+        $journal = $this->em->getRepository('AppBundle:Journal')->findOneBy([
+            'uuid' => strtoupper($uuid),
+        ]);
+        if (null === $journal) {
             $journal = new Journal();
         }
         $journal->setUuid($uuid);
@@ -76,10 +73,10 @@ class JournalBuilder {
      * @return Journal
      */
     public function fromRequest($uuid, $url) {
-        $journal = $this->em->getRepository('AppBundle:Journal')->findOneBy(array(
-        'uuid' => strtoupper($uuid),
-        ));
-        if ($journal === null) {
+        $journal = $this->em->getRepository('AppBundle:Journal')->findOneBy([
+            'uuid' => strtoupper($uuid),
+        ]);
+        if (null === $journal) {
             $journal = new Journal();
             $journal->setUuid($uuid);
             $journal->setStatus('new');
@@ -88,10 +85,10 @@ class JournalBuilder {
         }
         $journal->setUrl($url);
         $journal->setContacted(new \DateTime());
-        if ($journal->getStatus() !== 'new') {
+        if ('new' !== $journal->getStatus()) {
             $journal->setStatus('healthy');
         }
+
         return $journal;
     }
-
 }

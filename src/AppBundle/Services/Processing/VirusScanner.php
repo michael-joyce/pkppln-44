@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace AppBundle\Services\Processing;
 
 use AppBundle\Entity\Deposit;
@@ -17,11 +25,10 @@ use Xenolope\Quahog\Client;
  * Virus scanning service, via ClamAV.
  */
 class VirusScanner {
-
     /**
      * Buffer size for extracting embedded files.
      */
-    const BUFFER_SIZE = 64 * 1024;
+    public const BUFFER_SIZE = 64 * 1024;
 
     /**
      * File path service.
@@ -55,7 +62,6 @@ class VirusScanner {
      * Construct the virus scanner.
      *
      * @param string $socketPath
-     * @param FilePaths $filePaths
      */
     public function __construct($socketPath, FilePaths $filePaths) {
         $this->filePaths = $filePaths;
@@ -67,10 +73,8 @@ class VirusScanner {
 
     /**
      * Set the socket factory.
-     *
-     * @param Factory $factory
      */
-    public function setFactory(Factory $factory) {
+    public function setFactory(Factory $factory) : void {
         $this->factory = $factory;
     }
 
@@ -88,15 +92,12 @@ class VirusScanner {
         $socket = $this->factory->createClient('unix://' . $this->socketPath);
         $client = new Client($socket, 30, PHP_NORMAL_READ);
         $client->startSession();
+
         return $client;
     }
 
     /**
      * Scan an embedded file.
-     *
-     * @param DOMElement $embed
-     * @param DOMXpath $xp
-     * @param Client $client
      *
      * @return array
      */
@@ -108,11 +109,12 @@ class VirusScanner {
         while ($offset < $length) {
             $end = $offset + $this->bufferSize;
             $chunk = $xp->evaluate("substring(./text(), {$offset}, {$this->bufferSize})", $embed);
-            $data = base64_decode($chunk);
+            $data = base64_decode($chunk, true);
             fwrite($handle, $data);
             $offset = $end;
         }
         rewind($handle);
+
         return $client->scanResourceStream($handle);
     }
 
@@ -120,43 +122,40 @@ class VirusScanner {
      * Scan an XML file and it's embedded content.
      *
      * @param string $pathname
-     * @param Client $client
      * @param XmlParser $parser
      *
      * @return array
      */
     public function scanXmlFile($pathname, Client $client, XmlParser $parser = null) {
-        if (!$parser) {
+        if ( ! $parser) {
             $parser = new XmlParser();
         }
         $dom = $parser->fromFile($pathname);
         $xp = new DOMXPath($dom);
-        $results = array();
+        $results = [];
         foreach ($xp->query('//embed') as $embed) {
             $filename = $embed->attributes->getNamedItem('filename')->nodeValue;
             $r = $this->scanEmbed($embed, $xp, $client);
-            if ($r['status'] === 'OK') {
+            if ('OK' === $r['status']) {
                 $results[] = $filename . ' OK';
             } else {
                 $results[] = $filename . ' ' . $r['status'] . ': ' . $r['reason'];
             }
         }
+
         return $results;
     }
 
     /**
      * Find all the embedded files in the XML and scan them.
      *
-     * @param PharData $phar
-     * @param Client $client
-     *
      * @return array
      */
     public function scanEmbededFiles(PharData $phar, Client $client) {
-        $results = array();
+        $results = [];
         $parser = new XmlParser();
         foreach (new RecursiveIteratorIterator($phar) as $file) {
-            if (substr($file->getFilename(), -4) !== '.xml') {
+            if ('.xml' !== substr($file->getFilename(), -4)) {
                 continue;
             }
             $results = array_merge($this->scanXmlFile($file->getPathname(), $client, $parser), $results);
@@ -168,17 +167,14 @@ class VirusScanner {
     /**
      * Scan an archive.
      *
-     * @param PharData $phar
-     * @param Client $client
-     *
      * @return array
      */
     public function scanArchiveFiles(PharData $phar, Client $client) {
-        $results = array();
+        $results = [];
         foreach (new RecursiveIteratorIterator($phar) as $file) {
             $fh = fopen($file->getPathname(), 'rb');
             $r = $client->scanResourceStream($fh);
-            if ($r['status'] === 'OK') {
+            if ('OK' === $r['status']) {
                 $results[] = "{$file->getFileName()} OK";
             } else {
                 $results[] = "{$file->getFileName()} {$r['status']}: {$r['reason']}";
@@ -191,22 +187,21 @@ class VirusScanner {
     /**
      * Process one deposit.
      *
-     * @param Deposit $deposit
      * @param Client $client
      *
      * @return bool
      */
     public function processDeposit(Deposit $deposit, Client $client = null) {
-        if ($client === null) {
+        if (null === $client) {
             $client = $this->getClient();
         }
         $harvestedPath = $this->filePaths->getHarvestFile($deposit);
         $basename = basename($harvestedPath);
         $phar = new PharData($harvestedPath);
 
-        $baseResult = array();
+        $baseResult = [];
         $r = $client->scanFile($harvestedPath);
-        if ($r['status'] === 'OK') {
+        if ('OK' === $r['status']) {
             $baseResult[] = "{$basename} OK";
         } else {
             $baseResult[] = "{$basename} {$r['status']}: {$r['reason']}";
@@ -218,7 +213,7 @@ class VirusScanner {
             $archiveResult,
             $embeddedResult
         )));
+
         return true;
     }
-
 }

@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\TermOfUse;
@@ -20,11 +28,8 @@ use Symfony\Component\HttpFoundation\Request;
  * @Route("/termofuse")
  */
 class TermOfUseController extends Controller {
-
     /**
      * Lists all TermOfUse entities.
-     *
-     * @param Request $request
      *
      * @return array
      *
@@ -40,18 +45,16 @@ class TermOfUseController extends Controller {
         $paginator = $this->get('knp_paginator');
         $termOfUses = $paginator->paginate($query, $request->query->getint('page', 1), 25);
 
-        return array(
+        return [
             'termOfUses' => $termOfUses,
-        );
+        ];
     }
 
     /**
      * Creates a new TermOfUse entity.
      *
-     * @param Request $request
-     *
      * @return array|RedirectResponse
-     *   Array data for the template processor or a redirect to the TermOfUse.
+     *                                Array data for the template processor or a redirect to the TermOfUse.
      *
      * @Security("has_role('ROLE_ADMIN')")
      * @Route("/new", name="termofuse_new")
@@ -69,20 +72,18 @@ class TermOfUseController extends Controller {
             $em->flush();
 
             $this->addFlash('success', 'The new termOfUse was created.');
-            return $this->redirectToRoute('termofuse_show', array('id' => $termOfUse->getId()));
+
+            return $this->redirectToRoute('termofuse_show', ['id' => $termOfUse->getId()]);
         }
 
-        return array(
+        return [
             'termOfUse' => $termOfUse,
             'form' => $form->createView(),
-        );
+        ];
     }
 
     /**
      * Finds and displays a TermOfUse entity.
-     *
-     * @param EntityManagerInterface $em
-     * @param TermOfUse $termOfUse
      *
      * @return array
      *
@@ -94,21 +95,19 @@ class TermOfUseController extends Controller {
         // This can't just be $termOfUse->getHistory() or something because there
         // is no foreign key relationship - the history is preserved when a term is deleted.
         $repo = $em->getRepository(TermOfUseHistory::class);
-        $history = $repo->findBy(array('termId' => $termOfUse->getId()), array('id' => 'ASC'));
-        return array(
+        $history = $repo->findBy(['termId' => $termOfUse->getId()], ['id' => 'ASC']);
+
+        return [
             'termOfUse' => $termOfUse,
             'history' => $history,
-        );
+        ];
     }
 
     /**
      * Displays a form to edit an existing TermOfUse entity.
      *
-     * @param Request $request
-     * @param TermOfUse $termOfUse
-     *
      * @return array|RedirectResponse
-     *   Array data for the template processor or a redirect to the TermOfUse.
+     *                                Array data for the template processor or a redirect to the TermOfUse.
      *
      * @Security("has_role('ROLE_ADMIN')")
      * @Route("/{id}/edit", name="termofuse_edit")
@@ -123,23 +122,21 @@ class TermOfUseController extends Controller {
             $em = $this->getDoctrine()->getManager();
             $em->flush();
             $this->addFlash('success', 'The termOfUse has been updated.');
-            return $this->redirectToRoute('termofuse_show', array('id' => $termOfUse->getId()));
+
+            return $this->redirectToRoute('termofuse_show', ['id' => $termOfUse->getId()]);
         }
 
-        return array(
+        return [
             'termOfUse' => $termOfUse,
             'edit_form' => $editForm->createView(),
-        );
+        ];
     }
 
     /**
      * Deletes a TermOfUse entity.
      *
-     * @param Request $request
-     * @param TermOfUse $termOfUse
-     *
      * @return array|RedirectResponse
-     *   A redirect to the termofuse_index.
+     *                                A redirect to the termofuse_index.
      *
      * @Security("has_role('ROLE_ADMIN')")
      * @Route("/{id}/delete", name="termofuse_delete")
@@ -153,5 +150,4 @@ class TermOfUseController extends Controller {
 
         return $this->redirectToRoute('termofuse_index');
     }
-
 }

@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- *  This file is licensed under the MIT License version 3 or
- *  later. See the LICENSE file for details.
- *
- *  Copyright 2018 Michael Joyce <ubermichael@gmail.com>.
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace AppBundle\Utilities;
@@ -16,16 +17,15 @@ use Exception;
  * Wrapper around some XML parsing.
  */
 class XmlParser {
-
     /**
      * Options passed to LibXML.
      */
-    const LIBXML_OPTS = LIBXML_COMPACT | LIBXML_PARSEHUGE;
-    
+    public const LIBXML_OPTS = LIBXML_COMPACT | LIBXML_PARSEHUGE;
+
     /**
      * Block size for streaming.
      */
-    const BLOCKSIZE = 64 * 1024;
+    public const BLOCKSIZE = 64 * 1024;
 
     /**
      * List of errors in parsing.
@@ -38,7 +38,7 @@ class XmlParser {
      * Build the parser.
      */
     public function __construct() {
-        $this->errors = array();
+        $this->errors = [];
     }
 
     /**
@@ -67,6 +67,7 @@ class XmlParser {
             $changes += (strlen($buffer) - strlen($filtered));
             fwrite($toHandle, $filtered);
         }
+
         return $changes;
     }
 
@@ -87,27 +88,27 @@ class XmlParser {
      * @return DOMDocument
      */
     public function fromFile($filename) {
-        $dom = new DOMDocument("1.0", "UTF-8");
+        $dom = new DOMDocument('1.0', 'UTF-8');
         libxml_use_internal_errors(true);
         $originalResult = $dom->load($filename, self::LIBXML_OPTS);
-        if ($originalResult === true) {
+        if (true === $originalResult) {
             return $dom;
         }
         $error = libxml_get_last_error();
-        if (strpos($error->message, 'Input is not proper UTF-8') === false) {
+        if (false === strpos($error->message, 'Input is not proper UTF-8')) {
             throw new Exception("{$error->message} at {$error->file}:{$error->line}:{$error->column}.");
         }
         $filteredFilename = tempnam(sys_get_temp_dir(), 'pkppln-');
         $changes = $this->filter($filename, $filteredFilename);
         $this->errors[] = basename($filename) . " contains {$changes} invalid "
-        . "UTF-8 characters, which have been removed.";
+        . 'UTF-8 characters, which have been removed.';
         $filteredResult = $dom->load($filteredFilename, self::LIBXML_OPTS);
-        if ($filteredResult === true) {
+        if (true === $filteredResult) {
             return $dom;
         }
         $filteredError = libxml_get_last_error();
+
         throw new Exception("Filtered XML cannot be parsed. {$filteredError->message} at "
         . "{$filteredError->file}:{$filteredError->line}:{$filteredError->column}.");
     }
-
 }

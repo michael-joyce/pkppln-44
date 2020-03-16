@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Blacklist;
@@ -20,11 +28,8 @@ use Symfony\Component\HttpFoundation\Request;
  * @Route("/blacklist")
  */
 class BlacklistController extends Controller {
-
     /**
      * Lists all Blacklist entities.
-     *
-     * @param Request $request
      *
      * @return array
      *
@@ -40,15 +45,13 @@ class BlacklistController extends Controller {
         $paginator = $this->get('knp_paginator');
         $blacklists = $paginator->paginate($query, $request->query->getint('page', 1), 25);
 
-        return array(
+        return [
             'blacklists' => $blacklists,
-        );
+        ];
     }
 
     /**
      * Search for Blacklist entities.
-     *
-     * @param Request $request
      *
      * @Route("/search", name="blacklist_search")
      * @Method("GET")
@@ -63,22 +66,20 @@ class BlacklistController extends Controller {
             $query = $repo->searchQuery($q);
             $blacklists = $paginator->paginate($query, $request->query->getInt('page', 1), 25);
         } else {
-            $blacklists = $paginator->paginate(array(), $request->query->getInt('page', 1), 25);
+            $blacklists = $paginator->paginate([], $request->query->getInt('page', 1), 25);
         }
 
-        return array(
+        return [
             'blacklists' => $blacklists,
             'q' => $q,
-        );
+        ];
     }
 
     /**
      * Creates a new Blacklist entity.
      *
-     * @param Request $request
-     *
      * @return array|RedirectResponse
-     *   Array data for the template processor or a redirect to the Blacklist.
+     *                                Array data for the template processor or a redirect to the Blacklist.
      *
      * @Security("has_role('ROLE_ADMIN')")
      * @Route("/new", name="blacklist_new")
@@ -96,20 +97,18 @@ class BlacklistController extends Controller {
             $em->flush();
 
             $this->addFlash('success', 'The new blacklist was created.');
-            return $this->redirectToRoute('blacklist_show', array('id' => $blacklist->getId()));
+
+            return $this->redirectToRoute('blacklist_show', ['id' => $blacklist->getId()]);
         }
 
-        return array(
+        return [
             'blacklist' => $blacklist,
             'form' => $form->createView(),
-        );
+        ];
     }
 
     /**
      * Finds and displays a Blacklist entity.
-     *
-     * @param EntityManagerInterface $em
-     * @param Blacklist $blacklist
      *
      * @return array
      *
@@ -119,22 +118,19 @@ class BlacklistController extends Controller {
      */
     public function showAction(EntityManagerInterface $em, Blacklist $blacklist) {
         $repo = $em->getRepository(Journal::class);
-        $journal = $repo->findOneBy(array('uuid' => $blacklist->getUuid()));
+        $journal = $repo->findOneBy(['uuid' => $blacklist->getUuid()]);
 
-        return array(
+        return [
             'blacklist' => $blacklist,
             'journal' => $journal,
-        );
+        ];
     }
 
     /**
      * Displays a form to edit an existing Blacklist entity.
      *
-     * @param Request $request
-     * @param Blacklist $blacklist
-     *
      * @return array|RedirectResponse
-     *   Array data for the template processor or a redirect to the Blacklist.
+     *                                Array data for the template processor or a redirect to the Blacklist.
      *
      * @Security("has_role('ROLE_ADMIN')")
      * @Route("/{id}/edit", name="blacklist_edit")
@@ -149,23 +145,21 @@ class BlacklistController extends Controller {
             $em = $this->getDoctrine()->getManager();
             $em->flush();
             $this->addFlash('success', 'The blacklist has been updated.');
-            return $this->redirectToRoute('blacklist_show', array('id' => $blacklist->getId()));
+
+            return $this->redirectToRoute('blacklist_show', ['id' => $blacklist->getId()]);
         }
 
-        return array(
+        return [
             'blacklist' => $blacklist,
             'edit_form' => $editForm->createView(),
-        );
+        ];
     }
 
     /**
      * Deletes a Blacklist entity.
      *
-     * @param Request $request
-     * @param Blacklist $blacklist
-     *
      * @return array|RedirectResponse
-     *   A redirect to the blacklist_index.
+     *                                A redirect to the blacklist_index.
      *
      * @Security("has_role('ROLE_ADMIN')")
      * @Route("/{id}/delete", name="blacklist_delete")
@@ -179,5 +173,4 @@ class BlacklistController extends Controller {
 
         return $this->redirectToRoute('blacklist_index');
     }
-
 }

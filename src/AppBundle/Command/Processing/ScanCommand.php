@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace AppBundle\Command\Processing;
 
 use AppBundle\Entity\Deposit;
@@ -10,7 +18,6 @@ use Doctrine\ORM\EntityManagerInterface;
  * Scan a deposit for viruses.
  */
 class ScanCommand extends AbstractProcessingCmd {
-
     /**
      * Virus scanning service.
      *
@@ -20,9 +27,6 @@ class ScanCommand extends AbstractProcessingCmd {
 
     /**
      * Build the command.
-     *
-     * @param EntityManagerInterface $em
-     * @param VirusScanner $scanner
      */
     public function __construct(EntityManagerInterface $em, VirusScanner $scanner) {
         parent::__construct($em);
@@ -32,7 +36,7 @@ class ScanCommand extends AbstractProcessingCmd {
     /**
      * {@inheritdoc}
      */
-    protected function configure() {
+    protected function configure() : void {
         $this->setName('pln:scan');
         $this->setDescription('Scan deposit packages for viruses.');
         parent::configure();
@@ -79,5 +83,4 @@ class ScanCommand extends AbstractProcessingCmd {
     public function successLogMessage() {
         return 'Virus check passed. No infections found.';
     }
-
 }

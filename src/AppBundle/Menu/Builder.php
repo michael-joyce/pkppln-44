@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- *  This file is licensed under the MIT License version 3 or
- *  later. See the LICENSE file for details.
- *
- *  Copyright 2018 Michael Joyce <ubermichael@gmail.com>.
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace AppBundle\Menu;
@@ -19,13 +20,12 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  * Application menu builder.
  */
 class Builder implements ContainerAwareInterface {
-
     use ContainerAwareTrait;
 
     /**
      * U+25BE, black down-pointing small triangle.
      */
-    const CARET = ' ▾';
+    public const CARET = ' ▾';
 
     /**
      * Item factory.
@@ -50,10 +50,6 @@ class Builder implements ContainerAwareInterface {
 
     /**
      * Build the menu builder.
-     *
-     * @param FactoryInterface $factory
-     * @param AuthorizationCheckerInterface $authChecker
-     * @param TokenStorageInterface $tokenStorage
      */
     public function __construct(FactoryInterface $factory, AuthorizationCheckerInterface $authChecker, TokenStorageInterface $tokenStorage) {
         $this->factory = $factory;
@@ -69,56 +65,54 @@ class Builder implements ContainerAwareInterface {
      * @return bool
      */
     private function hasRole($role) {
-        if (!$this->tokenStorage->getToken()) {
+        if ( ! $this->tokenStorage->getToken()) {
             return false;
         }
+
         return $this->authChecker->isGranted($role);
     }
 
     /**
      * Build the app's main navigation menu.
      *
-     * @param array $options
-     *
      * @return ItemInterface
      */
     public function mainMenu(array $options) {
         $menu = $this->factory->createItem('root');
-        $menu->setChildrenAttributes(array(
+        $menu->setChildrenAttributes([
             'class' => 'nav navbar-nav',
-        ));
+        ]);
 
-        $menu->addChild('home', array(
+        $menu->addChild('home', [
             'label' => 'Home',
             'route' => 'homepage',
-        ));
+        ]);
 
-        if (!$this->hasRole('ROLE_USER')) {
+        if ( ! $this->hasRole('ROLE_USER')) {
             return $menu;
         }
 
-        $menu->addChild('terms', array(
+        $menu->addChild('terms', [
             'label' => 'Terms of Use',
             'route' => 'termofuse_index',
-        ));
+        ]);
 
-        $journals = $menu->addChild('journals', array(
+        $journals = $menu->addChild('journals', [
             'uri' => '#',
             'label' => 'Journals ' . self::CARET,
-        ));
+        ]);
         $journals->setAttribute('dropdown', true);
         $journals->setLinkAttribute('class', 'dropdown-toggle');
         $journals->setLinkAttribute('data-toggle', 'dropdown');
         $journals->setChildrenAttribute('class', 'dropdown-menu');
 
-        $journals->addChild('All Journals', array('route' => 'journal_index'));
-        $journals->addChild('Search Journals', array('route' => 'journal_search'));
-        $journals->addChild('Whitelist', array('route' => 'whitelist_index'));
-        $journals->addChild('Blacklist', array('route' => 'blacklist_index'));
+        $journals->addChild('All Journals', ['route' => 'journal_index']);
+        $journals->addChild('Search Journals', ['route' => 'journal_search']);
+        $journals->addChild('Whitelist', ['route' => 'whitelist_index']);
+        $journals->addChild('Blacklist', ['route' => 'blacklist_index']);
 
-        $menu->addChild('Docs', array('route' => 'document_index'));
+        $menu->addChild('Docs', ['route' => 'document_index']);
 
         return $menu;
     }
-
 }

@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- *  This file is licensed under the MIT License version 3 or
- *  later. See the LICENSE file for details.
- *
- *  Copyright 2018 Michael Joyce <ubermichael@gmail.com>.
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace AppBundle\Services;
@@ -17,7 +18,6 @@ use Symfony\Component\Filesystem\Filesystem;
  * Calculate file paths.
  */
 class FilePaths {
-
     /**
      * Base directory where the files are stored.
      *
@@ -43,7 +43,7 @@ class FilePaths {
      * @param FileSystem $fs
      */
     public function __construct($root, $projectDir, FileSystem $fs = null) {
-        if ($root && $root[0] !== '/') {
+        if ($root && '/' !== $root[0]) {
             $this->root = $projectDir . '/' . $root;
         } else {
             $this->root = $root;
@@ -67,17 +67,15 @@ class FilePaths {
     /**
      * Get the directory where a journal's deposits should be saved from LOCKSS.
      *
-     * @param Journal $journal
-     *
      * @return string
      */
     public function getRestoreDir(Journal $journal) {
-        $path = implode('/', array(
+        $path = implode('/', [
             $this->getRootPath(),
             'restore',
             $journal->getUuid(),
-        ));
-        if (!$this->fs->exists($path)) {
+        ]);
+        if ( ! $this->fs->exists($path)) {
             $this->fs->mkdir($path);
         }
 
@@ -87,32 +85,27 @@ class FilePaths {
     /**
      * Get the path to save a deposit from LOCKSS.
      *
-     * @param Deposit $deposit
-     *
      * @return string
      */
     public function getRestoreFile(Deposit $deposit) {
-        $path = implode('/', array(
+        return implode('/', [
             $this->getRestoreDir($deposit->getJournal()),
             $deposit->getDepositUuid() . '.zip',
-        ));
-        return $path;
+        ]);
     }
 
     /**
      * Get the harvest directory.
      *
-     * @param Journal $journal
-     *
      * @return string
      */
     public function getHarvestDir(Journal $journal) {
-        $path = implode('/', array(
-        $this->getRootPath(),
-        'harvest',
-        $journal->getUuid(),
-        ));
-        if (!$this->fs->exists($path)) {
+        $path = implode('/', [
+            $this->getRootPath(),
+            'harvest',
+            $journal->getUuid(),
+        ]);
+        if ( ! $this->fs->exists($path)) {
             $this->fs->mkdir($path);
         }
 
@@ -122,69 +115,62 @@ class FilePaths {
     /**
      * Get the path to a harvested deposit.
      *
-     * @param Deposit $deposit
-     *
      * @return mixed
      */
     public function getHarvestFile(Deposit $deposit) {
-        $path = implode('/', array(
-        $this->getHarvestDir($deposit->getJournal()),
-        $deposit->getDepositUuid() . '.zip',
-        ));
-        return $path;
+        return implode('/', [
+            $this->getHarvestDir($deposit->getJournal()),
+            $deposit->getDepositUuid() . '.zip',
+        ]);
     }
 
     /**
      * Get the processing directory.
      *
-     * @param Journal $journal
-     *
      * @return string
      */
     public function getProcessingDir(Journal $journal) {
-        $path = implode('/', array(
-        $this->getRootPath(),
-        'processing',
-        $journal->getUuid(),
-        ));
-        if (!$this->fs->exists($path)) {
+        $path = implode('/', [
+            $this->getRootPath(),
+            'processing',
+            $journal->getUuid(),
+        ]);
+        if ( ! $this->fs->exists($path)) {
             $this->fs->mkdir($path);
         }
+
         return $path;
     }
 
     /**
      * Get the path to a deposit bag being processed.
      *
-     * @param Deposit $deposit
-     *
      * @return mixed
      */
     public function getProcessingBagPath(Deposit $deposit) {
-        $path = implode('/', array(
-        $this->getProcessingDir($deposit->getJournal()),
-        $deposit->getDepositUuid(),
-        ));
-        if (!$this->fs->exists($path)) {
+        $path = implode('/', [
+            $this->getProcessingDir($deposit->getJournal()),
+            $deposit->getDepositUuid(),
+        ]);
+        if ( ! $this->fs->exists($path)) {
             $this->fs->mkdir($path);
         }
+
         return $path;
     }
 
     /**
      * Get the staging directory for processed deposits.
      *
-     * @param Journal $journal
-     *
      * @return string
      */
     public function getStagingDir(Journal $journal) {
-        $path = implode('/', array(
-        $this->getRootPath(),
-        'staged',
-        $journal->getUuid(),
-        ));
-        if (!$this->fs->exists($path)) {
+        $path = implode('/', [
+            $this->getRootPath(),
+            'staged',
+            $journal->getUuid(),
+        ]);
+        if ( ! $this->fs->exists($path)) {
             $this->fs->mkdir($path);
         }
 
@@ -193,8 +179,6 @@ class FilePaths {
 
     /**
      * Get the path to a processed, staged, bag.
-     *
-     * @param Deposit $deposit
      *
      * @return mixed
      */
@@ -212,5 +196,4 @@ class FilePaths {
     public function getOnixPath() {
         return $this->root . '/onix.xml';
     }
-
 }

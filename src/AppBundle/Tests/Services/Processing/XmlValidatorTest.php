@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- *  This file is licensed under the MIT License version 3 or
- *  later. See the LICENSE file for details.
- *
- *  Copyright 2018 Michael Joyce <ubermichael@gmail.com>.
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace AppBundle\Tests\Services\Processing;
@@ -13,25 +14,19 @@ use AppBundle\Services\Processing\XmlValidator;
 use Nines\UtilBundle\Tests\Util\BaseTestCase;
 
 /**
- * Description of PayloadValidatorTest
+ * Description of PayloadValidatorTest.
  */
 class XmlValidatorTest extends BaseTestCase {
-
     /**
      * @var XmlValidator
      */
     private $validator;
 
-    protected function setup() : void {
-        parent::setUp();
-        $this->validator = $this->container->get(XmlValidator::class);
-    }
-
-    public function testInstance() {
+    public function testInstance() : void {
         $this->assertInstanceOf(XmlValidator::class, $this->validator);
     }
 
-    public function testReportErrors() {
+    public function testReportErrors() : void {
         $errors = [
             ['line' => 1, 'message' => 'bad things happend.'],
             ['line' => 3, 'message' => 'good things happend.'],
@@ -43,4 +38,8 @@ class XmlValidatorTest extends BaseTestCase {
         $this->assertStringContainsStringIgnoringCase('On line 3: good things happend.', $report);
     }
 
+    protected function setup() : void {
+        parent::setUp();
+        $this->validator = $this->container->get(XmlValidator::class);
+    }
 }

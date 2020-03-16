@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Deposit;
@@ -20,12 +28,8 @@ use Symfony\Component\HttpFoundation\Request;
  * @ParamConverter("journal", options={"id"="journalId"})
  */
 class DepositController extends Controller {
-
     /**
      * Lists all Deposit entities.
-     *
-     * @param Request $request
-     * @param Journal $journal
      *
      * @return array
      *
@@ -41,10 +45,10 @@ class DepositController extends Controller {
         $paginator = $this->get('knp_paginator');
         $deposits = $paginator->paginate($query, $request->query->getint('page', 1), 25);
 
-        return array(
+        return [
             'deposits' => $deposits,
             'journal' => $journal,
-        );
+        ];
     }
 
     /**
@@ -53,9 +57,6 @@ class DepositController extends Controller {
      * This action lives in the default controller because the deposit
      * controller works with deposits from a single journal. This
      * search works across all deposits.
-     *
-     * @param Request $request
-     * @param Journal $journal
      *
      * @Route("/search", name="deposit_search")
      * @Method("GET")
@@ -71,21 +72,18 @@ class DepositController extends Controller {
             $query = $repo->searchQuery($q, $journal);
             $deposits = $paginator->paginate($query, $request->query->getInt('page', 1), 25);
         } else {
-            $deposits = $paginator->paginate(array(), $request->query->getInt('page', 1), 25);
+            $deposits = $paginator->paginate([], $request->query->getInt('page', 1), 25);
         }
 
-        return array(
+        return [
             'journal' => $journal,
             'deposits' => $deposits,
             'q' => $q,
-        );
+        ];
     }
-    
+
     /**
      * Finds and displays a Deposit entity.
-     *
-     * @param Journal $journal
-     * @param Deposit $deposit
      *
      * @return array
      *
@@ -94,11 +92,9 @@ class DepositController extends Controller {
      * @Template()
      */
     public function showAction(Journal $journal, Deposit $deposit) {
-
-        return array(
+        return [
             'journal' => $journal,
             'deposit' => $deposit,
-        );
+        ];
     }
-
 }

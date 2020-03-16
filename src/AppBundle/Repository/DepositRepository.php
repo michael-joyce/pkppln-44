@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace AppBundle\Repository;
 
 use AppBundle\Entity\Journal;
@@ -10,7 +18,6 @@ use Doctrine\ORM\Query;
  * Custom doctrine queries for deposits.
  */
 class DepositRepository extends EntityRepository {
-
     /**
      * Create a search query and return it.
      *
@@ -29,8 +36,8 @@ class DepositRepository extends EntityRepository {
             $qb->andWhere('d.journal = :journal');
             $qb->setParameter('journal', $journal);
         }
-        $query = $qb->getQuery();
-        return $query;
+
+        return $qb->getQuery();
     }
 
     /**
@@ -42,7 +49,8 @@ class DepositRepository extends EntityRepository {
         $qb = $this->createQueryBuilder('e');
         $qb->select('e.state, count(e) as ct')
             ->groupBy('e.state')
-            ->orderBy('e.state');
+            ->orderBy('e.state')
+        ;
 
         return $qb->getQuery()->getResult();
     }
@@ -63,5 +71,4 @@ class DepositRepository extends EntityRepository {
 
         return $qb->getQuery()->getResult();
     }
-
 }

@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- *  This file is licensed under the MIT License version 3 or
- *  later. See the LICENSE file for details.
- *
- *  Copyright 2018 Michael Joyce <ubermichael@gmail.com>.
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace AppBundle\Tests\Services\Processing;
@@ -22,59 +23,52 @@ use Psr\Http\Message\StreamInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * Description of HarvesterTest
+ * Description of HarvesterTest.
  */
 class HarvesterTest extends BaseTestCase {
-
     private $harvester;
-    
-    protected function setup() : void {
-        parent::setUp();
-        $this->harvester = $this->container->get(Harvester::class);
-    }
-    
-    public function testInstance() {
+
+    public function testInstance() : void {
         $this->assertInstanceOf(Harvester::class, $this->harvester);
     }
-    
-    public function testWriteDeposit() {
+
+    public function testWriteDeposit() : void {
         $body = $this->createMock(StreamInterface::class);
-        $body->method('read')->will($this->onConsecutiveCalls('abc', 'def', ''));        
+        $body->method('read')->will($this->onConsecutiveCalls('abc', 'def', ''));
         $response = $this->createMock(Response::class);
         $response->method('getBody')->willReturn($body);
         $fs = $this->createMock(Filesystem::class);
-        
+
         $output = '';
-        $fs->method('appendToFile')->will($this->returnCallback(function($path, $bytes) use(&$output) {
+        $fs->method('appendToFile')->will($this->returnCallback(function ($path, $bytes) use (&$output) {
             $output .= $bytes;
-            return null;
         }));
         $this->harvester->setFilesystem($fs);
         $this->harvester->writeDeposit('', $response);
-        $this->assertEquals('abcdef', $output);
+        $this->assertSame('abcdef', $output);
     }
-    
-    public function testWriteDepositNoBody() {
+
+    public function testWriteDepositNoBody() : void {
         $this->expectException(Exception::class);
         $response = $this->createMock(Response::class);
         $response->method('getBody')->willReturn(null);
         $this->harvester->writeDeposit('', $response);
     }
-    
-    public function testFetchDeposit() {
+
+    public function testFetchDeposit() : void {
         $mock = new MockHandler([
             new Response(200),
         ]);
         $handler = HandlerStack::create($mock);
         $client = new Client(['handler' => $handler]);
         $this->harvester->setClient($client);
-        
+
         $response = $this->harvester->fetchDeposit('http://example.com');
         $this->assertInstanceOf(Response::class, $response);
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
     }
-    
-    public function testDepositException() {
+
+    public function testDepositException() : void {
         $this->expectException(Exception::class);
         $mock = new MockHandler([
             new Response(404),
@@ -85,8 +79,8 @@ class HarvesterTest extends BaseTestCase {
         $this->harvester->fetchDeposit('http://example.com');
         $this->fail('No exception thrown.');
     }
-    
-    public function testDepositRedirect() {
+
+    public function testDepositRedirect() : void {
         $mock = new MockHandler([
             new Response(302, ['Location' => 'http://example.com/path']),
             new Response(200),
@@ -95,14 +89,14 @@ class HarvesterTest extends BaseTestCase {
         $client = new Client(['handler' => $handler]);
         $this->harvester->setClient($client);
         $response = $this->harvester->fetchDeposit('http://example.com');
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertSame(200, $response->getStatusCode());
     }
-    
-    public function testCheckSize() {
+
+    public function testCheckSize() : void {
         $deposit = new Deposit();
         $deposit->setSize(1);
         $deposit->setUrl('http://example.com/deposit');
-        
+
         $mock = new MockHandler([
             new Response(200, ['Content-Length' => 1024]),
         ]);
@@ -112,13 +106,13 @@ class HarvesterTest extends BaseTestCase {
         $this->harvester->checkSize($deposit);
         $this->assertNotContains('Expected file size', $deposit->getErrorLog());
     }
-    
-    public function testCheckSizeBadResponse() {
+
+    public function testCheckSizeBadResponse() : void {
         $this->expectException(Exception::class);
         $deposit = new Deposit();
         $deposit->setSize(1);
         $deposit->setUrl('http://example.com/deposit');
-        
+
         $mock = new MockHandler([
             new Response(500),
         ]);
@@ -127,13 +121,13 @@ class HarvesterTest extends BaseTestCase {
         $this->harvester->setClient($client);
         $this->harvester->checkSize($deposit);
     }
-    
-    public function testCheckSizeContentLengthMissing() {
+
+    public function testCheckSizeContentLengthMissing() : void {
         $this->expectException(Exception::class);
         $deposit = new Deposit();
         $deposit->setSize(1);
         $deposit->setUrl('http://example.com/deposit');
-        
+
         $mock = new MockHandler([
             new Response(200),
         ]);
@@ -142,14 +136,13 @@ class HarvesterTest extends BaseTestCase {
         $this->harvester->setClient($client);
         $this->harvester->checkSize($deposit);
     }
-    
-    
-    public function testCheckSizeContentLengthZero() {
+
+    public function testCheckSizeContentLengthZero() : void {
         $this->expectException(Exception::class);
         $deposit = new Deposit();
         $deposit->setSize(100);
         $deposit->setUrl('http://example.com/deposit');
-        
+
         $mock = new MockHandler([
             new Response(200, ['Content-Length' => 0]),
         ]);
@@ -158,13 +151,13 @@ class HarvesterTest extends BaseTestCase {
         $this->harvester->setClient($client);
         $this->harvester->checkSize($deposit);
     }
-    
-    public function testCheckSizeContentLengthMismatch() {
+
+    public function testCheckSizeContentLengthMismatch() : void {
         $this->expectException(Exception::class);
         $deposit = new Deposit();
         $deposit->setSize(100);
         $deposit->setUrl('http://example.com/deposit');
-        
+
         $mock = new MockHandler([
             new Response(200, ['Content-Length' => 10240]),
         ]);
@@ -173,20 +166,20 @@ class HarvesterTest extends BaseTestCase {
         $this->harvester->setClient($client);
         $this->harvester->checkSize($deposit);
     }
-    
-    public function testProcessDeposit() {
+
+    public function testProcessDeposit() : void {
         $fs = $this->createMock(Filesystem::class);
         $fs->method('appendToFile')->willReturn(null);
         $this->harvester->setFilesystem($fs);
-        
+
         $mock = new MockHandler([
-            new Response(200, ['Content-Length' => 1000]), # head request
-            new Response(200, ['Content-Length' => 1000], 'abcdef'), # get request
+            new Response(200, ['Content-Length' => 1000]), // head request
+            new Response(200, ['Content-Length' => 1000], 'abcdef'), // get request
         ]);
         $handler = HandlerStack::create($mock);
         $client = new Client(['handler' => $handler]);
         $this->harvester->setClient($client);
-        
+
         $deposit = new Deposit();
         $deposit->setUrl('http://example.com/path');
         $deposit->setSize(1);
@@ -194,23 +187,23 @@ class HarvesterTest extends BaseTestCase {
         $journal->setUuid('abc123');
         $deposit->setJournal($journal);
         $result = $this->harvester->processDeposit($deposit);
-        $this->assertEquals('', $deposit->getProcessingLog());
+        $this->assertSame('', $deposit->getProcessingLog());
         $this->assertTrue($result);
     }
-    
-    public function testProcessDepositFailue() {
+
+    public function testProcessDepositFailue() : void {
         $fs = $this->createMock(Filesystem::class);
         $fs->method('appendToFile')->willReturn(null);
         $this->harvester->setFilesystem($fs);
-        
+
         $mock = new MockHandler([
-            new Response(200, ['Content-Length' => 1000]), # head request
-            new Response(200, ['Content-Length' => 1000], 'abcdef'), # get request
+            new Response(200, ['Content-Length' => 1000]), // head request
+            new Response(200, ['Content-Length' => 1000], 'abcdef'), // get request
         ]);
         $handler = HandlerStack::create($mock);
         $client = new Client(['handler' => $handler]);
         $this->harvester->setClient($client);
-        
+
         $deposit = new Deposit();
         $deposit->setUrl('http://example.com/path');
         $deposit->setSize(1000);
@@ -221,14 +214,17 @@ class HarvesterTest extends BaseTestCase {
         $this->assertStringContainsStringIgnoringCase('Expected file size', $deposit->getProcessingLog());
         $this->assertNull($result);
     }
-    
-    public function testProcessDepositTooManyFails() {
+
+    public function testProcessDepositTooManyFails() : void {
         $deposit = new Deposit();
         $deposit->setHarvestAttempts(13);
         $result = $this->harvester->processDeposit($deposit);
-        $this->assertEquals('harvest-error', $deposit->getState());
+        $this->assertSame('harvest-error', $deposit->getState());
         $this->assertFalse($result);
     }
-    
-    
+
+    protected function setup() : void {
+        parent::setUp();
+        $this->harvester = $this->container->get(Harvester::class);
+    }
 }

@@ -33,6 +33,10 @@
                 <td>{{ deposit.depositUuid }}</td>
             </tr>
             <tr>
+                <th>AU Container</th>
+                <td><a href='{{ path('aucontainer_show', {'id': deposit.auContainer.id}) }}'>{{ deposit.auContainer.id }}</a></td>
+            </tr>
+            <tr>
                 <th>Received</th>
                 <td>{% if deposit.received %}{{ deposit.received|date }}{% endif %}</td>
             </tr>

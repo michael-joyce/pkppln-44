@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- *  This file is licensed under the MIT License version 3 or
- *  later. See the LICENSE file for details.
- *
- *  Copyright 2018 Michael Joyce <ubermichael@gmail.com>.
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace AppBundle\Utilities;
@@ -17,7 +18,6 @@ use Symfony\Component\Filesystem\Filesystem;
  * Wrapper around BagIt.
  */
 class BagReader {
-
     /**
      * Build the reader.
      */
@@ -30,20 +30,18 @@ class BagReader {
      *
      * @param string $path
      *
-     * @return BagIt
-     *
      * @throws Exception
-     *   Exception thrown if the bag doesn't exist.
+     *                   Exception thrown if the bag doesn't exist.
+     *
+     * @return BagIt
      */
     public function readBag($path) {
-        if (!$this->fs->exists($path)) {
+        if ( ! $this->fs->exists($path)) {
             throw new Exception("Bag {$path} does not exist");
         }
 
         //This call isn't testable without a real bag due to limitations
         // in the BagIt library.
-        $bag = new BagIt($path);
-        return $bag;
+        return new BagIt($path);
     }
-
 }

@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- *  This file is licensed under the MIT License version 3 or
- *  later. See the LICENSE file for details.
- *
- *  Copyright 2018 Michael Joyce <ubermichael@gmail.com>.
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace AppBundle\Tests\Repository;
@@ -15,30 +16,28 @@ use AppBundle\Repository\WhitelistRepository;
 use Nines\UtilBundle\Tests\Util\BaseTestCase;
 
 /**
- * Description of WhitelistRepositoryTest
+ * Description of WhitelistRepositoryTest.
  */
 class WhitelistRepositoryTest extends BaseTestCase {
-
     /**
      * @return WhitelistRepository
      */
     private $repo;
 
     protected function getFixtures() {
-        return array(
+        return [
             LoadWhitelist::class,
-        );
+        ];
+    }
+
+    public function testSearchQuery() : void {
+        $query = $this->repo->searchQuery('960CD4D9');
+        $result = $query->execute();
+        $this->assertSame(1, count($result));
     }
 
     protected function setup() : void {
         parent::setUp();
         $this->repo = $this->em->getRepository(Whitelist::class);
     }
-
-    public function testSearchQuery() {
-        $query = $this->repo->searchQuery('960CD4D9');
-        $result = $query->execute();
-        $this->assertEquals(1, count($result));
-    }
-
 }

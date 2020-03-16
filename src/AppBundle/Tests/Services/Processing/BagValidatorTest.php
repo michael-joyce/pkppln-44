@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- *  This file is licensed under the MIT License version 3 or
- *  later. See the LICENSE file for details.
- *
- *  Copyright 2018 Michael Joyce <ubermichael@gmail.com>.
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace AppBundle\Tests\Services\Processing;
@@ -18,71 +19,70 @@ use Exception;
 use Nines\UtilBundle\Tests\Util\BaseTestCase;
 
 /**
- * Description of PayloadValidatorTest
+ * Description of PayloadValidatorTest.
  */
 class BagValidatorTest extends BaseTestCase {
-
     /**
      * @var BagValidator
      */
     private $validator;
-    
+
     protected function getFixtures() {
-        return array(
+        return [
             LoadJournal::class,
             LoadDeposit::class,
-        );
+        ];
     }
-    
-    protected function setup() : void {
-        parent::setUp(); 
-        $this->validator = $this->container->get(BagValidator::class);
-    }
-    
-    public function testInstance() {
+
+    public function testInstance() : void {
         $this->assertInstanceOf(BagValidator::class, $this->validator);
     }
-    
-    public function testValidate() {
+
+    public function testValidate() : void {
         $deposit = $this->getReference('deposit.1');
-        
+
         $bag = $this->createMock(BagIt::class);
-        $bag->method('validate')->willReturn(array());
+        $bag->method('validate')->willReturn([]);
         $bag->method('getBagInfoData')->willReturn($deposit->getJournalVersion());
         $reader = $this->createMock(BagReader::class);
         $reader->method('readBag')->willReturn($bag);
         $this->validator->setBagReader($reader);
-        
+
         $this->validator->processDeposit($deposit);
         $this->assertEmpty($deposit->getErrorLog());
     }
-    
-    public function testValidateVersionMismatch() {
+
+    public function testValidateVersionMismatch() : void {
         $deposit = $this->getReference('deposit.1');
-        
+
         $bag = $this->createMock(BagIt::class);
-        $bag->method('validate')->willReturn(array());
+        $bag->method('validate')->willReturn([]);
         $bag->method('getBagInfoData')->willReturn('2.0.0.0');
         $reader = $this->createMock(BagReader::class);
         $reader->method('readBag')->willReturn($bag);
         $this->validator->setBagReader($reader);
-        
+
         $this->validator->processDeposit($deposit);
-        $this->assertEquals(1, count($deposit->getErrorLog()));
+        $this->assertSame(1, count($deposit->getErrorLog()));
         $this->assertStringStartsWith('Bag journal version tag', $deposit->getErrorLog()[0]);
     }
-    
-    public function testValidateFail() {
+
+    public function testValidateFail() : void {
         $this->expectException(Exception::class);
         $deposit = $this->getReference('deposit.1');
-        
+
         $bag = $this->createMock(BagIt::class);
         $bag->method('validate')->willReturn([['foo', 'error message']]);
         $bag->method('getBagInfoData')->willReturn('2.0.0.0');
         $reader = $this->createMock(BagReader::class);
         $reader->method('readBag')->willReturn($bag);
         $this->validator->setBagReader($reader);
-        
+
         $this->validator->processDeposit($deposit);
+    }
+
+    protected function setup() : void {
+        parent::setUp();
+        $this->validator = $this->container->get(BagValidator::class);
     }
 }

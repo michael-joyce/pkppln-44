@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
@@ -12,7 +20,6 @@ use Nines\UtilBundle\Entity\AbstractEntity;
  * @ORM\Entity(repositoryClass="AppBundle\Repository\DocumentRepository")
  */
 class Document extends AbstractEntity {
-
     /**
      * Document title.
      *
@@ -146,5 +153,4 @@ class Document extends AbstractEntity {
     public function getContent() {
         return $this->content;
     }
-
 }

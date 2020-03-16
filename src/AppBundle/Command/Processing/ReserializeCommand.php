@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace AppBundle\Command\Processing;
 
 use AppBundle\Entity\Deposit;
@@ -10,8 +18,6 @@ use Doctrine\ORM\EntityManagerInterface;
  * Reserialize the bags and add some metadata.
  */
 class ReserializeCommand extends AbstractProcessingCmd {
-
-
     /**
      * Bag reserializer service.
      *
@@ -21,9 +27,6 @@ class ReserializeCommand extends AbstractProcessingCmd {
 
     /**
      * Build the command.
-     *
-     * @param EntityManagerInterface $em
-     * @param BagReserializer $bagReserializer
      */
     public function __construct(EntityManagerInterface $em, BagReserializer $bagReserializer) {
         parent::__construct($em);
@@ -33,7 +36,7 @@ class ReserializeCommand extends AbstractProcessingCmd {
     /**
      * {@inheritdoc}
      */
-    protected function configure() {
+    protected function configure() : void {
         $this->setName('pln:reserialize');
         $this->setDescription('Reserialize the deposit bag.');
         parent::configure();
@@ -80,5 +83,4 @@ class ReserializeCommand extends AbstractProcessingCmd {
     public function errorState() {
         return 'reserialize-error';
     }
-
 }

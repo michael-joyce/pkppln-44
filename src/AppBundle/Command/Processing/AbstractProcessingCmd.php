@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- *  This file is licensed under the MIT License version 3 or
- *  later. See the LICENSE file for details.
- *
- *  Copyright 2018 Michael Joyce <ubermichael@gmail.com>.
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace AppBundle\Command\Processing;
@@ -22,7 +23,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Parent class for all processing commands.
  */
 abstract class AbstractProcessingCmd extends ContainerAwareCommand {
-
     /**
      * Database interface.
      *
@@ -32,8 +32,6 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
 
     /**
      * Build the command.
-     *
-     * @param EntityManagerInterface $em
      */
     public function __construct(EntityManagerInterface $em) {
         parent::__construct();
@@ -43,7 +41,7 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
     /**
      * {@inheritdoc}
      */
-    protected function configure() {
+    protected function configure() : void {
         $this->addOption('retry', 'r', InputOption::VALUE_NONE, 'Retry failed deposits');
         $this->addOption('dry-run', 'd', InputOption::VALUE_NONE, 'Do not update processing status');
         $this->addOption('limit', 'l', InputOption::VALUE_OPTIONAL, 'Only process $limit deposits.');
@@ -55,18 +53,40 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
      *
      * @param Deposit[] $deposits
      */
-    protected function preprocessDeposits(array $deposits = array()) {
+    protected function preprocessDeposits(array $deposits = []) : void {
         // Do nothing by default.
     }
 
     /**
      * Process one deposit return true on success and false on failure.
      *
-     * @param Deposit $deposit
-     *
-     * @return string|bool|null
+     * @return null|bool|string
      */
     abstract protected function processDeposit(Deposit $deposit);
+
+    /**
+     * Code to run before executing the command.
+     */
+    protected function preExecute() : void {
+        // Do nothing, let subclasses override if needed.
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    final protected function execute(InputInterface $input, OutputInterface $output) : void {
+        $this->preExecute();
+        $deposits = $this->getDeposits(
+            $input->getOption('retry'),
+            $input->getArgument('deposit-id'),
+            $input->getOption('limit')
+        );
+
+        $this->preprocessDeposits($deposits);
+        foreach ($deposits as $deposit) {
+            $this->runDeposit($deposit, $output, $input->getOption('dry-run'));
+        }
+    }
 
     /**
      * Deposits in this state will be processed by the commands.
@@ -94,13 +114,6 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
     abstract public function failureLogMessage();
 
     /**
-     * Code to run before executing the command.
-     */
-    protected function preExecute() {
-        // Do nothing, let subclasses override if needed.
-    }
-
-    /**
      * Get a list of deposits to process.
      *
      * @param bool $retry
@@ -109,19 +122,20 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
      *
      * @return Deposit[]
      */
-    public function getDeposits($retry = false, array $depositIds = array(), $limit = null) {
+    public function getDeposits($retry = false, array $depositIds = [], $limit = null) {
         $repo = $this->em->getRepository(Deposit::class);
         $state = $this->processingState();
         if ($retry) {
             $state = $this->errorState();
         }
-        $query = array('state' => $state);
+        $query = ['state' => $state];
         if (count($depositIds) > 0) {
             $query['id'] = $depositIds;
         }
-        $orderBy = array(
-        'id' => 'ASC',
-        );
+        $orderBy = [
+            'id' => 'ASC',
+        ];
+
         return $repo->findBy($query, $orderBy, $limit);
     }
 
@@ -130,11 +144,9 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
      *
      * If $dryRun is is true results will not be flushed to the database.
      *
-     * @param Deposit $deposit
-     * @param OutputInterface $output
      * @param bool $dryRun
      */
-    public function runDeposit(Deposit $deposit, OutputInterface $output, $dryRun = false) {
+    public function runDeposit(Deposit $deposit, OutputInterface $output, $dryRun = false) : void {
         try {
             $result = $this->processDeposit($deposit);
         } catch (Exception $e) {
@@ -143,6 +155,7 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
             $deposit->addToProcessingLog($this->failureLogMessage());
             $deposit->addErrorLog(get_class($e) . $e->getMessage());
             $this->em->flush($deposit);
+
             return;
         }
 
@@ -152,34 +165,16 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
 
         if (is_string($result)) {
             $deposit->setState($result);
-            $deposit->addToProcessingLog("Holding deposit.");
-        } elseif ($result === true) {
+            $deposit->addToProcessingLog('Holding deposit.');
+        } elseif (true === $result) {
             $deposit->setState($this->nextState());
             $deposit->addToProcessingLog($this->successLogMessage());
-        } elseif ($result === false) {
+        } elseif (false === $result) {
             $deposit->setState($this->errorState());
             $deposit->addToProcessingLog($this->failureLogMessage());
-        } elseif ($result === null) {
+        } elseif (null === $result) {
             // dunno, do nothing I guess.
         }
         $this->em->flush($deposit);
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    final protected function execute(InputInterface $input, OutputInterface $output) {
-        $this->preExecute();
-        $deposits = $this->getDeposits(
-            $input->getOption('retry'),
-            $input->getArgument('deposit-id'),
-            $input->getOption('limit')
-        );
-
-        $this->preprocessDeposits($deposits);
-        foreach ($deposits as $deposit) {
-            $this->runDeposit($deposit, $output, $input->getOption('dry-run'));
-        }
-    }
-
 }

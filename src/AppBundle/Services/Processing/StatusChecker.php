@@ -1,20 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace AppBundle\Services\Processing;
@@ -30,7 +21,6 @@ use RecursiveIteratorIterator;
  * @see SwordClient
  */
 class StatusChecker {
-
     /**
      * Sword client to communicate with LOCKSS.
      *
@@ -48,7 +38,6 @@ class StatusChecker {
     /**
      * Construct the status checker.
      *
-     * @param SwordClient $client
      * @param bool $cleanup
      */
     public function __construct(SwordClient $client, $cleanup) {
@@ -60,8 +49,10 @@ class StatusChecker {
      * Remove a directory and its contents recursively.
      *
      * Use with caution.
+     *
+     * @param mixed $path
      */
-    private function delTree($path) {
+    private function delTree($path) : void {
         $directoryIterator = new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS);
         $fileIterator = new RecursiveIteratorIterator($directoryIterator, RecursiveIteratorIterator::CHILD_FIRST);
         foreach ($fileIterator as $file) {
@@ -80,9 +71,7 @@ class StatusChecker {
      * Updates the deposit status, and may remove the processing files if
      * LOCKSSOatic reports agreement.
      *
-     * @param Deposit $deposit
-     *
-     * @return bool|null
+     * @return null|bool
      */
     protected function processDeposit(Deposit $deposit) {
         $this->logger->notice("Checking deposit {$deposit->getDepositUuid()}");
@@ -90,17 +79,15 @@ class StatusChecker {
         $status = (string) $statement->xpath('//atom:category[@scheme="http://purl.org/net/sword/terms/state"]/@term')[0];
         $this->logger->notice('Deposit is ' . $status);
         $deposit->setPlnState($status);
-        if ($status === 'agreement' && $this->cleanup) {
+        if ('agreement' === $status && $this->cleanup) {
             $this->logger->notice("Deposit complete. Removing processing files for deposit {$deposit->getId()}.");
             unlink($this->filePaths->getHarvestFile($deposit));
             $this->deltree($this->filePaths->getProcessingBagPath($deposit));
             unlink($this->filePaths->getStagingBagPath($deposit));
         }
 
-        if ($status === 'agreement') {
+        if ('agreement' === $status) {
             return true;
         }
-        return null;
     }
-
 }

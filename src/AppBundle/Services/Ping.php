@@ -1,10 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- *  This file is licensed under the MIT License version 3 or
- *  later. See the LICENSE file for details.
- *
- *  Copyright 2018 Michael Joyce <ubermichael@gmail.com>.
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace AppBundle\Services;
@@ -21,17 +22,16 @@ use GuzzleHttp\Client;
  * Ping service.
  */
 class Ping {
-
     /**
      * Http client configuration.
      */
-    const CONF = array(
+    public const CONF = [
         'allow_redirects' => true,
-        'headers' => array(
+        'headers' => [
             'User-Agent' => 'PkpPlnBot 1.0; http://pkp.sfu.ca',
             'Accept' => 'application/xml,text/xml,*/*;q=0.1',
-        ),
-    );
+        ],
+    ];
 
     /**
      * Minimum expected OJS version.
@@ -65,8 +65,6 @@ class Ping {
      * Construct the ping service.
      *
      * @param type $minOjsVersion
-     * @param EntityManagerInterface $em
-     * @param BlackWhiteList $list
      */
     public function __construct($minOjsVersion, EntityManagerInterface $em, BlackWhiteList $list) {
         $this->minOjsVersion = $minOjsVersion;
@@ -77,29 +75,25 @@ class Ping {
 
     /**
      * Set the HTTP client.
-     *
-     * @param Client $client
      */
-    public function setClient(Client $client) {
+    public function setClient(Client $client) : void {
         $this->client = $client;
     }
 
     /**
      * Process a ping response.
-     *
-     * @param Journal $journal
-     * @param PingResult $result
      */
-    public function process(Journal $journal, PingResult $result) {
-        if (!$result->getOjsRelease()) {
+    public function process(Journal $journal, PingResult $result) : void {
+        if ( ! $result->getOjsRelease()) {
             $journal->setStatus('ping-error');
-            $result->addError("Journal version information missing in ping result.");
+            $result->addError('Journal version information missing in ping result.');
+
             return;
         }
         $journal->setContacted(new DateTime());
         $journal->setTitle($result->getJournalTitle());
         $journal->setOjsVersion($result->getOjsRelease());
-        $journal->setTermsAccepted($result->areTermsAccepted() === 'yes');
+        $journal->setTermsAccepted('yes' === $result->areTermsAccepted());
         $journal->setStatus('healthy');
         if (version_compare($result->getOjsRelease(), $this->minOjsVersion, '<')) {
             return;
@@ -116,22 +110,22 @@ class Ping {
     /**
      * Ping $journal and return the result.
      *
-     * @param Journal $journal
      * @return PingResult
      */
     // @codingStandardsIgnoreStart
     public function ping(Journal $journal) {
-    // @codingStandardsIgnoreEnd
+        // @codingStandardsIgnoreEnd
         try {
             $response = $this->client->get($journal->getGatewayUrl(), self::CONF);
             $result = new PingResult($response);
             $this->process($journal, $result);
+
             return $result;
         } catch (Exception $e) {
             $journal->setStatus('ping-error');
             $message = strip_tags($e->getMessage());
+
             return new PingResult(null, $message);
         }
     }
-
 }
