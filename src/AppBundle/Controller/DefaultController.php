@@ -75,6 +75,7 @@ class DefaultController extends Controller {
         return [
             'deposits' => $deposits,
             'states' => $states,
+            'state' => $state,
         ];
     }
 

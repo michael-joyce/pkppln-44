@@ -89,6 +89,7 @@ class SwordController extends Controller {
         if ($required) {
             throw new BadRequestHttpException("HTTP header {$key} is required.", null, Response::HTTP_BAD_REQUEST);
         }
+        return '';
     }
 
     /**

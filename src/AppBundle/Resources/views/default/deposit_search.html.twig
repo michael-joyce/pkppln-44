@@ -1,12 +1,14 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Deposit List{% endblock %}
+{% block title %}Deposit Search{% endblock %}
 
 {% block pageheader %}
-    <h1>Deposit List</h1>
+    <h1>Deposit Search</h1>
+    {% if q %}
     <p class="count">
-        Displaying {{ deposits|length }} deposits of {{ deposits.getTotalItemCount }} total.
+        Displaying {{ deposits|length }} search results for <i>{{ q }}</i> of {{ deposits.getTotalItemCount }} total.
     </p>
+    {% endif %}
 {% endblock %} 
 
 {% block body %}

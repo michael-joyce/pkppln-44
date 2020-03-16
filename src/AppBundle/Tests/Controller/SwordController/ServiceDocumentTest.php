@@ -62,7 +62,7 @@ class ServiceDocumentTest extends AbstractSwordTestCase {
         $this->assertSame(200, $this->testClient->getResponse()->getStatusCode());
         $xml = $this->getXml($this->testClient);
         $this->assertSame('service', $xml->getName());
-        $this->assertSame(2.0, $this->getXmlValue($xml, '//sword:version'));
+        $this->assertSame('2.0', $this->getXmlValue($xml, '//sword:version'));
         $this->assertSame('No', $this->getXmlValue($xml, '//pkp:pln_accepting/@is_accepting'));
         $this->assertSame('The PKP PLN does not know about this journal yet.', $this->getXmlValue($xml, '//pkp:pln_accepting'));
         $this->assertCount(4, $xml->xpath('//pkp:terms_of_use/*'));
@@ -88,7 +88,7 @@ class ServiceDocumentTest extends AbstractSwordTestCase {
         $this->assertSame(200, $this->testClient->getResponse()->getStatusCode());
         $xml = $this->getXml($this->testClient);
         $this->assertSame('service', $xml->getName());
-        $this->assertSame(2.0, $this->getXmlValue($xml, '//sword:version'));
+        $this->assertSame('2.0', $this->getXmlValue($xml, '//sword:version'));
         $this->assertSame('Yes', $this->getXmlValue($xml, '//pkp:pln_accepting/@is_accepting'));
         $this->assertSame('The PKP PLN can accept deposits from this journal.', $this->getXmlValue($xml, '//pkp:pln_accepting'));
         $this->assertCount(4, $xml->xpath('//pkp:terms_of_use/*'));

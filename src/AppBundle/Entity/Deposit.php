@@ -94,14 +94,6 @@ class Deposit extends AbstractEntity {
     private $depositUuid;
 
     /**
-     * When the deposit was received.
-     *
-     * @var DateTime
-     * @ORM\Column(type="datetime", nullable=false)
-     */
-    private $received;
-
-    /**
      * The deposit action (add, edit).
      *
      * @var string
@@ -258,7 +250,6 @@ class Deposit extends AbstractEntity {
     public function __construct() {
         parent::__construct();
         $this->license = [];
-        $this->received = new DateTime();
         $this->processingLog = '';
         $this->state = 'depositedByJournal';
         $this->errorLog = [];
@@ -384,9 +375,7 @@ class Deposit extends AbstractEntity {
      *
      * @return Deposit
      */
-    public function setReceived(DateTime $received) {
-        $this->received = $received;
-
+    public function setReceived() {
         return $this;
     }
 
@@ -396,7 +385,7 @@ class Deposit extends AbstractEntity {
      * @return DateTime
      */
     public function getReceived() {
-        return $this->received;
+        return $this->created;
     }
 
     /**

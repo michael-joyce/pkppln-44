@@ -5,7 +5,7 @@
 {% block pageheader %}
     <h1>Deposit List</h1>
     <p class="count">
-        Displaying {{ deposits|length }} deposits of {{ deposits.getTotalItemCount }} total.
+        Displaying {{ deposits|length }} deposits in state <i>{{ state }}</i> of {{ deposits.getTotalItemCount }} total.
     </p>
 {% endblock %}
 

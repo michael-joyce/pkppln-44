@@ -8,8 +8,8 @@
          cacheTokens="true"
          processIsolation="false"
          colors="true"
-         stopOnError="true"
-         stopOnFailure="true"
+         stopOnError="false"
+         stopOnFailure="false"
          defaultTestSuite="app"
          cacheResultFile="var/cache/phpunit.cache"
          bootstrap="var/bootstrap.php.cache">

@@ -37,7 +37,6 @@ class LoadDeposit extends Fixture implements DependentFixtureInterface {
             $fixture->setLicense(['Creative Commons']);
             $fixture->setFileType('application/zip');
             $fixture->setDepositUuid(self::UUIDS[$i]);
-            $fixture->setReceived(new DateTime("2018-{$i}-{$i}T12:00:00"));
             $fixture->setAction('add');
             $fixture->setVolume(1);
             $fixture->setIssue($i + 1);
@@ -51,6 +50,7 @@ class LoadDeposit extends Fixture implements DependentFixtureInterface {
             $fixture->setDepositReceipt("http://example.com/receipt/{$i}");
             $fixture->setProcessingLog('');
             $fixture->setJournal($this->getReference('journal.1'));
+            $fixture->setAuContainer($this->getReference('aucontainer'));
 
             $em->persist($fixture);
             $this->setReference('deposit.' . $i, $fixture);
@@ -65,6 +65,7 @@ class LoadDeposit extends Fixture implements DependentFixtureInterface {
     public function getDependencies() {
         return [
             LoadJournal::class,
+            LoadAuContainer::class,
         ];
     }
 }

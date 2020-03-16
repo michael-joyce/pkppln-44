@@ -63,7 +63,7 @@ ENDXML;
 
     public function getXpathValueData() {
         return [
-            [2.0, '/app:service/sword:version'],
+            ['2.0', '/app:service/sword:version'],
             [null, '/foo/bar'],
         ];
     }

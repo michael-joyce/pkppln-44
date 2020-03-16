@@ -40,7 +40,7 @@ class DepositController extends Controller {
     public function indexAction(Request $request, Journal $journal) {
         $em = $this->getDoctrine()->getManager();
         $qb = $em->createQueryBuilder();
-        $qb->select('e')->from(Deposit::class, 'e')->orderBy('e.id', 'ASC');
+        $qb->select('e')->from(Deposit::class, 'e')->where('e.journal = :journal')->orderBy('e.id', 'ASC')->setParameter('journal', $journal);
         $query = $qb->getQuery();
         $paginator = $this->get('knp_paginator');
         $deposits = $paginator->paginate($query, $request->query->getint('page', 1), 25);
