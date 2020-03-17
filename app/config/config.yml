@@ -79,6 +79,12 @@ twig:
     date:
         format: D M j G:i:s T Y
         interval_format: '%%d days'
+    globals:
+        blackwhitelist: "@blackwhitelist"
+        pln_accepting: "%pln.accepting%"
+        pln_maxUploadSize: "%pln.max_upload%"
+        pln_maxAuSize: "%pln.max_au%"
+        pln_uploadChecksumType: "%pln.checksum_type%"
 
 # Doctrine Configuration
 doctrine:

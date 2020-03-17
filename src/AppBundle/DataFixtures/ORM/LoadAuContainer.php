@@ -1,33 +1,30 @@
 <?php
 
-declare(strict_types=1);
-
-/*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
- * This source file is subject to the GPL v2, bundled
- * with this source code in the file LICENSE.
- */
-
 namespace AppBundle\DataFixtures\ORM;
 
 use AppBundle\Entity\AuContainer;
-use AppBundle\Entity\Blacklist;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ObjectManager;
 
 /**
- * LoadBlacklist form.
+ * Load a deposit for testing.
  */
 class LoadAuContainer extends Fixture {
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    public function load(\Doctrine\Persistence\ObjectManager $manager) {
-        $auContainer = new AuContainer();
-        $manager->persist($auContainer);
-        $manager->flush();
-        $this->setReference('aucontainer', $auContainer);
+    public function load(ObjectManager $manager) {
+		$c1 = new AuContainer();
+		$c1->setOpen(false);
+        $this->setReference('aucontainer', $c1);
+		$manager->persist($c1);
+
+		$c2 = new AuContainer();
+		$manager->persist($c2);
+		$c3 = new AuContainer();
+		$manager->persist($c3);
+		$manager->flush();
     }
+
 }

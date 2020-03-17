@@ -35,7 +35,7 @@
     {% if entity.deposits|length %}
         <ol>
         {% for deposit in entity.deposits %}
-            <li><a class='uuid' href="{{ path('deposit_show', {'id': deposit.id}) }}">{{ deposit.depositUuid}}</a></li>
+            <li><a class='uuid' href="{{ path('deposit_show', {'journalId': deposit.journal.id, 'id': deposit.id}) }}">{{ deposit.depositUuid}}</a></li>
         {% endfor %}
         <ol>
     {% else %}

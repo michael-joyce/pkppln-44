@@ -33,7 +33,7 @@ services:
 
     AppBundle\Services\Processing\Harvester:
         arguments:
-            $maxHarvestAttempts: '%pln.max_harvest_attepmts%'
+            $maxHarvestAttempts: '%pln.max_harvest_attempts%'
 
     AppBundle\Services\Processing\StatusChecker:
         arguments:
@@ -42,6 +42,10 @@ services:
     AppBundle\Services\Processing\VirusScanner:
         arguments:
             $socketPath: '%pln.clamd_socket%'
+
+    AppBundle\Services\Processing\BagReserializer:
+        arguments:
+            $maxAuSize: '%pln.max_au%'
 
     AppBundle\Services\SwordClient:
         arguments:

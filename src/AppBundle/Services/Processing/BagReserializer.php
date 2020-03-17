@@ -10,9 +10,11 @@ declare(strict_types=1);
 
 namespace AppBundle\Services\Processing;
 
+use AppBundle\Entity\AuContainer;
 use AppBundle\Entity\Deposit;
 use AppBundle\Services\FilePaths;
 use AppBundle\Utilities\BagReader;
+use Doctrine\ORM\EntityManagerInterface;
 use whikloj\BagItTools\Bag;;
 
 /**
@@ -34,11 +36,17 @@ class BagReserializer {
     private $bagReader;
 
     /**
+     * @var EntityManagerInterface
+     */
+    private $em;
+
+    /**
      * Construct the reserializer service.
      */
-    public function __construct(FilePaths $fp, BagReader $bagReader) {
+    public function __construct($maxAuSize, FilePaths $fp, BagReader $bagReader, EntityManagerInterface $em) {
         $this->bagReader = $bagReader;
         $this->filePaths = $fp;
+        $this->em = $em;
     }
 
     /**
@@ -92,6 +100,18 @@ class BagReserializer {
         $deposit->setPackageSize(ceil(filesize($path) / 1000));
         $deposit->setPackageChecksumType('sha1');
         $deposit->setPackageChecksumValue(hash_file('sha1', $path));
+
+        $auContainer = $this->em->getRepository('AppBundle:AuContainer')->getOpenContainer();
+        if ($auContainer === null) {
+            $auContainer = new AuContainer();
+            $this->em->persist($auContainer);
+        }
+        $deposit->setAuContainer($auContainer);
+        $auContainer->addDeposit($deposit);
+        if ($auContainer->getSize() > $this->container->getParameter('pln_maxAuSize')) {
+            $auContainer->setOpen(false);
+        }
+        $this->em->flush();
 
         return true;
     }

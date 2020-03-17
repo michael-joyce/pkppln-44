@@ -53,6 +53,9 @@ services:
         tags:
             - { name: knp_menu.menu_builder, method: mainMenu, alias: main}
 
+    blackwhitelist:
+        class: AppBundle\Services\BlackWhiteList
+
     AppBundle\Services\FilePaths:
         arguments:
             $root: '%pln.data_dir%'
@@ -68,7 +71,7 @@ services:
 
     AppBundle\Services\Processing\Harvester:
         arguments:
-            $maxHarvestAttempts: '%pln.max_harvest_attepmts%'
+            $maxHarvestAttempts: '%pln.max_harvest_attempts%'
 
     AppBundle\Services\Processing\VirusScanner:
         arguments:
@@ -77,6 +80,10 @@ services:
     AppBundle\Services\Processing\StatusChecker:
         arguments:
             $cleanup: '%pln.remove_completed_deposits%'
+
+    AppBundle\Services\Processing\BagReserializer:
+        arguments:
+            $maxAuSize: '%pln.max_au%'
 
     AppBundle\Services\SwordClient:
         arguments:

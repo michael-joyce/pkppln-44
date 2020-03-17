@@ -20,7 +20,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table()
  * @ORM\HasLifecycleCallbacks
- * @ORM\Entity(repositoryClass="AuContainerRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\AuContainerRepository")
  */
 class AuContainer {
     /**
@@ -98,7 +98,7 @@ class AuContainer {
      * Set open. An open container can be made closed, but a closed container
      * cannot be reopened.
      *
-     * @param type $open
+     * @param bool $open
      *
      * @return AuContainer
      */
