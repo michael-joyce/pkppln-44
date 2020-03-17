@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1bf4e0a70206645526c197d8b0bd731b",
+    "content-hash": "f4362423908cef854565e113825d5d1f",
     "packages": [
         {
             "name": "beberlei/doctrineextensions",
@@ -3689,39 +3689,6 @@
             "time": "2020-02-21T04:36:14+00:00"
         },
         {
-            "name": "scholarslab/bagit",
-            "version": "0.3.1",
-            "source": {
-                "type": "git",
-                "url": "git@github.com:scholarslab/BagItPHP.git",
-                "reference": "63d21094a3cef17a4177a31aeacdf639c80e6b14"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/scholarslab/BagItPHP/zipball/63d21094a3cef17a4177a31aeacdf639c80e6b14",
-                "reference": "63d21094a3cef17a4177a31aeacdf639c80e6b14",
-                "shasum": ""
-            },
-            "require": {
-                "ext-hash": "*",
-                "ext-iconv": "*",
-                "ext-zip": "*",
-                "pear/archive_tar": "~1.3"
-            },
-            "require-dev": {
-                "mayflower/php-codebrowser": "~1.1",
-                "pdepend/pdepend": "2.1.0",
-                "phpdocumentor/phpdocumentor": "2.*",
-                "phpmd/phpmd": "@stable",
-                "phpunit/phpunit": "~4.4",
-                "sebastian/phpcpd": "*",
-                "squizlabs/php_codesniffer": "2.*"
-            },
-            "type": "library",
-            "notification-url": "https://packagist.org/downloads/",
-            "time": "2019-11-25T19:39:51+00:00"
-        },
-        {
             "name": "sebastian/code-unit-reverse-lookup",
             "version": "1.0.1",
             "source": {
@@ -6075,6 +6042,63 @@
                 "validate"
             ],
             "time": "2020-02-14T12:15:55+00:00"
+        },
+        {
+            "name": "whikloj/bagittools",
+            "version": "1.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/whikloj/BagItTools.git",
+                "reference": "667ae0b10fa784d0eaafe0521d635f4bee66f3ff"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/whikloj/BagItTools/zipball/667ae0b10fa784d0eaafe0521d635f4bee66f3ff",
+                "reference": "667ae0b10fa784d0eaafe0521d635f4bee66f3ff",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-intl": "*",
+                "ext-mbstring": "*",
+                "ext-zip": "*",
+                "pear/archive_tar": "^1.4",
+                "php": ">=5.6"
+            },
+            "require-dev": {
+                "donatj/mock-webserver": "^2.1",
+                "phpdocumentor/phpdocumentor": "^2.0",
+                "phpunit/phpunit": "~5.7",
+                "sebastian/phpcpd": "^3.0",
+                "squizlabs/php_codesniffer": "^3.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "whikloj\\BagItTools\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jared Whiklo",
+                    "email": "jwhiklo@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A PHP library to manipulate and verify BagIt bags.",
+            "homepage": "https://github.com/whikloj/bagittools",
+            "keywords": [
+                "bagit",
+                "bags",
+                "data",
+                "integrity",
+                "transmission"
+            ],
+            "time": "2020-02-28T17:20:17+00:00"
         },
         {
             "name": "xenolope/quahog",

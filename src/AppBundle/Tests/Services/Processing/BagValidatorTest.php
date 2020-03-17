@@ -14,7 +14,7 @@ use AppBundle\DataFixtures\ORM\LoadDeposit;
 use AppBundle\DataFixtures\ORM\LoadJournal;
 use AppBundle\Services\Processing\BagValidator;
 use AppBundle\Utilities\BagReader;
-use BagIt;
+use whikloj\BagItTools\Bag;;
 use Exception;
 use Nines\UtilBundle\Tests\Util\BaseTestCase;
 
@@ -41,7 +41,7 @@ class BagValidatorTest extends BaseTestCase {
     public function testValidate() : void {
         $deposit = $this->getReference('deposit.1');
 
-        $bag = $this->createMock(BagIt::class);
+        $bag = $this->createMock(Bag::class);
         $bag->method('validate')->willReturn([]);
         $bag->method('getBagInfoData')->willReturn($deposit->getJournalVersion());
         $reader = $this->createMock(BagReader::class);
@@ -55,7 +55,7 @@ class BagValidatorTest extends BaseTestCase {
     public function testValidateVersionMismatch() : void {
         $deposit = $this->getReference('deposit.1');
 
-        $bag = $this->createMock(BagIt::class);
+        $bag = $this->createMock(Bag::class);
         $bag->method('validate')->willReturn([]);
         $bag->method('getBagInfoData')->willReturn('2.0.0.0');
         $reader = $this->createMock(BagReader::class);
@@ -71,7 +71,7 @@ class BagValidatorTest extends BaseTestCase {
         $this->expectException(Exception::class);
         $deposit = $this->getReference('deposit.1');
 
-        $bag = $this->createMock(BagIt::class);
+        $bag = $this->createMock(Bag::class);
         $bag->method('validate')->willReturn([['foo', 'error message']]);
         $bag->method('getBagInfoData')->willReturn('2.0.0.0');
         $reader = $this->createMock(BagReader::class);

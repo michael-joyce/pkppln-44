@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace AppBundle\Utilities;
 
-use BagIt;
+use whikloj\BagItTools\Bag;;
 use Exception;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -33,7 +33,7 @@ class BagReader {
      * @throws Exception
      *                   Exception thrown if the bag doesn't exist.
      *
-     * @return BagIt
+     * @return Bag;
      */
     public function readBag($path) {
         if ( ! $this->fs->exists($path)) {
@@ -41,7 +41,7 @@ class BagReader {
         }
 
         //This call isn't testable without a real bag due to limitations
-        // in the BagIt library.
-        return new BagIt($path);
+        // in the Bag; library.
+        return Bag::create($path);
     }
 }

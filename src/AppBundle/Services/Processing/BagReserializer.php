@@ -13,7 +13,7 @@ namespace AppBundle\Services\Processing;
 use AppBundle\Entity\Deposit;
 use AppBundle\Services\FilePaths;
 use AppBundle\Utilities\BagReader;
-use BagIt;
+use whikloj\BagItTools\Bag;;
 
 /**
  * Take a processed bag and reserialize it.
@@ -44,27 +44,26 @@ class BagReserializer {
     /**
      * Add the metadata from the database to the bag-info.txt file.
      */
-    protected function addMetadata(BagIt $bag, Deposit $deposit) : void {
+    protected function addMetadata(Bag $bag, Deposit $deposit) : void {
         // @todo this is very very bad. Once BagItPHP is updated it should be $bag->clearAllBagInfo();
-        $bag->bagInfoData = [];
-        $bag->setBagInfoData('External-Identifier', $deposit->getDepositUuid());
-        $bag->setBagInfoData('PKP-PLN-Deposit-UUID', $deposit->getDepositUuid());
-        $bag->setBagInfoData('PKP-PLN-Deposit-Received', $deposit->getReceived()->format('c'));
-        $bag->setBagInfoData('PKP-PLN-Deposit-Volume', $deposit->getVolume());
-        $bag->setBagInfoData('PKP-PLN-Deposit-Issue', $deposit->getIssue());
-        $bag->setBagInfoData('PKP-PLN-Deposit-PubDate', $deposit->getPubDate()->format('c'));
+        $bag->addBagInfoTag('External-Identifier', $deposit->getDepositUuid());
+        $bag->addBagInfoTag('PKP-PLN-Deposit-UUID', $deposit->getDepositUuid());
+        $bag->addBagInfoTag('PKP-PLN-Deposit-Received', $deposit->getReceived()->format('c'));
+        $bag->addBagInfoTag('PKP-PLN-Deposit-Volume', $deposit->getVolume());
+        $bag->addBagInfoTag('PKP-PLN-Deposit-Issue', $deposit->getIssue());
+        $bag->addBagInfoTag('PKP-PLN-Deposit-PubDate', $deposit->getPubDate()->format('c'));
 
         $journal = $deposit->getJournal();
-        $bag->setBagInfoData('PKP-PLN-Journal-UUID', $journal->getUuid());
-        $bag->setBagInfoData('PKP-PLN-Journal-Title', $journal->getTitle());
-        $bag->setBagInfoData('PKP-PLN-Journal-ISSN', $journal->getIssn());
-        $bag->setBagInfoData('PKP-PLN-Journal-URL', $journal->getUrl());
-        $bag->setBagInfoData('PKP-PLN-Journal-Email', $journal->getEmail());
-        $bag->setBagInfoData('PKP-PLN-Publisher-Name', $journal->getPublisherName());
-        $bag->setBagInfoData('PKP-PLN-Publisher-URL', $journal->getPublisherUrl());
+        $bag->addBagInfoTag('PKP-PLN-Journal-UUID', $journal->getUuid());
+        $bag->addBagInfoTag('PKP-PLN-Journal-Title', $journal->getTitle());
+        $bag->addBagInfoTag('PKP-PLN-Journal-ISSN', $journal->getIssn());
+        $bag->addBagInfoTag('PKP-PLN-Journal-URL', $journal->getUrl());
+        $bag->addBagInfoTag('PKP-PLN-Journal-Email', $journal->getEmail());
+        $bag->addBagInfoTag('PKP-PLN-Publisher-Name', $journal->getPublisherName());
+        $bag->addBagInfoTag('PKP-PLN-Publisher-URL', $journal->getPublisherUrl());
 
         foreach ($deposit->getLicense() as $key => $value) {
-            $bag->setBagInfoData('PKP-PLN-' . $key, $value);
+            $bag->addBagInfoTag('PKP-PLN-' . $key, $value);
         }
     }
 

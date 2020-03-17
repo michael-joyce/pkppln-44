@@ -85,7 +85,7 @@ ENDXML;
 
     public function valueData() {
         return [
-            [10000, 'getMaxUpload'],
+            ['10000', 'getMaxUpload'],
             ['SHA1 MD5', 'getUploadChecksum'],
             ['http://example.com/path/to/sd', 'getCollectionUri'],
         ];

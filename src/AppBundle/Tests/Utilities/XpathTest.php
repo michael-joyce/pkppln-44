@@ -44,8 +44,8 @@ ENDXML;
     public function getXmlData() {
         return [
             ['1', '//a', null],
-            ['1', '//a', 3],
-            ['3', '//c', 3],
+            ['1', '//a', '3'],
+            ['3', '//c', '3'],
         ];
     }
 

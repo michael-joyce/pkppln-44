@@ -55,7 +55,7 @@ class PingResult {
 
         if ($response) {
             $oldErrors = libxml_use_internal_errors(true);
-            $this->xml = simplexml_load_string($response->getBody()->getContents());
+            $this->xml = simplexml_load_string($response->getBody());
             if (false === $this->xml) {
                 foreach (libxml_get_errors() as $error) {
                     $this->errors[] = "{$error->line}:{$error->column}:{$error->code}:{$error->message}";

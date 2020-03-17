@@ -193,7 +193,7 @@ class SwordClient {
             'On-Behalf-Of' => $this->uuid,
         ]);
 
-        return new ServiceDocument($response->getBody());
+        return new ServiceDocument($response->getBody()->getContents());
     }
 
     /**
@@ -232,7 +232,7 @@ class SwordClient {
             return;
         }
         $response = $this->request('GET', $deposit->getDepositReceipt(), [], null, $deposit);
-        $xml = new SimpleXMLElement($response->getBody());
+        $xml = new SimpleXMLElement($response->getBody()->getContents());
         Namespaces::registerNamespaces($xml);
 
         return $xml;

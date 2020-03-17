@@ -117,7 +117,7 @@ ENDXML;
     }
 
     public function testPluginCurrent() : void {
-        $this->assertSame(1, $this->result->isPluginCurrent());
+        $this->assertSame('1', $this->result->isPluginCurrent());
     }
 
     public function testTermsAccepted() : void {
@@ -129,7 +129,7 @@ ENDXML;
     }
 
     public function testArticleCount() : void {
-        $this->assertSame(12, $this->result->getArticleCount());
+        $this->assertSame('12', $this->result->getArticleCount());
     }
 
     public function testArticleTitles() : void {

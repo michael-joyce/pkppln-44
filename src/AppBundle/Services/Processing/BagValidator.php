@@ -56,10 +56,10 @@ class BagValidator {
 
         if (count($errors) > 0) {
             foreach ($errors as $error) {
-                $deposit->addErrorLog("Bagit validation error for {$error[0]} - {$error[1]}");
+                $deposit->addErrorLog("Bag; validation error for {$error[0]} - {$error[1]}");
             }
 
-            throw new Exception("BagIt validation failed for {$deposit->getDepositUuid()}");
+            throw new Exception("Bag; validation failed for {$deposit->getDepositUuid()}");
         }
         $journalVersion = $bag->getBagInfoData('PKP-PLN-OJS-Version');
         if ($journalVersion && $journalVersion !== $deposit->getJournalVersion()) {
