@@ -52,7 +52,7 @@ parameters:
     pln.max_upload: 10000
 
     # maximum deposit file size, in kb
-    pln.maxUploadSize: 1000000
+    pln.max_au: 100000
 
     # checksum algorithm to use when verifying integrity.
     pln.checksum_type: SHA-1
