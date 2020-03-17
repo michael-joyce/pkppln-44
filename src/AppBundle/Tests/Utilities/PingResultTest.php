@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace AppBundle\Tests\Utilities;
 
 use AppBundle\Utilities\PingResult;
+use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 
@@ -68,9 +69,8 @@ ENDXML;
     }
 
     public function testConstructorException() : void {
-        $mock = $this->createMock(ResponseInterface::class);
-        $mock->method('getBody')->willReturn('<n>&foo;</n>');
-        $this->result = new PingResult($mock);
+        $response = new Response(200, [], '<n>&foo;</n>');
+        $this->result = new PingResult($response);
         $this->assertTrue($this->result->hasError());
     }
 
@@ -101,7 +101,7 @@ ENDXML;
     }
 
     public function testGetHeader() : void {
-        $this->assertSame('Validated', $this->result->getHeader('foo'));
+        $this->assertSame('Validated', $this->result->getHeader('foo')[0]);
     }
 
     public function testGetOjsRelease() : void {
@@ -142,10 +142,7 @@ ENDXML;
 
     protected function setup() : void {
         parent::setUp();
-        $mock = $this->createMock(ResponseInterface::class);
-        $mock->method('getBody')->willReturn($this->getXml());
-        $mock->method('getStatusCode')->willReturn(200);
-        $mock->method('getHeader')->willReturn('Validated');
-        $this->result = new PingResult($mock);
+        $response = new Response(200, ["foo" => ["Validated"]], $this->getXml());
+        $this->result = new PingResult($response);
     }
 }

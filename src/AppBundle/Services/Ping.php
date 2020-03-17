@@ -110,11 +110,11 @@ class Ping {
     /**
      * Ping $journal and return the result.
      *
+     * @param Journal $journal
+     *
      * @return PingResult
      */
-    // @codingStandardsIgnoreStart
     public function ping(Journal $journal) {
-        // @codingStandardsIgnoreEnd
         try {
             $response = $this->client->get($journal->getGatewayUrl(), self::CONF);
             $result = new PingResult($response);

@@ -199,9 +199,10 @@ class SwordClient {
     /**
      * Create a deposit in LOCKSSOMatic.
      *
-     * @throws Exception
+     * @param Deposit $deposit
      *
      * @return bool
+     * @throws Exception
      */
     public function createDeposit(Deposit $deposit) {
         $sd = $this->serviceDocument();
@@ -225,7 +226,10 @@ class SwordClient {
     /**
      * Fetch the deposit receipt for $deposit.
      *
-     * @return SimpleXMLElement
+     * @param Deposit $deposit
+     *
+     * @return SimpleXMLElement|void
+     * @throws Exception
      */
     public function receipt(Deposit $deposit) {
         if ( ! $deposit->getDepositReceipt()) {
@@ -241,13 +245,16 @@ class SwordClient {
     /**
      * Fetch the sword statement for $deposit.
      *
+     * @param Deposit $deposit
+     *
      * @return SimpleXMLElement
+     * @throws Exception
      */
     public function statement(Deposit $deposit) {
         $receiptXml = $this->receipt($deposit);
         $statementUrl = (string) $receiptXml->xpath('atom:link[@rel="http://purl.org/net/sword/terms/statement"]/@href')[0];
         $response = $this->request('GET', $statementUrl, [], null, $deposit);
-        $statementXml = new SimpleXMLElement($response->getBody());
+        $statementXml = new SimpleXMLElement($response->getBody()->getContents());
         Namespaces::registerNamespaces($statementXml);
 
         return $statementXml;
@@ -255,10 +262,12 @@ class SwordClient {
 
     /**
      * Fetch the deposit back from LOCKSSOmatic.
-     *
      * Saves the file to disk and returns the full path to the file.
      *
+     * @param Deposit $deposit
+     *
      * @return string
+     * @throws Exception
      */
     public function fetch(Deposit $deposit) {
         $statement = $this->statement($deposit);

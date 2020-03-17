@@ -26,6 +26,13 @@ class PingResult {
     private $response;
 
     /**
+     * Content of the response body.
+     *
+     * @var string
+     */
+    private $content;
+
+    /**
      * Parsed XML from the response.
      *
      * @var SimpleXMLElement
@@ -47,6 +54,11 @@ class PingResult {
      */
     public function __construct(ResponseInterface $response = null, $errors = null) {
         $this->response = $response;
+        if( $response) {
+            $this->content = $response->getBody()->getContents();
+        } else {
+            $this->content = '';
+        }
         $this->errors = [];
         if ($errors) {
             $this->errors[] = $errors;
@@ -55,7 +67,7 @@ class PingResult {
 
         if ($response) {
             $oldErrors = libxml_use_internal_errors(true);
-            $this->xml = simplexml_load_string($response->getBody());
+            $this->xml = simplexml_load_string($this->content);
             if (false === $this->xml) {
                 foreach (libxml_get_errors() as $error) {
                     $this->errors[] = "{$error->line}:{$error->column}:{$error->code}:{$error->message}";
@@ -110,14 +122,14 @@ class PingResult {
      * @return string
      */
     public function getBody($stripTags = true) {
-        if ( ! $this->response) {
+        if ( ! $this->content) {
             return '';
         }
         if ($stripTags) {
-            return strip_tags($this->response->getBody());
+            return strip_tags($this->content);
         }
 
-        return $this->response->getBody();
+        return $this->content;
     }
 
     /**
@@ -149,7 +161,6 @@ class PingResult {
         if ( ! $this->response) {
             return '';
         }
-
         return $this->response->getHeader($name);
     }
 
