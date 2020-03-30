@@ -42,7 +42,7 @@ class BagValidatorTest extends BaseTestCase {
         $deposit = $this->getReference('deposit.1');
 
         $bag = $this->createMock(Bag::class);
-        $bag->method('validate')->willReturn([]);
+        $bag->method('validate')->willReturn(true);
         $bag->method('getBagInfoData')->willReturn($deposit->getJournalVersion());
         $reader = $this->createMock(BagReader::class);
         $reader->method('readBag')->willReturn($bag);
@@ -56,29 +56,16 @@ class BagValidatorTest extends BaseTestCase {
         $deposit = $this->getReference('deposit.1');
 
         $bag = $this->createMock(Bag::class);
-        $bag->method('validate')->willReturn([]);
+        $bag->method('validate')->willReturn(false);
         $bag->method('getBagInfoData')->willReturn('2.0.0.0');
+        $bag->method('getErrors')->willReturn([['file' => 'foo', 'message' => 'An error.']]);
         $reader = $this->createMock(BagReader::class);
         $reader->method('readBag')->willReturn($bag);
         $this->validator->setBagReader($reader);
 
         $this->validator->processDeposit($deposit);
         $this->assertSame(1, count($deposit->getErrorLog()));
-        $this->assertStringStartsWith('Bag journal version tag', $deposit->getErrorLog()[0]);
-    }
-
-    public function testValidateFail() : void {
-        $this->expectException(Exception::class);
-        $deposit = $this->getReference('deposit.1');
-
-        $bag = $this->createMock(Bag::class);
-        $bag->method('validate')->willReturn([['foo', 'error message']]);
-        $bag->method('getBagInfoData')->willReturn('2.0.0.0');
-        $reader = $this->createMock(BagReader::class);
-        $reader->method('readBag')->willReturn($bag);
-        $this->validator->setBagReader($reader);
-
-        $this->validator->processDeposit($deposit);
+        $this->assertStringStartsWith('Bag validation error for foo', $deposit->getErrorLog()[0]);
     }
 
     protected function setup() : void {

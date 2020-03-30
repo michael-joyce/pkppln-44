@@ -56,7 +56,7 @@ class BagValidator {
         $bag = $this->bagReader->readBag($harvestedPath);
         if( ! $bag->validate()) {
             foreach ($bag->getErrors() as $error) {
-                $deposit->addErrorLog("Bag; validation error for {$error['file']} - {$error['message']}");
+                $deposit->addErrorLog("Bag validation error for {$error['file']} - {$error['message']}");
             }
             return false;
         }
