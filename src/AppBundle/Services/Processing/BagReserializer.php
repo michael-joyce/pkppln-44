@@ -41,9 +41,15 @@ class BagReserializer {
     private $em;
 
     /**
+     * @var integer
+     */
+    private $maxAuSize;
+
+    /**
      * Construct the reserializer service.
      */
     public function __construct($maxAuSize, FilePaths $fp, BagReader $bagReader, EntityManagerInterface $em) {
+        $this->maxAuSize = $maxAuSize;
         $this->bagReader = $bagReader;
         $this->filePaths = $fp;
         $this->em = $em;
@@ -108,7 +114,7 @@ class BagReserializer {
         }
         $deposit->setAuContainer($auContainer);
         $auContainer->addDeposit($deposit);
-        if ($auContainer->getSize() > $this->container->getParameter('pln_maxAuSize')) {
+        if ($auContainer->getSize() > $this->maxAuSize) {
             $auContainer->setOpen(false);
         }
         $this->em->flush();

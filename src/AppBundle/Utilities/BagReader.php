@@ -10,14 +10,19 @@ declare(strict_types=1);
 
 namespace AppBundle\Utilities;
 
-use whikloj\BagItTools\Bag;;
-use Exception;
+use whikloj\BagItTools\Bag;
 use Symfony\Component\Filesystem\Filesystem;
+use whikloj\BagItTools\BagItException;
 
 /**
  * Wrapper around BagIt.
  */
 class BagReader {
+    /**
+     * @var Filesystem
+     */
+    private $fs;
+
     /**
      * Build the reader.
      */
@@ -30,18 +35,11 @@ class BagReader {
      *
      * @param string $path
      *
-     * @throws Exception
-     *                   Exception thrown if the bag doesn't exist.
+     * @return Bag
      *
-     * @return Bag;
+     * @throws BagItException
      */
     public function readBag($path) {
-        if ( ! $this->fs->exists($path)) {
-            throw new Exception("Bag {$path} does not exist");
-        }
-
-        //This call isn't testable without a real bag due to limitations
-        // in the Bag; library.
-        return Bag::create($path);
+        return Bag::load($path);
     }
 }

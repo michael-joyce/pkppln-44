@@ -74,6 +74,17 @@ class DtdValidator {
         set_error_handler($oldHandler);
     }
 
+    public function schemaValidate(DOMDocument $dom, $path, $clearErrors = true) : void {
+        if ($clearErrors) {
+            $this->clearErrors();
+        }
+        $xsd = $path . '/native.xsd';
+        $oldHandler = set_error_handler([$this, 'validationError']);
+        $dom->schemaValidate($xsd);
+        set_error_handler($oldHandler);
+
+    }
+
     /**
      * Return true if the document had errors.
      *

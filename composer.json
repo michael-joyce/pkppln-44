@@ -27,8 +27,10 @@
     ],
     "require": {
         "php": ">=7.2.0",
-        "ext-xmlwriter": "*",
+        "ext-dom": "*",
+        "ext-libxml": "*",
         "ext-simplexml": "*",
+        "ext-xmlwriter": "*",
         "beberlei/doctrineextensions": "^1.0",
         "doctrine/doctrine-bundle": "^1.8",
         "doctrine/doctrine-migrations-bundle": "^1.0",

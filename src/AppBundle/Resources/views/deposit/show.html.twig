@@ -34,7 +34,11 @@
             </tr>
             <tr>
                 <th>AU Container</th>
-                <td><a href='{{ path('aucontainer_show', {'id': deposit.auContainer.id}) }}'>{{ deposit.auContainer.id }}</a></td>
+                <td>
+                    {% if deposit.auContainer %}
+                        <a href='{{ path('aucontainer_show', {'id': deposit.auContainer.id}) }}'>{{ deposit.auContainer.id }}</a>
+                    {% endif %}
+                </td>
             </tr>
             <tr>
                 <th>Received</th>

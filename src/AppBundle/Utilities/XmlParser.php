@@ -73,19 +73,17 @@ class XmlParser {
 
     /**
      * Load the XML document into a DOM and return it.
-     *
      * Errors are appended to the $report parameter.
-     *
-     * For reasons beyond anyone's apparent control, the export may contain
+     * The export may contain
      * invalid UTF-8 characters. If the file cannot be parsed as XML, the
      * function will attempt to filter out invalid UTF-8 characters and then
      * try to load the XML again.
-     *
      * Other errors in the XML, beyond the bad UTF-8, will not be tolerated.
      *
      * @param string $filename
      *
      * @return DOMDocument
+     * @throws Exception
      */
     public function fromFile($filename) {
         $dom = new DOMDocument('1.0', 'UTF-8');

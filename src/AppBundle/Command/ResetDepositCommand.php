@@ -98,7 +98,7 @@ class ResetDepositCommand extends ContainerAwareCommand {
         $qb = $this->em->createQueryBuilder();
         $qb->select('d')->from('AppBundle:Deposit', 'd');
         if ($ids && count($ids)) {
-            $qb->andWhere('d.depositUuid IN :ids');
+            $qb->andWhere('d.depositUuid IN (:ids)');
             $qb->setParameter('ids', $ids);
         }
 

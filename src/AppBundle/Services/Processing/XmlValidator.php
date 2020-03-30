@@ -100,14 +100,15 @@ class XmlValidator {
         $bag = $bag = $this->bagReader->readBag($harvestedPath);
         $report = '';
 
-        foreach ($bag->getBagContents() as $filename) {
-            if ('.xml' !== substr($filename, -4)) {
-                continue;
-            }
-            $dom = $this->xmlParser->fromFile($filename);
-            $this->validator->validate($dom, $report);
-            $this->reportErrors($this->validator->getErrors(), $report);
+        $issuePath = $bag->getBagRoot() . '/data/' . 'Issue' . $deposit->getDepositUuid() . '.xml';
+        $dom = $this->xmlParser->fromFile($issuePath);
+        $root = $dom->documentElement;
+        if ($root->hasAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'schemaLocation')) {
+            $this->validator->schemaValidate($dom, $bag->getBagRoot() . '/data/');
+        } else {
+            $this->validator->validate($dom);
         }
+        $this->reportErrors($this->validator->getErrors(), $report);
         if (trim($report)) {
             $deposit->addToProcessingLog($report);
 

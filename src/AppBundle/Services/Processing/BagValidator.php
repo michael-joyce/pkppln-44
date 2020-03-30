@@ -14,6 +14,7 @@ use AppBundle\Entity\Deposit;
 use AppBundle\Services\FilePaths;
 use AppBundle\Utilities\BagReader;
 use Exception;
+use whikloj\BagItTools\BagItException;
 
 /**
  * Validate a bag, according to the bagit spec.
@@ -42,7 +43,9 @@ class BagValidator {
     }
 
     /**
-     * Overridet the bag reader.
+     * Override the bag reader.
+     *
+     * @param BagReader $bagReader
      */
     public function setBagReader(BagReader $bagReader) : void {
         $this->bagReader = $bagReader;
@@ -51,19 +54,15 @@ class BagValidator {
     public function processDeposit(Deposit $deposit) {
         $harvestedPath = $this->filePaths->getHarvestFile($deposit);
         $bag = $this->bagReader->readBag($harvestedPath);
-
-        $errors = $bag->validate();
-
-        if (count($errors) > 0) {
-            foreach ($errors as $error) {
-                $deposit->addErrorLog("Bag; validation error for {$error[0]} - {$error[1]}");
+        if( ! $bag->validate()) {
+            foreach ($bag->getErrors() as $error) {
+                $deposit->addErrorLog("Bag; validation error for {$error['file']} - {$error['message']}");
             }
-
-            throw new Exception("Bag; validation failed for {$deposit->getDepositUuid()}");
+            return false;
         }
-        $journalVersion = $bag->getBagInfoData('PKP-PLN-OJS-Version');
+        $journalVersion = $bag->getBagInfoByTag('PKP-PLN-OJS-Version');
         if ($journalVersion && $journalVersion !== $deposit->getJournalVersion()) {
-            $deposit->addErrorLog("Bag journal version tag {$journalVersion} does not match deposit journal version {$deposit->getJournalVersion()}");
+            $deposit->addErrorLog("Bag journal version tag {$journalVersion[0]} does not match deposit journal version {$deposit->getJournalVersion()}");
         }
 
         return true;

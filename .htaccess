@@ -11,5 +11,5 @@
   RewriteCond %{REQUEST_URI}::$1 ^(/.+)/(.*)::\2$
   RewriteRule ^(.*) - [E=BASE:%1]
 
-  RewriteRule ^$ /pkppln-v2/web/app_dev.php [R,L]
+  RewriteRule ^$ /pkppln-34/web/app_dev.php [R,L]
 </IfModule>
