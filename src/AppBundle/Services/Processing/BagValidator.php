@@ -13,8 +13,6 @@ namespace AppBundle\Services\Processing;
 use AppBundle\Entity\Deposit;
 use AppBundle\Services\FilePaths;
 use AppBundle\Utilities\BagReader;
-use Exception;
-use whikloj\BagItTools\BagItException;
 
 /**
  * Validate a bag, according to the bagit spec.
@@ -44,8 +42,6 @@ class BagValidator {
 
     /**
      * Override the bag reader.
-     *
-     * @param BagReader $bagReader
      */
     public function setBagReader(BagReader $bagReader) : void {
         $this->bagReader = $bagReader;
@@ -54,10 +50,11 @@ class BagValidator {
     public function processDeposit(Deposit $deposit) {
         $harvestedPath = $this->filePaths->getHarvestFile($deposit);
         $bag = $this->bagReader->readBag($harvestedPath);
-        if( ! $bag->validate()) {
+        if ( ! $bag->validate()) {
             foreach ($bag->getErrors() as $error) {
                 $deposit->addErrorLog("Bag validation error for {$error['file']} - {$error['message']}");
             }
+
             return false;
         }
         $journalVersion = $bag->getBagInfoByTag('PKP-PLN-OJS-Version');

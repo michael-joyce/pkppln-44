@@ -110,8 +110,6 @@ class Ping {
     /**
      * Ping $journal and return the result.
      *
-     * @param Journal $journal
-     *
      * @return PingResult
      */
     public function ping(Journal $journal) {

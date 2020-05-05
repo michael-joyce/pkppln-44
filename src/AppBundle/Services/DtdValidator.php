@@ -16,14 +16,11 @@ use DOMDocument;
  * Simple wrapper around around DOMDocument->validate().
  */
 class DtdValidator extends AbstractValidator {
-
     /**
      * Validate a DOM document.
      *
-     * @param DOMDocument $dom
      * @param null $path
      * @param bool $clearErrors
-     *
      */
     public function validate(DOMDocument $dom, $path = null, $clearErrors = true) : void {
         if ($clearErrors) {
@@ -36,5 +33,4 @@ class DtdValidator extends AbstractValidator {
         $dom->validate();
         set_error_handler($oldHandler);
     }
-
 }

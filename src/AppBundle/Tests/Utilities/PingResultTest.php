@@ -13,7 +13,7 @@ namespace AppBundle\Tests\Utilities;
 use AppBundle\Utilities\PingResult;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\ResponseInterface;
+use SimpleXMLElement;
 
 /**
  * Description of PingResultTest.
@@ -97,7 +97,7 @@ ENDXML;
 
     public function testXml() : void {
         $this->assertTrue($this->result->hasXml());
-        $this->assertInstanceOf(\SimpleXMLElement::class, $this->result->getXml());
+        $this->assertInstanceOf(SimpleXMLElement::class, $this->result->getXml());
     }
 
     public function testGetHeader() : void {
@@ -142,7 +142,7 @@ ENDXML;
 
     protected function setup() : void {
         parent::setUp();
-        $response = new Response(200, ["foo" => ["Validated"]], $this->getXml());
+        $response = new Response(200, ['foo' => ['Validated']], $this->getXml());
         $this->result = new PingResult($response);
     }
 }

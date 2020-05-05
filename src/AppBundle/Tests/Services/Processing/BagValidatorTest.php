@@ -14,9 +14,8 @@ use AppBundle\DataFixtures\ORM\LoadDeposit;
 use AppBundle\DataFixtures\ORM\LoadJournal;
 use AppBundle\Services\Processing\BagValidator;
 use AppBundle\Utilities\BagReader;
-use whikloj\BagItTools\Bag;;
-use Exception;
 use Nines\UtilBundle\Tests\Util\BaseTestCase;
+use whikloj\BagItTools\Bag;
 
 /**
  * Description of PayloadValidatorTest.

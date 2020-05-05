@@ -24,7 +24,6 @@ use Nines\UtilBundle\Entity\AbstractEntity;
  * @ORM\Entity(repositoryClass="AppBundle\Repository\AuContainerRepository")
  */
 class AuContainer extends AbstractEntity {
-
     /**
      * List of deposits in one AU.
      *
@@ -47,6 +46,13 @@ class AuContainer extends AbstractEntity {
     public function __construct() {
         $this->deposits = new ArrayCollection();
         $this->open = true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __toString() {
+        return $this->id;
     }
 
     /**
@@ -132,12 +138,5 @@ class AuContainer extends AbstractEntity {
      */
     public function countDeposits() {
         return $this->deposits->count();
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function __toString() {
-        return $this->id;
     }
 }

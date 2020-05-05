@@ -82,8 +82,9 @@ class XmlParser {
      *
      * @param string $filename
      *
-     * @return DOMDocument
      * @throws Exception
+     *
+     * @return DOMDocument
      */
     public function fromFile($filename) {
         $dom = new DOMDocument('1.0', 'UTF-8');

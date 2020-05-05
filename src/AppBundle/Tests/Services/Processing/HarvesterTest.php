@@ -40,7 +40,7 @@ class HarvesterTest extends BaseTestCase {
         $fs = $this->createMock(Filesystem::class);
 
         $output = '';
-        $fs->method('appendToFile')->will($this->returnCallback(function ($path, $bytes) use (&$output) {
+        $fs->method('appendToFile')->will($this->returnCallback(function ($path, $bytes) use (&$output) : void {
             $output .= $bytes;
         }));
         $this->harvester->setFilesystem($fs);

@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace AppBundle\Repository;
 
 use AppBundle\Entity\AuContainer;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -23,7 +22,7 @@ class AuContainerRepository extends EntityRepository {
      * ever be one open container, but finding the one with lowest database ID
      * guarantees it.
      *
-     * @return object|AuContainer
+     * @return AuContainer|object
      */
     public function getOpenContainer() {
         return $this->findOneBy(

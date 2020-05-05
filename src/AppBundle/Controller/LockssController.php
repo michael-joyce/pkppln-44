@@ -44,7 +44,6 @@ class LockssController extends Controller {
      *
      * @return BinaryFileResponse
      *
-     *
      * @Route("/fetch/{journalUuid}/{depositUuid}.zip", name="fetch")
      * @Method("GET")
      * @ParamConverter("journal", class="AppBundle:Journal", options={"mapping": {"journalUuid"="uuid"}})

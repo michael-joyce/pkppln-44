@@ -1,20 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
- * Copyright (C) 2015-2016 Michael Joyce <ubermichael@gmail.com>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
  */
 
 namespace AppBundle\Services;
@@ -24,17 +15,14 @@ use DOMDocument;
 /**
  * Simple wrapper around around DOMDocument->validate().
  */
-class SchemaValidator extends AbstractValidator
-{
-
+class SchemaValidator extends AbstractValidator {
     /**
      * Validate a DOM document.
      *
-     * @param DOMDocument $dom
-     * @param bool        $clearErrors
+     * @param bool $clearErrors
+     * @param mixed $path
      */
-    public function validate(DOMDocument $dom, $path, $clearErrors = true)
-    {
+    public function validate(DOMDocument $dom, $path, $clearErrors = true) : void {
         if ($clearErrors) {
             $this->clearErrors();
         }
@@ -43,5 +31,4 @@ class SchemaValidator extends AbstractValidator
         $dom->schemaValidate($xsd);
         set_error_handler($oldHandler);
     }
-
 }

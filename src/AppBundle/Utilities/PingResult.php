@@ -54,7 +54,7 @@ class PingResult {
      */
     public function __construct(ResponseInterface $response = null, $errors = null) {
         $this->response = $response;
-        if( $response) {
+        if ($response) {
             $this->content = $response->getBody()->getContents();
         } else {
             $this->content = '';
@@ -161,6 +161,7 @@ class PingResult {
         if ( ! $this->response) {
             return '';
         }
+
         return $this->response->getHeader($name);
     }
 

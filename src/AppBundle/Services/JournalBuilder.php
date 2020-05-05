@@ -12,6 +12,7 @@ namespace AppBundle\Services;
 
 use AppBundle\Entity\Journal;
 use AppBundle\Utilities\Xpath;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use SimpleXMLElement;
 
@@ -58,7 +59,7 @@ class JournalBuilder {
         $journal->setPublisherName(Xpath::getXmlValue($xml, '//pkp:publisherName'));
         // &amp; -> &.
         $journal->setPublisherUrl(html_entity_decode(Xpath::getXmlValue($xml, '//pkp:publisherUrl')));
-        $journal->setContacted(new \DateTime());
+        $journal->setContacted(new DateTime());
         $this->em->persist($journal);
 
         return $journal;
@@ -84,7 +85,7 @@ class JournalBuilder {
             $this->em->persist($journal);
         }
         $journal->setUrl($url);
-        $journal->setContacted(new \DateTime());
+        $journal->setContacted(new DateTime());
         if ('new' !== $journal->getStatus()) {
             $journal->setStatus('healthy');
         }

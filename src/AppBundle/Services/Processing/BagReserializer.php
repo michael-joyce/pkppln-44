@@ -15,7 +15,7 @@ use AppBundle\Entity\Deposit;
 use AppBundle\Services\FilePaths;
 use AppBundle\Utilities\BagReader;
 use Doctrine\ORM\EntityManagerInterface;
-use whikloj\BagItTools\Bag;;
+use whikloj\BagItTools\Bag;
 
 /**
  * Take a processed bag and reserialize it.
@@ -41,12 +41,14 @@ class BagReserializer {
     private $em;
 
     /**
-     * @var integer
+     * @var int
      */
     private $maxAuSize;
 
     /**
      * Construct the reserializer service.
+     *
+     * @param mixed $maxAuSize
      */
     public function __construct($maxAuSize, FilePaths $fp, BagReader $bagReader, EntityManagerInterface $em) {
         $this->maxAuSize = $maxAuSize;
@@ -108,7 +110,7 @@ class BagReserializer {
         $deposit->setPackageChecksumValue(hash_file('sha1', $path));
 
         $auContainer = $this->em->getRepository('AppBundle:AuContainer')->getOpenContainer();
-        if ($auContainer === null) {
+        if (null === $auContainer) {
             $auContainer = new AuContainer();
             $this->em->persist($auContainer);
         }

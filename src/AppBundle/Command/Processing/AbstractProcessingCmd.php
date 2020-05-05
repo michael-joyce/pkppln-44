@@ -155,6 +155,7 @@ abstract class AbstractProcessingCmd extends ContainerAwareCommand {
             $deposit->addToProcessingLog($this->failureLogMessage());
             $deposit->addErrorLog(get_class($e) . $e->getMessage());
             $this->em->flush();
+
             return;
         }
 

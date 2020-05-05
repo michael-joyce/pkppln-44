@@ -34,10 +34,6 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
 
     /**
      * Build the command.
-     *
-     * @param EntityManagerInterface $em
-     * @param DtdValidator $dtdValidator
-     * @param SchemaValidator $schemaValidator
      */
     public function __construct(EntityManagerInterface $em, DtdValidator $dtdValidator, SchemaValidator $schemaValidator) {
         parent::__construct($em);

@@ -16,7 +16,6 @@ use AppBundle\Services\FilePaths;
 use AppBundle\Services\SchemaValidator;
 use AppBundle\Utilities\BagReader;
 use AppBundle\Utilities\XmlParser;
-use Doctrine\DBAL\Schema\Schema;
 
 /**
  * Validate the OJS XML export.
@@ -69,10 +68,6 @@ class XmlValidator {
 
     /**
      * Build the validator.
-     *
-     * @param FilePaths $filePaths
-     * @param DtdValidator $dtdValidator
-     * @param SchemaValidator $schemaValidator
      */
     public function __construct(FilePaths $filePaths, DtdValidator $dtdValidator, SchemaValidator $schemaValidator) {
         $this->filePaths = $filePaths;
@@ -84,8 +79,6 @@ class XmlValidator {
 
     /**
      * Override the default bag reader.
-     *
-     * @param BagReader $bagReader
      */
     public function setBagReader(BagReader $bagReader) : void {
         $this->bagReader = $bagReader;
@@ -93,8 +86,6 @@ class XmlValidator {
 
     /**
      * Override the default Xml Parser.
-     *
-     * @param XmlParser $xmlParser
      */
     public function setXmlParser(XmlParser $xmlParser) : void {
         $this->xmlParser = $xmlParser;
@@ -103,7 +94,6 @@ class XmlValidator {
     /**
      * Add any errors to the report.
      *
-     * @param array $errors
      * @param string $report
      */
     public function reportErrors(array $errors, &$report) : void {

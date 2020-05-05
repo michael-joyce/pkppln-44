@@ -10,8 +10,8 @@ declare(strict_types=1);
 
 namespace AppBundle\Utilities;
 
-use whikloj\BagItTools\Bag;
 use Symfony\Component\Filesystem\Filesystem;
+use whikloj\BagItTools\Bag;
 use whikloj\BagItTools\BagItException;
 
 /**
@@ -35,9 +35,9 @@ class BagReader {
      *
      * @param string $path
      *
-     * @return Bag
-     *
      * @throws BagItException
+     *
+     * @return Bag
      */
     public function readBag($path) {
         return Bag::load($path);

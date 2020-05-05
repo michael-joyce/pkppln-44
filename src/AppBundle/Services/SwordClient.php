@@ -199,10 +199,9 @@ class SwordClient {
     /**
      * Create a deposit in LOCKSSOMatic.
      *
-     * @param Deposit $deposit
+     * @throws Exception
      *
      * @return bool
-     * @throws Exception
      */
     public function createDeposit(Deposit $deposit) {
         $sd = $this->serviceDocument();
@@ -226,10 +225,9 @@ class SwordClient {
     /**
      * Fetch the deposit receipt for $deposit.
      *
-     * @param Deposit $deposit
+     * @throws Exception
      *
      * @return SimpleXMLElement|void
-     * @throws Exception
      */
     public function receipt(Deposit $deposit) {
         if ( ! $deposit->getDepositReceipt()) {
@@ -245,10 +243,9 @@ class SwordClient {
     /**
      * Fetch the sword statement for $deposit.
      *
-     * @param Deposit $deposit
+     * @throws Exception
      *
      * @return SimpleXMLElement
-     * @throws Exception
      */
     public function statement(Deposit $deposit) {
         $receiptXml = $this->receipt($deposit);
@@ -264,10 +261,9 @@ class SwordClient {
      * Fetch the deposit back from LOCKSSOmatic.
      * Saves the file to disk and returns the full path to the file.
      *
-     * @param Deposit $deposit
+     * @throws Exception
      *
      * @return string
-     * @throws Exception
      */
     public function fetch(Deposit $deposit) {
         $statement = $this->statement($deposit);

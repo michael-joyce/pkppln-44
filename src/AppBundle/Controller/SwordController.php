@@ -19,6 +19,7 @@ use AppBundle\Services\JournalBuilder;
 use AppBundle\Utilities\Namespaces;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Psr\Log\LoggerAwareTrait;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -89,6 +90,7 @@ class SwordController extends Controller {
         if ($required) {
             throw new BadRequestHttpException("HTTP header {$key} is required.", null, Response::HTTP_BAD_REQUEST);
         }
+
         return '';
     }
 
@@ -150,7 +152,7 @@ class SwordController extends Controller {
             Namespaces::registerNamespaces($xml);
 
             return $xml;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw new BadRequestHttpException('Cannot parse request XML.', $e, Response::HTTP_BAD_REQUEST);
         }
     }

@@ -1,12 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
+ */
 
 namespace AppBundle\Services;
 
 use DOMDocument;
 
 abstract class AbstractValidator {
-
     /**
      * @var array
      */
@@ -15,9 +21,8 @@ abstract class AbstractValidator {
     /**
      * Construct a validator.
      */
-    public function __construct()
-    {
-        $this->errors = array();
+    public function __construct() {
+        $this->errors = [];
     }
 
     /**
@@ -29,22 +34,21 @@ abstract class AbstractValidator {
      * @param string $line
      * @param string $context
      */
-    public function validationError($n, $message, $file, $line, $context)
-    {
+    public function validationError($n, $message, $file, $line, $context) : void {
         $lxml = libxml_get_last_error();
 
         if ($lxml) {
-            $this->errors[] = array(
+            $this->errors[] = [
                 'message' => $lxml->message,
                 'file' => $lxml->file,
                 'line' => $lxml->line,
-            );
+            ];
         } else {
-            $this->errors[] = array(
+            $this->errors[] = [
                 'message' => $message,
                 'file' => $file,
                 'line' => $line,
-            );
+            ];
         }
     }
 
@@ -55,8 +59,7 @@ abstract class AbstractValidator {
      *
      * @return bool
      */
-    public function hasErrors()
-    {
+    public function hasErrors() {
         return count($this->errors) > 0;
     }
 
@@ -65,8 +68,7 @@ abstract class AbstractValidator {
      *
      * @return int
      */
-    public function countErrors()
-    {
+    public function countErrors() {
         return count($this->errors);
     }
 
@@ -75,17 +77,14 @@ abstract class AbstractValidator {
      *
      * @return array
      */
-    public function getErrors()
-    {
+    public function getErrors() {
         return $this->errors;
     }
 
     /**
      * Clear out the errors and start fresh.
      */
-    public function clearErrors()
-    {
-        $this->errors = array();
+    public function clearErrors() : void {
+        $this->errors = [];
     }
-
 }
