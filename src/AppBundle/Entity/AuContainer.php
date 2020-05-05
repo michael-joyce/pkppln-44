@@ -13,6 +13,7 @@ namespace AppBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Nines\UtilBundle\Entity\AbstractEntity;
 
 /**
  * AuContainer organizes the deposits by size to abstract the responsibility
@@ -22,17 +23,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\HasLifecycleCallbacks
  * @ORM\Entity(repositoryClass="AppBundle\Repository\AuContainerRepository")
  */
-class AuContainer {
-    /**
-     * Database ID.
-     *
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+class AuContainer extends AbstractEntity {
 
     /**
      * List of deposits in one AU.
@@ -141,5 +132,12 @@ class AuContainer {
      */
     public function countDeposits() {
         return $this->deposits->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function __toString() {
+        return $this->id;
     }
 }

@@ -150,7 +150,7 @@ class Journal extends AbstractEntity {
     /**
      * The journal's deposits.
      *
-     * @var ArrayCollection|Deposit[]
+     * @var Collection|Deposit[]
      * @ORM\OneToMany(targetEntity="Deposit", mappedBy="journal")
      */
     private $deposits;
@@ -163,6 +163,7 @@ class Journal extends AbstractEntity {
         $this->status = 'healthy';
         $this->contacted = new DateTime();
         $this->termsAccepted = false;
+        $this->deposits = new ArrayCollection();
     }
 
     /**

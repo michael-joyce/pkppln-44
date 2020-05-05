@@ -10,7 +10,9 @@ declare(strict_types=1);
 
 namespace AppBundle\Command;
 
+use AppBundle\Entity\Deposit;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Internal\Hydration\IterableResult;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -57,11 +59,14 @@ class ResetDepositCommand extends ContainerAwareCommand {
         $i = 0;
         foreach ($iterator as $row) {
             $i++;
+            /** @var Deposit $deposit */
             $deposit = $row[0];
             $deposit->setState($state);
             if ($clear) {
                 $deposit->setErrorLog([]);
                 $deposit->setProcessingLog('');
+                $deposit->setAuContainer(null);
+                $deposit->setHarvestAttempts(0);
             }
             $deposit->addToProcessingLog('Deposit state reset to ' . $state);
             if (0 === ($i % self::BATCH_SIZE)) {

@@ -11,7 +11,9 @@ declare(strict_types=1);
 namespace AppBundle\Command\Processing;
 
 use AppBundle\Entity\Deposit;
+use AppBundle\Services\DtdValidator;
 use AppBundle\Services\Processing\XmlValidator;
+use AppBundle\Services\SchemaValidator;
 use Doctrine\ORM\EntityManagerInterface;
 
 /**
@@ -23,14 +25,24 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
      *
      * @var XmlValidator
      */
-    private $validator;
+    private $dtdValidator;
+
+    /**
+     * @var SchemaValidator
+     */
+    private $schemaValidator;
 
     /**
      * Build the command.
+     *
+     * @param EntityManagerInterface $em
+     * @param DtdValidator $dtdValidator
+     * @param SchemaValidator $schemaValidator
      */
-    public function __construct(EntityManagerInterface $em, XmlValidator $validator) {
+    public function __construct(EntityManagerInterface $em, DtdValidator $dtdValidator, SchemaValidator $schemaValidator) {
         parent::__construct($em);
-        $this->validator = $validator;
+        $this->dtdValidator = $dtdValidator;
+        $this->schemaValidator = $schemaValidator;
     }
 
     /**
@@ -46,7 +58,7 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
      * {@inheritdoc}
      */
     protected function processDeposit(Deposit $deposit) {
-        return $this->validator->processDeposit($deposit);
+        return $this->dtdValidator->processDeposit($deposit);
     }
 
     /**

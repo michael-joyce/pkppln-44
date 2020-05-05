@@ -104,7 +104,7 @@ class Deposit extends AbstractEntity {
     /**
      * The issue volume number.
      *
-     * @var int
+     * @var string
      * @ORM\Column(type="string", nullable=false)
      */
     private $volume;
@@ -112,7 +112,7 @@ class Deposit extends AbstractEntity {
     /**
      * The issue number for the deposit.
      *
-     * @var int
+     * @var string
      *
      * @ORM\Column(type="string")
      */
@@ -173,6 +173,8 @@ class Deposit extends AbstractEntity {
 
     /**
      * List of errors that occured while processing.
+     *
+     * @todo Why is this an array? A text column should be fine here.
      *
      * @var array
      * @ORM\Column(type="array", nullable=false)
@@ -413,7 +415,7 @@ class Deposit extends AbstractEntity {
     /**
      * Set volume.
      *
-     * @param int $volume
+     * @param string $volume
      *
      * @return Deposit
      */
@@ -426,7 +428,7 @@ class Deposit extends AbstractEntity {
     /**
      * Get volume.
      *
-     * @return int
+     * @return string
      */
     public function getVolume() {
         return $this->volume;
@@ -435,7 +437,7 @@ class Deposit extends AbstractEntity {
     /**
      * Set issue.
      *
-     * @param int $issue
+     * @param string $issue
      *
      * @return Deposit
      */
@@ -448,7 +450,7 @@ class Deposit extends AbstractEntity {
     /**
      * Get issue.
      *
-     * @return int
+     * @return string
      */
     public function getIssue() {
         return $this->issue;

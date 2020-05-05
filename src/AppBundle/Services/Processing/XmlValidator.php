@@ -13,8 +13,10 @@ namespace AppBundle\Services\Processing;
 use AppBundle\Entity\Deposit;
 use AppBundle\Services\DtdValidator;
 use AppBundle\Services\FilePaths;
+use AppBundle\Services\SchemaValidator;
 use AppBundle\Utilities\BagReader;
 use AppBundle\Utilities\XmlParser;
+use Doctrine\DBAL\Schema\Schema;
 
 /**
  * Validate the OJS XML export.
@@ -44,7 +46,7 @@ class XmlValidator {
      *
      * @var DtdValidator
      */
-    private $validator;
+    private $dtdValidator;
 
     /**
      * Parser for XML files.
@@ -61,17 +63,29 @@ class XmlValidator {
     private $bagReader;
 
     /**
-     * Build the validator.
+     * @var SchemaValidator
      */
-    public function __construct(FilePaths $filePaths, DtdValidator $validator) {
+    private $schemaValidator;
+
+    /**
+     * Build the validator.
+     *
+     * @param FilePaths $filePaths
+     * @param DtdValidator $dtdValidator
+     * @param SchemaValidator $schemaValidator
+     */
+    public function __construct(FilePaths $filePaths, DtdValidator $dtdValidator, SchemaValidator $schemaValidator) {
         $this->filePaths = $filePaths;
-        $this->validator = $validator;
+        $this->dtdValidator = $dtdValidator;
+        $this->schemaValidator = $schemaValidator;
         $this->xmlParser = new XmlParser();
         $this->bagReader = new BagReader();
     }
 
     /**
      * Override the default bag reader.
+     *
+     * @param BagReader $bagReader
      */
     public function setBagReader(BagReader $bagReader) : void {
         $this->bagReader = $bagReader;
@@ -79,6 +93,8 @@ class XmlValidator {
 
     /**
      * Override the default Xml Parser.
+     *
+     * @param XmlParser $xmlParser
      */
     public function setXmlParser(XmlParser $xmlParser) : void {
         $this->xmlParser = $xmlParser;
@@ -87,6 +103,7 @@ class XmlValidator {
     /**
      * Add any errors to the report.
      *
+     * @param array $errors
      * @param string $report
      */
     public function reportErrors(array $errors, &$report) : void {
@@ -104,11 +121,11 @@ class XmlValidator {
         $dom = $this->xmlParser->fromFile($issuePath);
         $root = $dom->documentElement;
         if ($root->hasAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'schemaLocation')) {
-            $this->validator->schemaValidate($dom, $bag->getBagRoot() . '/data/');
+            $this->schemaValidator->validate($dom, $bag->getBagRoot() . '/data/');
         } else {
-            $this->validator->validate($dom);
+            $this->dtdValidator->validate($dom, $bag->getBagRoot() . '/data/');
         }
-        $this->reportErrors($this->validator->getErrors(), $report);
+        $this->reportErrors($this->dtdValidator->getErrors(), $report);
         if (trim($report)) {
             $deposit->addToProcessingLog($report);
 
