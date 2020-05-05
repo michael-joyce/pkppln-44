@@ -26,7 +26,7 @@ class SchemaValidatorTest extends BaseTestCase {
 	public function testValidate() {
 		$dom = new DOMDocument();
 		$dom->loadXML($this->getValidXml());
-		$path = dirname(__FILE__, 3) . '/data';
+		$path = dirname(__FILE__, 2) . '/data';
 		$this->validator->validate($dom, $path, true);
 		$this->assertEquals(0, $this->validator->countErrors());
 	}
@@ -34,7 +34,7 @@ class SchemaValidatorTest extends BaseTestCase {
 	public function testValidateWithErrors() {
 		$dom = new DOMDocument();
 		$dom->loadXML($this->getinvalidXml());
-        $path = dirname(__FILE__, 3) . '/data';
+        $path = dirname(__FILE__, 2) . '/data';
         $this->validator->validate($dom, $path, true);
 		$this->assertEquals(1, $this->validator->countErrors());
 	}
