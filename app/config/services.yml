@@ -90,3 +90,7 @@ services:
             $serviceUri: '%pln.service_uri%'
             $uuid: '%pln.uuid%'
             $saveXml: '%pln.save_deposit_xml%'
+
+    AppBundle\Command\UpgradeCommand:
+        arguments:
+            $oldEm: '@doctrine.dbal.oldversion_connection'

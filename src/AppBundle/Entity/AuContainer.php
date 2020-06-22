@@ -28,7 +28,7 @@ class AuContainer extends AbstractEntity {
      * List of deposits in one AU.
      *
      * @var ArrayCollection|Deposit[]
-     * @ORM\OneToMany(targetEntity="Deposit", mappedBy="auContainer")
+     * @ORM\OneToMany(targetEntity="Deposit", mappedBy="auContainer", fetch="EXTRA_LAZY")
      */
     private $deposits;
 

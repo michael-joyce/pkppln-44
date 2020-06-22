@@ -678,7 +678,9 @@ class Deposit extends AbstractEntity {
      * @return Deposit
      */
     public function setPackageChecksumType($packageChecksumType) {
-        $this->packageChecksumType = strtolower($packageChecksumType);
+        if($packageChecksumType) {
+            $this->packageChecksumType = strtolower($packageChecksumType);
+        }
 
         return $this;
     }
@@ -700,7 +702,9 @@ class Deposit extends AbstractEntity {
      * @return Deposit
      */
     public function setPackageChecksumValue($packageChecksumValue) {
-        $this->packageChecksumValue = strtoupper($packageChecksumValue);
+        if($packageChecksumValue) {
+            $this->packageChecksumValue = strtoupper($packageChecksumValue);
+        }
 
         return $this;
     }

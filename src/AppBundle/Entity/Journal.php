@@ -151,7 +151,7 @@ class Journal extends AbstractEntity {
      * The journal's deposits.
      *
      * @var Collection|Deposit[]
-     * @ORM\OneToMany(targetEntity="Deposit", mappedBy="journal")
+     * @ORM\OneToMany(targetEntity="Deposit", mappedBy="journal", fetch="EXTRA_LAZY")
      */
     private $deposits;
 
