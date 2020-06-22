@@ -25,7 +25,7 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
      *
      * @var XmlValidator
      */
-    private $dtdValidator;
+    private $xmlValidator;
 
     /**
      * @var SchemaValidator
@@ -35,10 +35,9 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
     /**
      * Build the command.
      */
-    public function __construct(EntityManagerInterface $em, DtdValidator $dtdValidator, SchemaValidator $schemaValidator) {
+    public function __construct(EntityManagerInterface $em, XmlValidator $xmlValidator) {
         parent::__construct($em);
-        $this->dtdValidator = $dtdValidator;
-        $this->schemaValidator = $schemaValidator;
+        $this->xmlValidator = $xmlValidator;
     }
 
     /**
@@ -54,7 +53,7 @@ class ValidateXmlCommand extends AbstractProcessingCmd {
      * {@inheritdoc}
      */
     protected function processDeposit(Deposit $deposit) {
-        return $this->dtdValidator->processDeposit($deposit);
+        return $this->xmlValidator->processDeposit($deposit);
     }
 
     /**
