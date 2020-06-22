@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace AppBundle\Command\Processing;
 
 use AppBundle\Entity\Deposit;
-use AppBundle\Services\DtdValidator;
 use AppBundle\Services\Processing\XmlValidator;
 use AppBundle\Services\SchemaValidator;
 use Doctrine\ORM\EntityManagerInterface;

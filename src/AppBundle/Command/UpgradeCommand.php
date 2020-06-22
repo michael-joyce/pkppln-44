@@ -295,11 +295,12 @@ class UpgradeCommand extends ContainerAwareCommand {
             $deposit = new Deposit();
 
             $journalId = $this->getIdMap(Journal::class, $row['journal_id']);
-            if( ! $journalId) {
+            if ( ! $journalId) {
                 dump($row);
-                throw new Exception("No ID for journal: " . $row['journal_id']);
+
+                throw new Exception('No ID for journal: ' . $row['journal_id']);
             }
-             $journal = $this->em->find(Journal::class, $journalId);
+            $journal = $this->em->find(Journal::class, $journalId);
             if ( ! $journal) {
                 throw new Exception("Journal {$row['journal_id']} not found.");
             }
