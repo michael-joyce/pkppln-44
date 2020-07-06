@@ -40,6 +40,6 @@ class XmlValidatorTest extends ControllerBaseCase {
 
     protected function setup() : void {
         parent::setUp();
-        $this->validator = $this->container->get(XmlValidator::class);
+        $this->validator = self::$container->get(XmlValidator::class);
     }
 }

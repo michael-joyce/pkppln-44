@@ -61,7 +61,7 @@ ENDXML;
     }
 
     public function testInstance() : void {
-        $this->assertInstanceOf(JournalBuilder::class, $this->container->get(JournalBuilder::class));
+        $this->assertInstanceOf(JournalBuilder::class, self::$container->get(JournalBuilder::class));
     }
 
     public function testResultInstance() : void {
@@ -135,6 +135,6 @@ ENDXML;
 
     protected function setup() : void {
         parent::setUp();
-        $this->builder = $this->container->get(JournalBuilder::class);
+        $this->builder = self::$container->get(JournalBuilder::class);
     }
 }

@@ -336,6 +336,6 @@ ENDXML;
 
     protected function setup() : void {
         parent::setUp();
-        $this->swordClient = $this->container->get(SwordClient::class);
+        $this->swordClient = self::$container->get(SwordClient::class);
     }
 }

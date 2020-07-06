@@ -181,7 +181,7 @@ ENDXML;
 
     protected function setup() : void {
         parent::setUp();
-        $this->ping = $this->container->get(Ping::class);
-        $this->list = $this->container->get(BlackWhiteList::class);
+        $this->ping = self::$container->get(Ping::class);
+        $this->list = self::$container->get(BlackWhiteList::class);
     }
 }

@@ -56,14 +56,14 @@ ENDSTR;
 
     public function testValidateNoDtd() : void {
         $dom = new DOMDocument();
-        $dom->XMLFixtures('<root />');
+        $dom->loadXML('<root />');
         $this->validator->validate($dom);
         $this->assertSame(0, $this->validator->countErrors());
     }
 
     public function testValidate() : void {
         $dom = new DOMDocument();
-        $dom->XMLFixtures($this->getValidXml());
+        $dom->loadXML($this->getValidXml());
         $this->validator->validate($dom, true);
         $this->assertFalse($this->validator->hasErrors());
         $this->assertSame(0, $this->validator->countErrors());
@@ -71,7 +71,7 @@ ENDSTR;
 
     public function testValidateWithErrors() : void {
         $dom = new DOMDocument();
-        $dom->XMLFixtures($this->getinvalidXml());
+        $dom->loadXML($this->getinvalidXml());
         $this->validator->validate($dom, true);
         $this->assertTrue($this->validator->hasErrors());
         $this->assertSame(1, $this->validator->countErrors());
@@ -79,7 +79,7 @@ ENDSTR;
 
     protected function setup() : void {
         parent::setUp();
-        $this->validator = $this->container->get(DtdValidator::class);
+        $this->validator = self::$container->get(DtdValidator::class);
         $this->validator->clearErrors();
     }
 }

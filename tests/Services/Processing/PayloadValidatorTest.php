@@ -127,7 +127,7 @@ class PayloadValidatorTest extends ControllerBaseCase {
 
     protected function setup() : void {
         parent::setUp();
-        $this->validator = $this->container->get(PayloadValidator::class);
+        $this->validator = self::$container->get(PayloadValidator::class);
         $this->root = vfsStream::setup();
     }
 }

@@ -225,6 +225,6 @@ class HarvesterTest extends ControllerBaseCase {
 
     protected function setup() : void {
         parent::setUp();
-        $this->harvester = $this->container->get(Harvester::class);
+        $this->harvester = self::$container->get(Harvester::class);
     }
 }

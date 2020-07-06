@@ -205,7 +205,7 @@ class SwordClient {
      */
     public function createDeposit(Deposit $deposit) {
         $sd = $this->serviceDocument();
-        $xml = $this->templating->render('App:sword:deposit.xml.twig', [
+        $xml = $this->templating->render('sword/deposit.xml.twig', [
             'deposit' => $deposit,
         ]);
         if ($this->saveXml) {

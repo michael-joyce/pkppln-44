@@ -61,7 +61,7 @@ ENDXML;
     }
 
     public function testInstance() : void {
-        $this->assertInstanceOf(DepositBuilder::class, $this->container->get(DepositBuilder::class));
+        $this->assertInstanceOf(DepositBuilder::class, self::$container->get(DepositBuilder::class));
     }
 
     public function testBuildInstance() : void {
@@ -112,7 +112,7 @@ ENDXML;
 
     protected function setup() : void {
         parent::setUp();
-        $builder = $this->container->get(DepositBuilder::class);
+        $builder = self::$container->get(DepositBuilder::class);
         $this->deposit = $builder->fromXml($this->getReference('journal.1'), $this->getXml());
     }
 }

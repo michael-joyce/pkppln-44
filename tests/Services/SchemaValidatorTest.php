@@ -50,7 +50,7 @@ ENDSTR;
 
     public function testValidate() : void {
         $dom = new DOMDocument();
-        $dom->XMLFixtures($this->getValidXml());
+        $dom->loadXML($this->getValidXml());
         $path = dirname(__FILE__, 2) . '/data';
         $this->validator->validate($dom, $path, true);
         $this->assertSame(0, $this->validator->countErrors());
@@ -58,7 +58,7 @@ ENDSTR;
 
     public function testValidateWithErrors() : void {
         $dom = new DOMDocument();
-        $dom->XMLFixtures($this->getinvalidXml());
+        $dom->loadXML($this->getinvalidXml());
         $path = dirname(__FILE__, 2) . '/data';
         $this->validator->validate($dom, $path, true);
         $this->assertSame(1, $this->validator->countErrors());
@@ -66,7 +66,7 @@ ENDSTR;
 
     protected function setUp() : void {
         parent::setUp();
-        $this->validator = $this->container->get(SchemaValidator::class);
+        $this->validator = self::$container->get(SchemaValidator::class);
         $this->validator->clearErrors();
     }
 }

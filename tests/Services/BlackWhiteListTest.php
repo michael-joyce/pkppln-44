@@ -50,6 +50,6 @@ class BlackWhiteListTest extends ControllerBaseCase {
 
     protected function setup() : void {
         parent::setUp();
-        $this->list = $this->container->get(BlackWhiteList::class);
+        $this->list = self::$container->get(BlackWhiteList::class);
     }
 }

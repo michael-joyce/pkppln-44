@@ -47,7 +47,7 @@ class VirusScannerTest extends ControllerBaseCase {
         $xp = $this->createMock(DOMXPath::class);
         $xp->method('evaluate')->will($this->onConsecutiveCalls(10, base64_encode("We're fine. We're all fine here, now, thank you. How are you?")));
         $client = $this->createMock(Client::class);
-        $this->clientmethod('scanResourceStream')->willReturn([
+        $client->method('scanResourceStream')->willReturn([
             'filename' => 'stream',
             'reason' => null,
             'status' => Client::RESULT_OK,
@@ -65,7 +65,7 @@ class VirusScannerTest extends ControllerBaseCase {
         $xp = $this->createMock(DOMXPath::class);
         $xp->method('evaluate')->will($this->onConsecutiveCalls(10, base64_encode('X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*')));
         $client = $this->createMock(Client::class);
-        $this->clientmethod('scanResourceStream')->willReturn([
+        $client->method('scanResourceStream')->willReturn([
             'filename' => 'stream',
             'reason' => 'EICAR',
             'status' => Client::RESULT_FOUND,
@@ -113,11 +113,11 @@ class VirusScannerTest extends ControllerBaseCase {
 
     public function testScanCleanXmlFile() : void {
         $dom = new DOMDocument();
-        $dom->XMLFixtures($this->getCleanXml());
+        $dom->loadXML($this->getCleanXml());
         $parser = $this->createMock(XmlParser::class);
         $parser->method('fromFile')->willReturn($dom);
         $client = $this->createMock(Client::class);
-        $this->clientmethod('scanResourceStream')->willReturn([
+        $client->method('scanResourceStream')->willReturn([
             'filename' => 'stream',
             'reason' => null,
             'status' => Client::RESULT_OK,
@@ -128,11 +128,11 @@ class VirusScannerTest extends ControllerBaseCase {
 
     public function testScanDirtyXmlFile() : void {
         $dom = new DOMDocument();
-        $dom->XMLFixtures($this->getDirtyXml());
+        $dom->loadXML($this->getDirtyXml());
         $parser = $this->createMock(XmlParser::class);
         $parser->method('fromFile')->willReturn($dom);
         $client = $this->createMock(Client::class);
-        $this->clientmethod('scanResourceStream')->will($this->onConsecutiveCalls([
+        $client->method('scanResourceStream')->will($this->onConsecutiveCalls([
             'filename' => 'stream',
             'reason' => null,
             'status' => Client::RESULT_OK,
@@ -150,7 +150,7 @@ class VirusScannerTest extends ControllerBaseCase {
      */
     public function testLiveScanCleanXmlFile() : void {
         $dom = new DOMDocument();
-        $dom->XMLFixtures($this->getCleanXml());
+        $dom->loadXML($this->getCleanXml());
         $parser = $this->createMock(XmlParser::class);
         $parser->method('fromFile')->willReturn($dom);
         $client = $this->scanner->getClient();
@@ -163,7 +163,7 @@ class VirusScannerTest extends ControllerBaseCase {
      */
     public function testLiveScanDirtyXmlFile() : void {
         $dom = new DOMDocument();
-        $dom->XMLFixtures($this->getDirtyXml());
+        $dom->loadXML($this->getDirtyXml());
         $parser = $this->createMock(XmlParser::class);
         $parser->method('fromFile')->willReturn($dom);
         $client = $this->scanner->getClient();
@@ -195,6 +195,6 @@ ENDXML;
 
     protected function setup() : void {
         parent::setUp();
-        $this->scanner = $this->container->get(VirusScanner::class);
+        $this->scanner = self::$container->get(VirusScanner::class);
     }
 }
