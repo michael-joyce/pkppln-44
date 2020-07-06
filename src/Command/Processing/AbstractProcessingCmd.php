@@ -124,19 +124,25 @@ abstract class AbstractProcessingCmd extends Command {
      */
     public function getDeposits($retry = false, array $depositIds = [], $limit = null) {
         $repo = $this->em->getRepository(Deposit::class);
-        $state = $this->processingState();
-        if ($retry) {
-            $state = $this->errorState();
+        $qb = $this->em->createQueryBuilder();
+        $qb->select('d')->from(Deposit::class, 'd');
+        $qb->where('d.state = :state');
+        if($retry) {
+            $qb->setParameter('state', $this->errorState());
+        } else {
+            $qb->setParameter('state', $this->processingState());
         }
-        $query = ['state' => $state];
-        if (count($depositIds) > 0) {
-            $query['id'] = $depositIds;
-        }
-        $orderBy = [
-            'id' => 'ASC',
-        ];
 
-        return $repo->findBy($query, $orderBy, $limit);
+        if (count($depositIds) > 0) {
+            $qb->andWhere('d.id in (:ids)')
+               ->setParameter('ids', $depositIds);
+        }
+
+        $qb->orderBy('d.id', 'ASC');
+        if($limit) {
+            $qb->setMaxResults($limit);
+        }
+        return $qb->getQuery()->execute();
     }
 
     /**

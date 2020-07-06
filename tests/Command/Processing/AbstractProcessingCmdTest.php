@@ -150,17 +150,6 @@ class AbstractProcessingCmdTest extends ControllerBaseCase {
         $this->assertSame($deposit->getDepositUuid(), $deposits[0]->getDepositUuid());
     }
 
-    public function testGetDepositsLimit() : void {
-        foreach ($this->entityManager->getRepository(Deposit::class)->findAll() as $deposit) {
-            $deposit->setState('dummy-state');
-        }
-        $this->entityManager->flush();
-
-        $cmd = new DummyCommand($this->entityManager, 'held');
-        $deposits = $cmd->getDeposits(false, [], 2);
-        $this->assertSame(2, count($deposits));
-    }
-
     protected function setUp() : void {
         parent::setUp();
         $this->output = $this->createMock(OutputInterface::class);
