@@ -72,7 +72,7 @@ class DocumentControllerTest extends ControllerBaseCase {
 
         $crawler = $this->client->request('GET', '/document/1/edit');
         $this->assertSame(302, $this->client->getResponse()->getStatusCode());
-        $this->assertTrue($this->client->getResponse()->isRedirect('http://localhost/login'));
+        $this->assertTrue($this->client->getResponse()->isRedirect());
     }
 
     public function testUserEdit() : void {
@@ -104,7 +104,7 @@ class DocumentControllerTest extends ControllerBaseCase {
 
         $crawler = $this->client->request('GET', '/document/new');
         $this->assertSame(302, $this->client->getResponse()->getStatusCode());
-        $this->assertTrue($this->client->getResponse()->isRedirect('http://localhost/login'));
+        $this->assertTrue($this->client->getResponse()->isRedirect());
     }
 
     public function testUserNew() : void {
@@ -136,7 +136,7 @@ class DocumentControllerTest extends ControllerBaseCase {
 
         $crawler = $this->client->request('GET', '/document/1/delete');
         $this->assertSame(302, $this->client->getResponse()->getStatusCode());
-        $this->assertTrue($this->client->getResponse()->isRedirect('http://localhost/login'));
+        $this->assertTrue($this->client->getResponse()->isRedirect());
     }
 
     public function testUserDelete() : void {

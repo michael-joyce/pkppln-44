@@ -72,7 +72,7 @@ class TermOfUseControllerTest extends ControllerBaseCase {
 
         $crawler = $this->client->request('GET', '/termofuse/1/edit');
         $this->assertSame(302, $this->client->getResponse()->getStatusCode());
-        $this->assertTrue($this->client->getResponse()->isRedirect('http://localhost/login'));
+        $this->assertTrue($this->client->getResponse()->isRedirect());
     }
 
     public function testUserEdit() : void {
@@ -105,7 +105,7 @@ class TermOfUseControllerTest extends ControllerBaseCase {
 
         $crawler = $this->client->request('GET', '/termofuse/new');
         $this->assertSame(302, $this->client->getResponse()->getStatusCode());
-        $this->assertTrue($this->client->getResponse()->isRedirect('http://localhost/login'));
+        $this->assertTrue($this->client->getResponse()->isRedirect());
     }
 
     public function testUserNew() : void {
@@ -138,7 +138,7 @@ class TermOfUseControllerTest extends ControllerBaseCase {
 
         $crawler = $this->client->request('GET', '/termofuse/1/delete');
         $this->assertSame(302, $this->client->getResponse()->getStatusCode());
-        $this->assertTrue($this->client->getResponse()->isRedirect('http://localhost/login'));
+        $this->assertTrue($this->client->getResponse()->isRedirect());
     }
 
     public function testUserDelete() : void {

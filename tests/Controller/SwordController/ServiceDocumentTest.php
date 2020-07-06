@@ -15,52 +15,52 @@ use App\Entity\Journal;
 
 class ServiceDocumentTest extends AbstractSwordTestCase {
     public function testServiceDocument() : void {
-        $this->testClient->request('GET', '/api/sword/2.0/sd-iri', [], [], [
+        $this->client->request('GET', '/api/sword/2.0/sd-iri', [], [], [
             'HTTP_On-Behalf-Of' => '7AD045C9-89E6-4ACA-8363-56FE9A45C34F',
             'HTTP_Journal-Url' => 'http://example.com',
         ]);
-        $this->assertSame(200, $this->testClient->getResponse()->getStatusCode());
+        $this->assertSame(200, $this->client->getResponse()->getStatusCode());
     }
 
     public function testServiceDocumentNoOBH() : void {
-        $this->testClient->request('GET', '/api/sword/2.0/sd-iri', [], [], [
+        $this->client->request('GET', '/api/sword/2.0/sd-iri', [], [], [
             'HTTP_Journal-Url' => 'http://example.com',
         ]);
-        $this->assertSame(400, $this->testClient->getResponse()->getStatusCode());
+        $this->assertSame(400, $this->client->getResponse()->getStatusCode());
     }
 
     public function testServiceDocumentNoJournalUrl() : void {
-        $this->testClient->request('GET', '/api/sword/2.0/sd-iri', [], [], [
+        $this->client->request('GET', '/api/sword/2.0/sd-iri', [], [], [
             'HTTP_On-Behalf-Of' => '7AD045C9-89E6-4ACA-8363-56FE9A45C34F',
         ]);
-        $this->assertSame(400, $this->testClient->getResponse()->getStatusCode());
+        $this->assertSame(400, $this->client->getResponse()->getStatusCode());
     }
 
     public function testServiceDocumentBadObh() : void {
-        $this->testClient->request('GET', '/api/sword/2.0/sd-iri', [], [], [
+        $this->client->request('GET', '/api/sword/2.0/sd-iri', [], [], [
             'HTTP_On-Behalf-Of' => '',
             'HTTP_Journal-Url' => 'http://example.com',
         ]);
-        $this->assertSame(400, $this->testClient->getResponse()->getStatusCode());
+        $this->assertSame(400, $this->client->getResponse()->getStatusCode());
     }
 
     public function testServiceDocumentBadJournalUrl() : void {
-        $this->testClient->request('GET', '/api/sword/2.0/sd-iri', [], [], [
+        $this->client->request('GET', '/api/sword/2.0/sd-iri', [], [], [
             'HTTP_On-Behalf-Of' => '7AD045C9-89E6-4ACA-8363-56FE9A45C34F',
             'HTTP_Journal-Url' => '',
         ]);
-        $this->assertSame(400, $this->testClient->getResponse()->getStatusCode());
+        $this->assertSame(400, $this->client->getResponse()->getStatusCode());
     }
 
     public function testServiceDocumentContentNewJournal() : void {
         $count = count($this->entityManager->getRepository(Journal::class)->findAll());
 
-        $this->testClient->request('GET', '/api/sword/2.0/sd-iri', [], [], [
+        $this->client->request('GET', '/api/sword/2.0/sd-iri', [], [], [
             'HTTP_On-Behalf-Of' => '7AD045C9-89E6-4ACA-8363-56FE9A45C34F',
             'HTTP_Journal-Url' => 'http://example.com',
         ]);
-        $this->assertSame(200, $this->testClient->getResponse()->getStatusCode());
-        $xml = $this->getXml($this->testClient);
+        $this->assertSame(200, $this->client->getResponse()->getStatusCode());
+        $xml = $this->getXml($this->client);
         $this->assertSame('service', $xml->getName());
         $this->assertSame('2.0', $this->getXmlValue($xml, '//sword:version'));
         $this->assertSame('No', $this->getXmlValue($xml, '//pkp:pln_accepting/@is_accepting'));
@@ -81,12 +81,12 @@ class ServiceDocumentTest extends AbstractSwordTestCase {
     public function testServiceDocumentContentWhitelistedJournal() : void {
         $count = count($this->entityManager->getRepository(Journal::class)->findAll());
 
-        $this->testClient->request('GET', '/api/sword/2.0/sd-iri', [], [], [
+        $this->client->request('GET', '/api/sword/2.0/sd-iri', [], [], [
             'HTTP_On-Behalf-Of' => WhitelistFixtures::UUIDS[0],
             'HTTP_Journal-Url' => 'http://example.com',
         ]);
-        $this->assertSame(200, $this->testClient->getResponse()->getStatusCode());
-        $xml = $this->getXml($this->testClient);
+        $this->assertSame(200, $this->client->getResponse()->getStatusCode());
+        $xml = $this->getXml($this->client);
         $this->assertSame('service', $xml->getName());
         $this->assertSame('2.0', $this->getXmlValue($xml, '//sword:version'));
         $this->assertSame('Yes', $this->getXmlValue($xml, '//pkp:pln_accepting/@is_accepting'));

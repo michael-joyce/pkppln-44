@@ -94,7 +94,7 @@ class TermsOfUseListener {
         }
         $em->persist($history);
         // These are post-whatever events, after a flush.
-        $em->flush($history);
+        $em->flush();
     }
 
     /**

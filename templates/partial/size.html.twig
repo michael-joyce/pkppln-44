@@ -1,4 +1,4 @@
-{% spaceless %}
+{% apply spaceless %}
     {# LOCKSS reports box status in 1000-byte units, not in bytes. #}
     {% set kilobyte = 1 %}
     {% set megabyte = kilobyte * 1000 %}
@@ -18,4 +18,4 @@
     {% else %}
         {{ (bytes / terabyte)|number_format(2, '.') ~ ' TB' }}
     {% endif %}
-{% endspaceless %}
+{% endapply %}

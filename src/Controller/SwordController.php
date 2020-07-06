@@ -269,7 +269,7 @@ class SwordController extends AbstractController implements PaginatorAwareInterf
         $journal->setContacted(new DateTime());
         $journal->setStatus('healthy');
         $this->em->flush();
-        $response = $this->render('App:sword:statement.xml.twig', [
+        $response = $this->render('sword/statement.xml.twig', [
             'deposit' => $deposit,
         ]);
         $response->headers->set('Content-Type', 'text/xml');

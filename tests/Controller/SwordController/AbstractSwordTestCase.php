@@ -22,18 +22,9 @@ use SimpleXMLElement;
 use Symfony\Component\BrowserKit\Client;
 
 abstract class AbstractSwordTestCase extends ControllerBaseCase {
-    /**
-     * @var Client
-     */
-    protected $testClient;
 
-    /**
-     * @param Client $this->client
-     *
-     * @return SimpleXMLElement
-     */
     protected function getXml() {
-        $xml = new SimpleXMLElement($this->testClient->getResponse()->getContent());
+        $xml = new SimpleXMLElement($this->client->getResponse()->getContent());
         Namespaces::registerNamespaces($xml);
 
         return $xml;
@@ -72,6 +63,5 @@ abstract class AbstractSwordTestCase extends ControllerBaseCase {
 
     protected function setUp() : void {
         parent::setUp();
-        $this->testClient = static::createClient();
     }
 }

@@ -84,7 +84,7 @@ class SwordExceptionListener {
             return;
         }
 
-        $exception = $event->getException();
+        $exception = $event->getThrowable();
         $response = new Response();
         if ($exception instanceof HttpExceptionInterface) {
             $response->setStatusCode($exception->getStatusCode());

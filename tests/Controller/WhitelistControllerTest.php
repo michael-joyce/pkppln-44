@@ -102,7 +102,7 @@ class WhitelistControllerTest extends ControllerBaseCase {
 
         $crawler = $this->client->request('GET', '/whitelist/1/edit');
         $this->assertSame(302, $this->client->getResponse()->getStatusCode());
-        $this->assertTrue($this->client->getResponse()->isRedirect('http://localhost/login'));
+        $this->assertTrue($this->client->getResponse()->isRedirect());
     }
 
     public function testUserEdit() : void {
@@ -132,7 +132,7 @@ class WhitelistControllerTest extends ControllerBaseCase {
 
         $crawler = $this->client->request('GET', '/whitelist/new');
         $this->assertSame(302, $this->client->getResponse()->getStatusCode());
-        $this->assertTrue($this->client->getResponse()->isRedirect('http://localhost/login'));
+        $this->assertTrue($this->client->getResponse()->isRedirect());
     }
 
     public function testUserNew() : void {
@@ -162,7 +162,7 @@ class WhitelistControllerTest extends ControllerBaseCase {
 
         $crawler = $this->client->request('GET', '/whitelist/1/delete');
         $this->assertSame(302, $this->client->getResponse()->getStatusCode());
-        $this->assertTrue($this->client->getResponse()->isRedirect('http://localhost/login'));
+        $this->assertTrue($this->client->getResponse()->isRedirect());
     }
 
     public function testUserDelete() : void {

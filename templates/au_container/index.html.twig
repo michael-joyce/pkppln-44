@@ -26,12 +26,15 @@
             </tr>
         </thead>
         <tbody>
-            {% dump(sizes) %}
 			{% for entity in entities %}
 				<tr>
 					<td><a href="{{ path('aucontainer_show', { 'id': entity.id }) }}">{{ entity.id }}</a></td>
 					<td>{{ entity.countDeposits() }}</td>
-                    <td>{{ sizes[entity.id]['size'] }}kb</td>
+                    <td>
+                        {% if sizes[entity.id] is defined %}
+                            {{ sizes[entity.id]['size'] }}kb
+                        {% endif %}
+                    </td>
 				</tr>
 			{% endfor %}
         </tbody>

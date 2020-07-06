@@ -103,7 +103,7 @@ class BlacklistControllerTest extends ControllerBaseCase {
 
         $crawler = $this->client->request('GET', '/blacklist/1/edit');
         $this->assertSame(302, $this->client->getResponse()->getStatusCode());
-        $this->assertTrue($this->client->getResponse()->isRedirect('http://localhost/login'));
+        $this->assertTrue($this->client->getResponse()->isRedirect());
     }
 
     public function testUserEdit() : void {
@@ -133,7 +133,7 @@ class BlacklistControllerTest extends ControllerBaseCase {
 
         $crawler = $this->client->request('GET', '/blacklist/new');
         $this->assertSame(302, $this->client->getResponse()->getStatusCode());
-        $this->assertTrue($this->client->getResponse()->isRedirect('http://localhost/login'));
+        $this->assertTrue($this->client->getResponse()->isRedirect());
     }
 
     public function testUserNew() : void {
@@ -163,7 +163,7 @@ class BlacklistControllerTest extends ControllerBaseCase {
 
         $crawler = $this->client->request('GET', '/blacklist/1/delete');
         $this->assertSame(302, $this->client->getResponse()->getStatusCode());
-        $this->assertTrue($this->client->getResponse()->isRedirect('http://localhost/login'));
+        $this->assertTrue($this->client->getResponse()->isRedirect());
     }
 
     public function testUserDelete() : void {
