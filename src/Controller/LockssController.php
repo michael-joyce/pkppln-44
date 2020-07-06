@@ -16,6 +16,7 @@ use App\Services\FilePaths;
 use Knp\Bundle\PaginatorBundle\Definition\PaginatorAwareInterface;
 use Nines\UtilBundle\Controller\PaginatorTrait;
 use Psr\Log\LoggerAwareTrait;
+use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
@@ -31,7 +32,23 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class LockssController extends AbstractController implements PaginatorAwareInterface {
     use PaginatorTrait;
-    use LoggerAwareTrait;
+
+    /**
+     * The logger instance.
+     *
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
+     * Sets a logger.
+     *
+     * @param LoggerInterface $lockssLogger
+     */
+    public function setLogger(LoggerInterface $lockssLogger)
+    {
+        $this->logger = $lockssLogger;
+    }
 
     /**
      * The LOCKSS permision statement.

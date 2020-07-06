@@ -110,6 +110,9 @@ class SwordController extends AbstractController implements PaginatorAwareInterf
      * @return bool
      */
     private function checkAccess($uuid) {
+        if( ! $uuid) {
+            return false;
+        }
         if ($this->blackwhitelist->isWhitelisted($uuid)) {
             return true;
         }
@@ -187,7 +190,7 @@ class SwordController extends AbstractController implements PaginatorAwareInterf
 
         $journal = $builder->fromRequest($obh, $journalUrl);
         if ( ! $journal->getTermsAccepted()) {
-            $this->accepting = false;
+            $accepting = false;
         }
         $this->em->flush();
         $termsRepo = $this->getDoctrine()->getRepository(TermOfUse::class);

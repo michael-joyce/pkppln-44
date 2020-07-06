@@ -192,15 +192,12 @@ class UpgradeCommand extends Command {
     public function upgradeUsers() : void {
         $callback = function ($row) {
             $entry = new User();
-            $entry->setUsername($row['username']);
             $entry->setEmail($row['username']);
-            $entry->setEnabled(true);
-            $entry->setSalt($row['salt']);
+            $entry->setActive($row['enabled'] == 1);
             $entry->setPassword($row['password']);
-            $entry->setLastLogin(new DateTime($row['last_login']));
             $entry->setRoles(unserialize($row['roles']));
             $entry->setFullname($row['fullname']);
-            $entry->setInstitution($row['institution']);
+            $entry->setAffiliation($row['institution']);
 
             return $entry;
         };
@@ -255,6 +252,7 @@ class UpgradeCommand extends Command {
             $journal = new Journal();
             $journal->setUuid($row['uuid']);
             $journal->setContacted(new DateTime($row['contacted']));
+            $journal->setTermsAccepted($row['terms_accepted']);
             if ($row['notified']) {
                 $journal->setNotified(new DateTime($row['notified']));
             }
@@ -276,7 +274,6 @@ class UpgradeCommand extends Command {
             if ($row['ojs_version']) {
                 $journal->setOjsVersion($row['ojs_version']);
             }
-            $journal->setTermsAccepted(1 === $row['terms_accepted']);
 
             return $journal;
         };
