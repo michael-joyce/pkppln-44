@@ -49,8 +49,6 @@ class Blacklist extends AbstractEntity {
 
     /**
      * Return the UUID.
-     *
-     * @return string
      */
     public function __toString() : string {
         return $this->uuid;

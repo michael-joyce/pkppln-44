@@ -22,6 +22,7 @@ class AuContainerRepository extends ServiceEntityRepository {
     public function __construct(ManagerRegistry $registry) {
         parent::__construct($registry, AuContainer::class);
     }
+
     /**
      * Find the open container with the lowest database ID. There should only
      * ever be one open container, but finding the one with lowest database ID
@@ -40,7 +41,9 @@ class AuContainerRepository extends ServiceEntityRepository {
         $qb = $this->_em->createQueryBuilder()
             ->from(Deposit::class, 'd')
             ->select('identity(d.auContainer) as acid, sum(d.size) as size')
-            ->groupBy('acid');
+            ->groupBy('acid')
+        ;
+
         return $qb->getQuery()->execute();
     }
 }

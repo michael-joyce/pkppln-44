@@ -23,6 +23,7 @@ class JournalRepository extends ServiceEntityRepository {
     public function __construct(ManagerRegistry $registry) {
         parent::__construct($registry, Journal::class);
     }
+
     /**
      * Get a list of journals that need to be pinged.
      *

@@ -18,7 +18,6 @@ use Doctrine\Persistence\ManagerRegistry;
  * Whitelist repository for custom doctrine queries.
  */
 class WhitelistRepository extends ServiceEntityRepository {
-
     public function __construct(ManagerRegistry $registry) {
         parent::__construct($registry, Whitelist::class);
     }

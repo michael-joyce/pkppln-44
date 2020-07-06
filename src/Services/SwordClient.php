@@ -19,11 +19,10 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use Twig\Environment;
 use function GuzzleHttp\Psr7\str;
 use SimpleXMLElement;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Templating\EngineInterface;
+use Twig\Environment;
 
 /**
  * Description of SwordClient.

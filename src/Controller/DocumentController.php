@@ -14,12 +14,11 @@ use App\Entity\Document;
 use App\Form\DocumentType;
 use Knp\Bundle\PaginatorBundle\Definition\PaginatorAwareInterface;
 use Nines\UtilBundle\Controller\PaginatorTrait;
-
-use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Document controller.
@@ -27,8 +26,9 @@ use Symfony\Component\HttpFoundation\Request;
  * @Security("is_granted('ROLE_USER')")
  * @Route("/document")
  */
-class DocumentController extends AbstractController  implements PaginatorAwareInterface {
+class DocumentController extends AbstractController implements PaginatorAwareInterface {
     use PaginatorTrait;
+
     /**
      * Lists all Document entities.
      *
@@ -135,7 +135,6 @@ class DocumentController extends AbstractController  implements PaginatorAwareIn
      *
      * @Security("is_granted('ROLE_ADMIN')")
      * @Route("/{id}/delete", name="document_delete", methods={"GET"})
-     *
      */
     public function deleteAction(Request $request, Document $document) {
         $em = $this->getDoctrine()->getManager();

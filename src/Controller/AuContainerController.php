@@ -13,7 +13,6 @@ namespace App\Controller;
 use App\Entity\AuContainer;
 use Knp\Bundle\PaginatorBundle\Definition\PaginatorAwareInterface;
 use Nines\UtilBundle\Controller\PaginatorTrait;
-
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,8 +23,9 @@ use Symfony\Component\Routing\Annotation\Route;
  *
  * @Route("/aucontainer")
  */
-class AuContainerController extends AbstractController  implements PaginatorAwareInterface {
+class AuContainerController extends AbstractController implements PaginatorAwareInterface {
     use PaginatorTrait;
+
     /**
      * Lists all AuContainer entities.
      *

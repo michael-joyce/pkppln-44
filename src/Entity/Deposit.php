@@ -261,8 +261,6 @@ class Deposit extends AbstractEntity {
 
     /**
      * Return the deposit UUID.
-     *
-     * @return string
      */
     public function __toString() : string {
         return $this->getDepositUuid();

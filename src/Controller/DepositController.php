@@ -14,13 +14,12 @@ use App\Entity\Deposit;
 use App\Entity\Journal;
 use Knp\Bundle\PaginatorBundle\Definition\PaginatorAwareInterface;
 use Nines\UtilBundle\Controller\PaginatorTrait;
-
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Deposit controller.
@@ -29,8 +28,9 @@ use Symfony\Component\HttpFoundation\Request;
  * @Route("/journal/{journalId}/deposit")
  * @ParamConverter("journal", options={"id"="journalId"})
  */
-class DepositController extends AbstractController  implements PaginatorAwareInterface {
+class DepositController extends AbstractController implements PaginatorAwareInterface {
     use PaginatorTrait;
+
     /**
      * Lists all Deposit entities.
      *

@@ -23,6 +23,7 @@ class DepositRepository extends ServiceEntityRepository {
     public function __construct(ManagerRegistry $registry) {
         parent::__construct($registry, Deposit::class);
     }
+
     /**
      * Create a search query and return it.
      *

@@ -42,6 +42,7 @@ class StatusCommand extends AbstractProcessingCmd {
         $statusXml = $this->client->statement($deposit);
         $term = (string) $statusXml->xpath('//atom:category[@label="State"]/@term')[0];
         $deposit->setPlnState($term);
+
         return 'agreement' === $term;
     }
 

@@ -14,18 +14,17 @@ use App\Entity\Deposit;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Bundle\PaginatorBundle\Definition\PaginatorAwareInterface;
 use Nines\UtilBundle\Controller\PaginatorTrait;
-
-use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Default controller.
  */
-class DefaultController extends AbstractController  implements PaginatorAwareInterface {
+class DefaultController extends AbstractController implements PaginatorAwareInterface {
     use PaginatorTrait;
     /**
      * The LOCKSS permision statement.

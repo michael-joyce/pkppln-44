@@ -16,7 +16,6 @@ use App\Form\WhitelistType;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Bundle\PaginatorBundle\Definition\PaginatorAwareInterface;
 use Nines\UtilBundle\Controller\PaginatorTrait;
-
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -167,7 +166,6 @@ class WhitelistController extends AbstractController implements PaginatorAwareIn
      *
      * @Security("is_granted('ROLE_ADMIN')")
      * @Route("/{id}/delete", name="whitelist_delete", methods={"GET"})
-     *
      */
     public function deleteAction(Request $request, Whitelist $whitelist) {
         $em = $this->getDoctrine()->getManager();

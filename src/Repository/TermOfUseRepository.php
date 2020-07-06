@@ -11,8 +11,8 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\TermOfUse;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -22,6 +22,7 @@ class TermOfUseRepository extends ServiceEntityRepository {
     public function __construct(ManagerRegistry $registry) {
         parent::__construct($registry, TermOfUse::class);
     }
+
     /**
      * Get the terms of use, sorted by weight.
      *

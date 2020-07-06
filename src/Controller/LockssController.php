@@ -16,9 +16,7 @@ use App\Services\FilePaths;
 use Knp\Bundle\PaginatorBundle\Definition\PaginatorAwareInterface;
 use Nines\UtilBundle\Controller\PaginatorTrait;
 use Psr\Log\LoggerAwareTrait;
-
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -26,11 +24,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Lockss Controller for handling all interaction with the LOCKSS network.
  */
-class LockssController extends AbstractController  implements PaginatorAwareInterface {
+class LockssController extends AbstractController implements PaginatorAwareInterface {
     use PaginatorTrait;
     use LoggerAwareTrait;
 
@@ -72,7 +71,6 @@ class LockssController extends AbstractController  implements PaginatorAwareInte
      * @return Response
      *
      * @Route("/permission", name="lockss_permission", methods={"GET"})
-     *
      */
     public function permissionAction(Request $request) {
         $this->logger->notice("{$request->getClientIp()} - permission");

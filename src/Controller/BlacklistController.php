@@ -16,12 +16,11 @@ use App\Form\BlacklistType;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Bundle\PaginatorBundle\Definition\PaginatorAwareInterface;
 use Nines\UtilBundle\Controller\PaginatorTrait;
-
-use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Blacklist controller.
@@ -68,8 +67,7 @@ class BlacklistController extends AbstractController implements PaginatorAwareIn
         if ($q) {
             $query = $repo->searchQuery($q);
             $blacklists = $this->paginator->paginate($query, $request->query->getInt('page', 1), 25);
-        }
-        else {
+        } else {
             $blacklists = $this->paginator->paginate([], $request->query->getInt('page', 1), 25);
         }
 
@@ -167,7 +165,6 @@ class BlacklistController extends AbstractController implements PaginatorAwareIn
      *
      * @Security("is_granted('ROLE_ADMIN')")
      * @Route("/{id}/delete", name="blacklist_delete", methods={"GET"})
-     *
      */
     public function deleteAction(Request $request, Blacklist $blacklist) {
         $em = $this->getDoctrine()->getManager();

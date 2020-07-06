@@ -306,9 +306,9 @@ class UpgradeCommand extends Command {
             $deposit->setJournal($journal);
 
             $auContainerId = $this->getIdMap(AuContainer::class, $row['au_container_id']);
-            if($auContainerId) {
+            if ($auContainerId) {
                 $auContainer = $this->em->find(AuContainer::class, $auContainerId);
-                if( ! $auContainer) {
+                if ( ! $auContainer) {
                     throw new Exception("Cannot find au container {$row['au_container_id']} for deposit {$row['id']}.");
                 }
                 $deposit->setAuContainer($auContainer);
@@ -366,9 +366,10 @@ class UpgradeCommand extends Command {
     }
 
     public function upgradeAuContainers() : void {
-        $callback = function($row) {
+        $callback = function ($row) {
             $auContainer = new AuContainer();
             $auContainer->setOpen($row['open']);
+
             return $auContainer;
         };
         $this->upgradeTable('au_container', $callback);
