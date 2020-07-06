@@ -8,10 +8,10 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace AppBundle\Tests\Controller\SwordController;
+namespace App\Tests\Controller\SwordController;
 
-use AppBundle\DataFixtures\ORM\LoadWhitelist;
-use AppBundle\Entity\Journal;
+use App\DataFixtures\WhitelistFixtures;
+use App\Entity\Journal;
 
 class ServiceDocumentTest extends AbstractSwordTestCase {
     public function testServiceDocument() : void {
@@ -53,7 +53,7 @@ class ServiceDocumentTest extends AbstractSwordTestCase {
     }
 
     public function testServiceDocumentContentNewJournal() : void {
-        $count = count($this->em->getRepository(Journal::class)->findAll());
+        $count = count($this->entityManager->getRepository(Journal::class)->findAll());
 
         $this->testClient->request('GET', '/api/sword/2.0/sd-iri', [], [], [
             'HTTP_On-Behalf-Of' => '7AD045C9-89E6-4ACA-8363-56FE9A45C34F',
@@ -69,9 +69,9 @@ class ServiceDocumentTest extends AbstractSwordTestCase {
         $this->assertSame('PKP PLN deposit for 7AD045C9-89E6-4ACA-8363-56FE9A45C34F', $this->getXmlValue($xml, '//atom:title'));
         $this->assertSame('http://localhost/api/sword/2.0/col-iri/7AD045C9-89E6-4ACA-8363-56FE9A45C34F', $this->getXmlValue($xml, '//app:collection/@href'));
 
-        $this->assertCount($count + 1, $this->em->getRepository('AppBundle:Journal')->findAll());
+        $this->assertCount($count + 1, $this->entityManager->getRepository('App:Journal')->findAll());
 
-        $journal = $this->em->getRepository('AppBundle:Journal')->findOneBy(['uuid' => '7AD045C9-89E6-4ACA-8363-56FE9A45C34F']);
+        $journal = $this->entityManager->getRepository('App:Journal')->findOneBy(['uuid' => '7AD045C9-89E6-4ACA-8363-56FE9A45C34F']);
         $this->assertNotNull($journal);
         $this->assertNull($journal->getTitle());
         $this->assertSame('http://example.com', $journal->getUrl());
@@ -79,10 +79,10 @@ class ServiceDocumentTest extends AbstractSwordTestCase {
     }
 
     public function testServiceDocumentContentWhitelistedJournal() : void {
-        $count = count($this->em->getRepository(Journal::class)->findAll());
+        $count = count($this->entityManager->getRepository(Journal::class)->findAll());
 
         $this->testClient->request('GET', '/api/sword/2.0/sd-iri', [], [], [
-            'HTTP_On-Behalf-Of' => LoadWhitelist::UUIDS[0],
+            'HTTP_On-Behalf-Of' => WhitelistFixtures::UUIDS[0],
             'HTTP_Journal-Url' => 'http://example.com',
         ]);
         $this->assertSame(200, $this->testClient->getResponse()->getStatusCode());
@@ -92,12 +92,12 @@ class ServiceDocumentTest extends AbstractSwordTestCase {
         $this->assertSame('Yes', $this->getXmlValue($xml, '//pkp:pln_accepting/@is_accepting'));
         $this->assertSame('The PKP PLN can accept deposits from this journal.', $this->getXmlValue($xml, '//pkp:pln_accepting'));
         $this->assertCount(4, $xml->xpath('//pkp:terms_of_use/*'));
-        $this->assertSame('PKP PLN deposit for ' . LoadWhitelist::UUIDS[0], $this->getXmlValue($xml, '//atom:title'));
-        $this->assertSame('http://localhost/api/sword/2.0/col-iri/' . LoadWhitelist::UUIDS[0], $this->getXmlValue($xml, '//app:collection/@href'));
+        $this->assertSame('PKP PLN deposit for ' . WhitelistFixtures::UUIDS[0], $this->getXmlValue($xml, '//atom:title'));
+        $this->assertSame('http://localhost/api/sword/2.0/col-iri/' . WhitelistFixtures::UUIDS[0], $this->getXmlValue($xml, '//app:collection/@href'));
 
-        $this->em->clear();
-        $this->assertCount($count, $this->em->getRepository('AppBundle:Journal')->findAll());
-        $journal = $this->em->getRepository('AppBundle:Journal')->findOneBy(['uuid' => LoadWhitelist::UUIDS[0]]);
+        $this->entityManager->clear();
+        $this->assertCount($count, $this->entityManager->getRepository('App:Journal')->findAll());
+        $journal = $this->entityManager->getRepository('App:Journal')->findOneBy(['uuid' => WhitelistFixtures::UUIDS[0]]);
         $this->assertSame('http://example.com', $journal->getUrl());
     }
 }

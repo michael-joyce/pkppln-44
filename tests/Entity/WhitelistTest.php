@@ -8,15 +8,15 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace AppBundle\Tests\Entity;
+namespace App\Tests\Entity;
 
-use AppBundle\Entity\Whitelist;
-use Nines\UtilBundle\Tests\Util\BaseTestCase;
+use App\Entity\Whitelist;
+use Nines\UtilBundle\Tests\ControllerBaseCase;
 
 /**
  * Description of WhitelistTest.
  */
-class WhitelistTest extends BaseTestCase {
+class WhitelistTest extends ControllerBaseCase {
     private $whitelist;
 
     public function testInstance() : void {

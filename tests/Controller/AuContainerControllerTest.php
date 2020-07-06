@@ -8,34 +8,34 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace AppBundle\Controller;
+namespace App\Controller;
 
-use AppBundle\DataFixtures\ORM\LoadAuContainer;
-use AppBundle\DataFixtures\ORM\LoadBlacklist;
-use AppBundle\DataFixtures\ORM\LoadDeposit;
-use AppBundle\DataFixtures\ORM\LoadJournal;
-use Nines\UserBundle\DataFixtures\ORM\LoadUser;
-use Nines\UtilBundle\Tests\Util\BaseTestCase;
+use App\DataFixtures\AuContainerFixtures;
+use App\DataFixtures\BlacklistFixtures;
+use App\DataFixtures\DepositFixtures;
+use App\DataFixtures\JournalFixtures;
+use Nines\UserBundle\DataFixtures\UserFixtures;
+use Nines\UtilBundle\Tests\ControllerBaseCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class AuContainerControllerTest extends BaseTestCase {
-    protected function getFixtures() {
+class AuContainerControllerTest extends ControllerBaseCase {
+    protected function fixtures() : array {
         return [
-            LoadUser::class,
-            LoadBlacklist::class,
-            LoadJournal::class,
-            LoadDeposit::class,
-            LoadAuContainer::class,
+            UserFixtures::class,
+            BlacklistFixtures::class,
+            JournalFixtures::class,
+            DepositFixtures::class,
+            AuContainerFixtures::class,
         ];
     }
 
     public function testIndex() : void {
-        $client = $this->makeClient(LoadUser::USER);
-        $client->request('GET', '/aucontainer/');
-        $response = $client->getResponse();
+        $this->login('user.user');
+        $this->client->request('GET', '/aucontainer/');
+        $response = $this->client->getResponse();
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $this->assertStringContainsString('Displaying 3 records of 3 total.', $response->getContent());
-        $this->assertStringContainsString('2 (0 deposits/0kb)', $client->getResponse()->getContent());
+        $this->assertStringContainsString('2 (0 deposits/0kb)', $this->client->getResponse()->getContent());
     }
 
     public function setUp() : void {

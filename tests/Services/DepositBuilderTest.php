@@ -8,20 +8,20 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace AppBundle\Tests\Services;
+namespace App\Tests\Services;
 
-use AppBundle\DataFixtures\ORM\LoadDeposit;
-use AppBundle\DataFixtures\ORM\LoadJournal;
-use AppBundle\Entity\Deposit;
-use AppBundle\Services\DepositBuilder;
-use AppBundle\Utilities\Namespaces;
+use App\DataFixtures\DepositFixtures;
+use App\DataFixtures\JournalFixtures;
+use App\Entity\Deposit;
+use App\Services\DepositBuilder;
+use App\Utilities\Namespaces;
 use DateTime;
-use Nines\UtilBundle\Tests\Util\BaseTestCase;
+use Nines\UtilBundle\Tests\ControllerBaseCase;
 
 /**
  * Description of DepositBuilderTest.
  */
-class DepositBuilderTest extends BaseTestCase {
+class DepositBuilderTest extends ControllerBaseCase {
     private $deposit;
 
     private function getXml() {
@@ -53,10 +53,10 @@ ENDXML;
         return $xml;
     }
 
-    public function getFixtures() {
+    public function fixtures() : array {
         return [
-            LoadJournal::class,
-            LoadDeposit::class,
+            JournalFixtures::class,
+            DepositFixtures::class,
         ];
     }
 

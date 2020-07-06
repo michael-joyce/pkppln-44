@@ -16,8 +16,8 @@ use App\Services\Ping;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Bundle\PaginatorBundle\Definition\PaginatorAwareInterface;
 use Nines\UtilBundle\Controller\PaginatorTrait;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+
+use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -36,8 +36,8 @@ class JournalController extends AbstractController  implements PaginatorAwareInt
      *
      * @return array
      *
-     * @Route("/", name="journal_index")
-     * @Method("GET")
+     * @Route("/", name="journal_index", methods={"GET"})
+     *
      * @Template()
      */
     public function indexAction(Request $request) {
@@ -60,8 +60,8 @@ class JournalController extends AbstractController  implements PaginatorAwareInt
     /**
      * Search for Journal entities.
      *
-     * @Route("/search", name="journal_search")
-     * @Method("GET")
+     * @Route("/search", name="journal_search", methods={"GET"})
+     *
      * @Template()
      */
     public function searchAction(Request $request) {
@@ -87,8 +87,8 @@ class JournalController extends AbstractController  implements PaginatorAwareInt
      *
      * @return array
      *
-     * @Route("/{id}", name="journal_show")
-     * @Method("GET")
+     * @Route("/{id}", name="journal_show", methods={"GET"})
+     *
      * @Template()
      */
     public function showAction(Journal $journal, BlackWhiteList $list) {
@@ -103,8 +103,8 @@ class JournalController extends AbstractController  implements PaginatorAwareInt
      *
      * @return array
      *
-     * @Route("/{id}/ping", name="journal_ping")
-     * @Method("GET")
+     * @Route("/{id}/ping", name="journal_ping", methods={"GET"})
+     *
      * @Template()
      */
     public function pingAction(Journal $journal, Ping $ping, EntityManagerInterface $em) {

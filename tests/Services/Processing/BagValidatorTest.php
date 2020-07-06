@@ -8,28 +8,28 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace AppBundle\Tests\Services\Processing;
+namespace App\Tests\Services\Processing;
 
-use AppBundle\DataFixtures\ORM\LoadDeposit;
-use AppBundle\DataFixtures\ORM\LoadJournal;
-use AppBundle\Services\Processing\BagValidator;
-use AppBundle\Utilities\BagReader;
-use Nines\UtilBundle\Tests\Util\BaseTestCase;
+use App\DataFixtures\DepositFixtures;
+use App\DataFixtures\JournalFixtures;
+use App\Services\Processing\BagValidator;
+use App\Utilities\BagReader;
+use Nines\UtilBundle\Tests\ControllerBaseCase;
 use whikloj\BagItTools\Bag;
 
 /**
  * Description of PayloadValidatorTest.
  */
-class BagValidatorTest extends BaseTestCase {
+class BagValidatorTest extends ControllerBaseCase {
     /**
      * @var BagValidator
      */
     private $validator;
 
-    protected function getFixtures() {
+    protected function fixtures() : array {
         return [
-            LoadJournal::class,
-            LoadDeposit::class,
+            JournalFixtures::class,
+            DepositFixtures::class,
         ];
     }
 

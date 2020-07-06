@@ -8,27 +8,27 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace AppBundle\Tests\Services;
+namespace App\Tests\Services;
 
-use AppBundle\DataFixtures\ORM\LoadDeposit;
-use AppBundle\DataFixtures\ORM\LoadJournal;
-use AppBundle\Services\FilePaths;
-use AppBundle\Services\SwordClient;
-use AppBundle\Utilities\ServiceDocument;
+use App\DataFixtures\DepositFixtures;
+use App\DataFixtures\JournalFixtures;
+use App\Services\FilePaths;
+use App\Services\SwordClient;
+use App\Utilities\ServiceDocument;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
-use Nines\UtilBundle\Tests\Util\BaseTestCase;
+use Nines\UtilBundle\Tests\ControllerBaseCase;
 use org\bovigo\vfs\vfsStream;
 use SimpleXMLElement;
 
 /**
  * Description of PingTest.
  */
-class SwordClientTest extends BaseTestCase {
+class SwordClientTest extends ControllerBaseCase {
     /**
      * @var SwordClient
      */
@@ -115,10 +115,10 @@ ENDXML;
 ENDXML;
     }
 
-    protected function getFixtures() {
+    protected function fixtures() : array {
         return [
-            LoadDeposit::class,
-            LoadJournal::class,
+            DepositFixtures::class,
+            JournalFixtures::class,
         ];
     }
 

@@ -8,11 +8,11 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace AppBundle\Entity;
+namespace App\Entity;
 
-use Nines\UtilBundle\Tests\Util\BaseTestCase;
+use Nines\UtilBundle\Tests\ControllerBaseCase;
 
-class AuContainerTest extends BaseTestCase {
+class AuContainerTest extends ControllerBaseCase {
     /**
      * @var AuContainer
      */

@@ -8,15 +8,15 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace AppBundle\Tests\Entity;
+namespace App\Tests\Entity;
 
-use AppBundle\Entity\TermOfUseHistory;
-use Nines\UtilBundle\Tests\Util\BaseTestCase;
+use App\Entity\TermOfUseHistory;
+use Nines\UtilBundle\Tests\ControllerBaseCase;
 
 /**
  * Description of TermOfUseHistoryTest.
  */
-class TermOfUseHistoryTest extends BaseTestCase {
+class TermOfUseHistoryTest extends ControllerBaseCase {
     private $history;
 
     public function testToString() : void {

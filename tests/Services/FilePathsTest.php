@@ -8,11 +8,11 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace AppBundle\Tests\Services;
+namespace App\Tests\Services;
 
-use AppBundle\Entity\Deposit;
-use AppBundle\Entity\Journal;
-use AppBundle\Services\FilePaths;
+use App\Entity\Deposit;
+use App\Entity\Journal;
+use App\Services\FilePaths;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 

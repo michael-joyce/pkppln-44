@@ -8,15 +8,15 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace AppBundle\Tests\Services\Processing;
+namespace App\Tests\Services\Processing;
 
-use AppBundle\Services\Processing\XmlValidator;
-use Nines\UtilBundle\Tests\Util\BaseTestCase;
+use App\Services\Processing\XmlValidator;
+use Nines\UtilBundle\Tests\ControllerBaseCase;
 
 /**
  * Description of PayloadValidatorTest.
  */
-class XmlValidatorTest extends BaseTestCase {
+class XmlValidatorTest extends ControllerBaseCase {
     /**
      * @var XmlValidator
      */

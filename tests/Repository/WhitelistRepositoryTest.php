@@ -8,25 +8,25 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace AppBundle\Tests\Repository;
+namespace App\Tests\Repository;
 
-use AppBundle\DataFixtures\ORM\LoadWhitelist;
-use AppBundle\Entity\Whitelist;
-use AppBundle\Repository\WhitelistRepository;
-use Nines\UtilBundle\Tests\Util\BaseTestCase;
+use App\DataFixtures\WhitelistFixtures;
+use App\Entity\Whitelist;
+use App\Repository\WhitelistRepository;
+use Nines\UtilBundle\Tests\ControllerBaseCase;
 
 /**
  * Description of WhitelistRepositoryTest.
  */
-class WhitelistRepositoryTest extends BaseTestCase {
+class WhitelistRepositoryTest extends ControllerBaseCase {
     /**
      * @return WhitelistRepository
      */
     private $repo;
 
-    protected function getFixtures() {
+    protected function fixtures() : array {
         return [
-            LoadWhitelist::class,
+            WhitelistFixtures::class,
         ];
     }
 
@@ -38,6 +38,6 @@ class WhitelistRepositoryTest extends BaseTestCase {
 
     protected function setup() : void {
         parent::setUp();
-        $this->repo = $this->em->getRepository(Whitelist::class);
+        $this->repo = $this->entityManager->getRepository(Whitelist::class);
     }
 }

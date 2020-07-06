@@ -64,8 +64,8 @@ class DepositFixtures extends Fixture implements DependentFixtureInterface {
      */
     public function getDependencies() {
         return [
-            JournalFixtures,
-            AuContainerFixtures,
+            JournalFixtures::class,
+            AuContainerFixtures::class,
         ];
     }
 }

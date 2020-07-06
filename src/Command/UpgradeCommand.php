@@ -23,7 +23,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Nines\UserBundle\Entity\User;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -31,7 +31,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Upgrade a PKP PLN instance from version 1 to version 2.
  */
-class UpgradeCommand extends ContainerAwareCommand {
+class UpgradeCommand extends Command {
     /**
      * Doctrine connection to the old database.
      *

@@ -8,12 +8,12 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace AppBundle\Entity;
+namespace App\Entity;
 
-use AppBundle\DataFixtures\ORM\LoadAuContainer;
-use Nines\UtilBundle\Tests\Util\BaseTestCase;
+use App\DataFixtures\AuContainerFixtures;
+use Nines\UtilBundle\Tests\ControllerBaseCase;
 
-class AuContainerRepositoryTest extends BaseTestCase {
+class AuContainerRepositoryTest extends ControllerBaseCase {
     /**
      * @var AuContainer
      */
@@ -21,19 +21,19 @@ class AuContainerRepositoryTest extends BaseTestCase {
 
     public function testGetOpenContainer() : void {
         $c = $this->repository->getOpenContainer();
-        $this->assertInstanceOf('AppBundle\Entity\AuContainer', $c);
+        $this->assertInstanceOf('App\Entity\AuContainer', $c);
         $this->assertSame(true, $c->isOpen());
         $this->assertSame(2, $c->getId());
     }
 
-    public function getFixtures() {
+    public function fixtures() : array {
         return [
-            LoadAuContainer::class,
+            AuContainerFixtures::class,
         ];
     }
 
     public function setUp() : void {
         parent::setUp();
-        $this->repository = $this->em->getRepository('AppBundle:AuContainer');
+        $this->repository = $this->entityManager->getRepository('App:AuContainer');
     }
 }

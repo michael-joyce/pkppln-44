@@ -14,8 +14,8 @@ use App\Entity\Document;
 use App\Form\DocumentType;
 use Knp\Bundle\PaginatorBundle\Definition\PaginatorAwareInterface;
 use Nines\UtilBundle\Controller\PaginatorTrait;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+
+use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -34,8 +34,8 @@ class DocumentController extends AbstractController  implements PaginatorAwareIn
      *
      * @return array
      *
-     * @Route("/", name="document_index")
-     * @Method("GET")
+     * @Route("/", name="document_index", methods={"GET"})
+     *
      * @Template()
      */
     public function indexAction(Request $request) {
@@ -58,8 +58,8 @@ class DocumentController extends AbstractController  implements PaginatorAwareIn
      *                                Array data for the template processor or a redirect to the Document.
      *
      * @Security("is_granted('ROLE_ADMIN')")
-     * @Route("/new", name="document_new")
-     * @Method({"GET", "POST"})
+     * @Route("/new", name="document_new", methods={"GET","POST"})
+     *
      * @Template()
      */
     public function newAction(Request $request) {
@@ -88,8 +88,8 @@ class DocumentController extends AbstractController  implements PaginatorAwareIn
      *
      * @return array
      *
-     * @Route("/{id}", name="document_show")
-     * @Method("GET")
+     * @Route("/{id}", name="document_show", methods={"GET"})
+     *
      * @Template()
      */
     public function showAction(Document $document) {
@@ -105,8 +105,8 @@ class DocumentController extends AbstractController  implements PaginatorAwareIn
      *                                Array data for the template processor or a redirect to the Document.
      *
      * @Security("is_granted('ROLE_ADMIN')")
-     * @Route("/{id}/edit", name="document_edit")
-     * @Method({"GET", "POST"})
+     * @Route("/{id}/edit", name="document_edit", methods={"GET","POST"})
+     *
      * @Template()
      */
     public function editAction(Request $request, Document $document) {
@@ -134,8 +134,8 @@ class DocumentController extends AbstractController  implements PaginatorAwareIn
      *                                A redirect to the document_index.
      *
      * @Security("is_granted('ROLE_ADMIN')")
-     * @Route("/{id}/delete", name="document_delete")
-     * @Method("GET")
+     * @Route("/{id}/delete", name="document_delete", methods={"GET"})
+     *
      */
     public function deleteAction(Request $request, Document $document) {
         $em = $this->getDoctrine()->getManager();

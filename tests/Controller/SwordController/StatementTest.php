@@ -8,9 +8,9 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace AppBundle\Tests\Controller\SwordController;
+namespace App\Tests\Controller\SwordController;
 
-use AppBundle\Entity\Whitelist;
+use App\Entity\Whitelist;
 
 class StatementTest extends AbstractSwordTestCase {
     // journal not whitelisted
@@ -45,7 +45,7 @@ class StatementTest extends AbstractSwordTestCase {
         $whitelist = new Whitelist();
         $whitelist->setUuid($this->getReference('journal.1')->getUuid());
         $whitelist->setComment('b');
-        $this->em->persist($whitelist);
+        $this->entityManager->persist($whitelist);
         $this->em->flush();
         $this->em->clear();
 

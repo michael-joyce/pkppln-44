@@ -8,13 +8,13 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace AppBundle\Tests\Services;
+namespace App\Tests\Services;
 
-use AppBundle\Services\SchemaValidator;
+use App\Services\SchemaValidator;
 use DOMDocument;
-use Nines\UtilBundle\Tests\Util\BaseTestCase;
+use Nines\UtilBundle\Tests\ControllerBaseCase;
 
-class SchemaValidatorTest extends BaseTestCase {
+class SchemaValidatorTest extends ControllerBaseCase {
     /**
      * @var SchemaValidator
      */
@@ -50,7 +50,7 @@ ENDSTR;
 
     public function testValidate() : void {
         $dom = new DOMDocument();
-        $dom->loadXML($this->getValidXml());
+        $dom->XMLFixtures($this->getValidXml());
         $path = dirname(__FILE__, 2) . '/data';
         $this->validator->validate($dom, $path, true);
         $this->assertSame(0, $this->validator->countErrors());
@@ -58,7 +58,7 @@ ENDSTR;
 
     public function testValidateWithErrors() : void {
         $dom = new DOMDocument();
-        $dom->loadXML($this->getinvalidXml());
+        $dom->XMLFixtures($this->getinvalidXml());
         $path = dirname(__FILE__, 2) . '/data';
         $this->validator->validate($dom, $path, true);
         $this->assertSame(1, $this->validator->countErrors());

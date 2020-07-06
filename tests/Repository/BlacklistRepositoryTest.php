@@ -8,25 +8,25 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace AppBundle\Tests\Repository;
+namespace App\Tests\Repository;
 
-use AppBundle\DataFixtures\ORM\LoadBlacklist;
-use AppBundle\Entity\Blacklist;
-use AppBundle\Repository\BlacklistRepository;
-use Nines\UtilBundle\Tests\Util\BaseTestCase;
+use App\DataFixtures\BlacklistFixtures;
+use App\Entity\Blacklist;
+use App\Repository\BlacklistRepository;
+use Nines\UtilBundle\Tests\ControllerBaseCase;
 
 /**
  * Description of BlacklistRepositoryTest.
  */
-class BlacklistRepositoryTest extends BaseTestCase {
+class BlacklistRepositoryTest extends ControllerBaseCase {
     /**
      * @return BlacklistRepository
      */
     private $repo;
 
-    protected function getFixtures() {
+    protected function fixtures() : array {
         return [
-            LoadBlacklist::class,
+            BlacklistFixtures::class,
         ];
     }
 
@@ -38,6 +38,6 @@ class BlacklistRepositoryTest extends BaseTestCase {
 
     protected function setup() : void {
         parent::setUp();
-        $this->repo = $this->em->getRepository(Blacklist::class);
+        $this->repo = $this->entityManager->getRepository(Blacklist::class);
     }
 }

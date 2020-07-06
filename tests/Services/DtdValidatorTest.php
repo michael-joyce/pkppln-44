@@ -8,13 +8,13 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace AppBundle\Tests\Services;
+namespace App\Tests\Services;
 
-use AppBundle\Services\DtdValidator;
+use App\Services\DtdValidator;
 use DOMDocument;
-use Nines\UtilBundle\Tests\Util\BaseTestCase;
+use Nines\UtilBundle\Tests\ControllerBaseCase;
 
-class DtdValidatorTest extends BaseTestCase {
+class DtdValidatorTest extends ControllerBaseCase {
     /**
      * @var DtdValidator
      */
@@ -56,14 +56,14 @@ ENDSTR;
 
     public function testValidateNoDtd() : void {
         $dom = new DOMDocument();
-        $dom->loadXML('<root />');
+        $dom->XMLFixtures('<root />');
         $this->validator->validate($dom);
         $this->assertSame(0, $this->validator->countErrors());
     }
 
     public function testValidate() : void {
         $dom = new DOMDocument();
-        $dom->loadXML($this->getValidXml());
+        $dom->XMLFixtures($this->getValidXml());
         $this->validator->validate($dom, true);
         $this->assertFalse($this->validator->hasErrors());
         $this->assertSame(0, $this->validator->countErrors());
@@ -71,7 +71,7 @@ ENDSTR;
 
     public function testValidateWithErrors() : void {
         $dom = new DOMDocument();
-        $dom->loadXML($this->getinvalidXml());
+        $dom->XMLFixtures($this->getinvalidXml());
         $this->validator->validate($dom, true);
         $this->assertTrue($this->validator->hasErrors());
         $this->assertSame(1, $this->validator->countErrors());

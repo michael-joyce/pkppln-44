@@ -8,21 +8,21 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace AppBundle\Tests\Services\Processing;
+namespace App\Tests\Services\Processing;
 
-use AppBundle\Entity\Deposit;
-use AppBundle\Entity\Journal;
-use AppBundle\Services\FilePaths;
-use AppBundle\Services\Processing\PayloadValidator;
+use App\Entity\Deposit;
+use App\Entity\Journal;
+use App\Services\FilePaths;
+use App\Services\Processing\PayloadValidator;
 use Exception;
-use Nines\UtilBundle\Tests\Util\BaseTestCase;
+use Nines\UtilBundle\Tests\ControllerBaseCase;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 
 /**
  * Description of PayloadValidatorTest.
  */
-class PayloadValidatorTest extends BaseTestCase {
+class PayloadValidatorTest extends ControllerBaseCase {
     /**
      * @var PayloadValidator
      */

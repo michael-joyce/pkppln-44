@@ -13,7 +13,7 @@ namespace App\Command;
 use App\Entity\Deposit;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Internal\Hydration\IterableResult;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -22,7 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Reset the processing status on one or more deposits.
  */
-class ResetDepositCommand extends ContainerAwareCommand {
+class ResetDepositCommand extends Command {
     /**
      * Number of deposits to process in one batch.
      */

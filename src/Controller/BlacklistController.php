@@ -16,8 +16,8 @@ use App\Form\BlacklistType;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Bundle\PaginatorBundle\Definition\PaginatorAwareInterface;
 use Nines\UtilBundle\Controller\PaginatorTrait;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+
+use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -37,8 +37,7 @@ class BlacklistController extends AbstractController implements PaginatorAwareIn
      *
      * @return array
      *
-     * @Route("/", name="blacklist_index")
-     * @Method("GET")
+     * @Route("/", name="blacklist_index", methods={"GET"})
      * @Template()
      */
     public function indexAction(Request $request) {
@@ -57,8 +56,8 @@ class BlacklistController extends AbstractController implements PaginatorAwareIn
     /**
      * Search for Blacklist entities.
      *
-     * @Route("/search", name="blacklist_search")
-     * @Method("GET")
+     * @Route("/search", name="blacklist_search", methods={"GET"})
+     *
      * @Template()
      */
     public function searchAction(Request $request) {
@@ -87,8 +86,8 @@ class BlacklistController extends AbstractController implements PaginatorAwareIn
      *                                Array data for the template processor or a redirect to the Blacklist.
      *
      * @Security("is_granted('ROLE_ADMIN')")
-     * @Route("/new", name="blacklist_new")
-     * @Method({"GET", "POST"})
+     * @Route("/new", name="blacklist_new", methods={"GET","POST"})
+     *
      * @Template()
      */
     public function newAction(Request $request) {
@@ -117,8 +116,8 @@ class BlacklistController extends AbstractController implements PaginatorAwareIn
      *
      * @return array
      *
-     * @Route("/{id}", name="blacklist_show")
-     * @Method("GET")
+     * @Route("/{id}", name="blacklist_show", methods={"GET"})
+     *
      * @Template()
      */
     public function showAction(EntityManagerInterface $em, Blacklist $blacklist) {
@@ -138,8 +137,8 @@ class BlacklistController extends AbstractController implements PaginatorAwareIn
      *                                Array data for the template processor or a redirect to the Blacklist.
      *
      * @Security("is_granted('ROLE_ADMIN')")
-     * @Route("/{id}/edit", name="blacklist_edit")
-     * @Method({"GET", "POST"})
+     * @Route("/{id}/edit", name="blacklist_edit", methods={"GET","POST"})
+     *
      * @Template()
      */
     public function editAction(Request $request, Blacklist $blacklist) {
@@ -167,8 +166,8 @@ class BlacklistController extends AbstractController implements PaginatorAwareIn
      *                                A redirect to the blacklist_index.
      *
      * @Security("is_granted('ROLE_ADMIN')")
-     * @Route("/{id}/delete", name="blacklist_delete")
-     * @Method("GET")
+     * @Route("/{id}/delete", name="blacklist_delete", methods={"GET"})
+     *
      */
     public function deleteAction(Request $request, Blacklist $blacklist) {
         $em = $this->getDoctrine()->getManager();

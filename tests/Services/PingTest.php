@@ -8,25 +8,25 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace AppBundle\Tests\Services;
+namespace App\Tests\Services;
 
-use AppBundle\DataFixtures\ORM\LoadJournal;
-use AppBundle\Entity\Whitelist;
-use AppBundle\Services\BlackWhiteList;
-use AppBundle\Services\Ping;
-use AppBundle\Utilities\PingResult;
+use App\DataFixtures\JournalFixtures;
+use App\Entity\Whitelist;
+use App\Services\BlackWhiteList;
+use App\Services\Ping;
+use App\Utilities\PingResult;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use Nines\UtilBundle\Tests\Util\BaseTestCase;
+use Nines\UtilBundle\Tests\ControllerBaseCase;
 
 /**
  * Description of PingTest.
  */
-class PingTest extends BaseTestCase {
+class PingTest extends ControllerBaseCase {
     /**
      * @var Ping
      */
@@ -77,9 +77,9 @@ class PingTest extends BaseTestCase {
 ENDXML;
     }
 
-    protected function getFixtures() {
+    protected function fixtures() : array {
         return [
-            LoadJournal::class,
+            JournalFixtures::class,
         ];
     }
 
@@ -113,7 +113,7 @@ ENDXML;
 
         $journal = $this->getReference('journal.1');
         $this->ping->process($journal, $result);
-        $this->em->flush();
+        $this->entityManager->flush();
         $this->assertSame('healthy', $journal->getStatus());
         $this->assertFalse($this->list->isListed($journal->getUuid()));
     }
@@ -129,11 +129,11 @@ ENDXML;
         $whitelist = new Whitelist();
         $whitelist->setUuid($journal->getUuid());
         $whitelist->setComment('testing.');
-        $this->em->persist($whitelist);
-        $this->em->flush();
+        $this->entityManager->persist($whitelist);
+        $this->entityManager->flush();
 
         $this->ping->process($journal, $result);
-        $this->em->flush();
+        $this->entityManager->flush();
         $this->assertSame('healthy', $journal->getStatus());
     }
 
@@ -146,7 +146,7 @@ ENDXML;
 
         $journal = $this->getReference('journal.1');
         $this->ping->process($journal, $result);
-        $this->em->flush();
+        $this->entityManager->flush();
         $this->assertSame('healthy', $journal->getStatus());
         $this->assertTrue($this->list->isListed($journal->getUuid()));
     }
@@ -174,7 +174,7 @@ ENDXML;
         $this->ping->setClient($client);
         $journal = $this->getReference('journal.1');
         $this->ping->ping($journal);
-        $this->em->flush();
+        $this->entityManager->flush();
         $this->assertSame('healthy', $journal->getStatus());
         $this->assertTrue($this->list->isListed($journal->getUuid()));
     }

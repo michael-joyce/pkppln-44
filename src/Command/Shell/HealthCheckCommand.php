@@ -19,7 +19,7 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\XmlParseException;
 use Psr\Log\LoggerInterface;
 use Swift_Message;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -31,7 +31,7 @@ use Twig\Environment;
  * Ping all the journals that haven't contacted the PLN in a while, and send
  * notifications to interested users.
  */
-class HealthCheckCommand extends ContainerAwareCommand {
+class HealthCheckCommand extends Command {
     /**
      * @var Logger
      */

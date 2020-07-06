@@ -13,7 +13,7 @@ namespace App\Command\Processing;
 use App\Entity\Deposit;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -22,7 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Parent class for all processing commands.
  */
-abstract class AbstractProcessingCmd extends ContainerAwareCommand {
+abstract class AbstractProcessingCmd extends Command {
     /**
      * Database interface.
      *

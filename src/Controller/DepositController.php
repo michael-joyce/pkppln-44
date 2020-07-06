@@ -14,9 +14,9 @@ use App\Entity\Deposit;
 use App\Entity\Journal;
 use Knp\Bundle\PaginatorBundle\Definition\PaginatorAwareInterface;
 use Nines\UtilBundle\Controller\PaginatorTrait;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -36,8 +36,8 @@ class DepositController extends AbstractController  implements PaginatorAwareInt
      *
      * @return array
      *
-     * @Route("/", name="deposit_index")
-     * @Method("GET")
+     * @Route("/", name="deposit_index", methods={"GET"})
+     *
      * @Template()
      */
     public function indexAction(Request $request, Journal $journal) {
@@ -61,8 +61,8 @@ class DepositController extends AbstractController  implements PaginatorAwareInt
      * controller works with deposits from a single journal. This
      * search works across all deposits.
      *
-     * @Route("/search", name="deposit_search")
-     * @Method("GET")
+     * @Route("/search", name="deposit_search", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_USER')")
      * @Template()
      */
@@ -90,8 +90,8 @@ class DepositController extends AbstractController  implements PaginatorAwareInt
      *
      * @return array
      *
-     * @Route("/{id}", name="deposit_show")
-     * @Method("GET")
+     * @Route("/{id}", name="deposit_show", methods={"GET"})
+     *
      * @Template()
      */
     public function showAction(Journal $journal, Deposit $deposit) {

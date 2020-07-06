@@ -8,25 +8,25 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace AppBundle\Tests\Repository;
+namespace App\Tests\Repository;
 
-use AppBundle\DataFixtures\ORM\LoadTermOfUse;
-use AppBundle\Entity\TermOfUse;
-use AppBundle\Repository\TermOfUseRepository;
-use Nines\UtilBundle\Tests\Util\BaseTestCase;
+use App\DataFixtures\TermOfUseFixtures;
+use App\Entity\TermOfUse;
+use App\Repository\TermOfUseRepository;
+use Nines\UtilBundle\Tests\ControllerBaseCase;
 
 /**
  * Description of JournalRepositoryTest.
  */
-class TermOfUseRepositoryTest extends BaseTestCase {
+class TermOfUseRepositoryTest extends ControllerBaseCase {
     /**
      * @return TermOfUseRepository
      */
     private $repo;
 
-    protected function getFixtures() {
+    protected function fixtures() : array {
         return [
-            LoadTermOfUse::class,
+            TermOfUseFixtures::class,
         ];
     }
 
@@ -41,6 +41,6 @@ class TermOfUseRepositoryTest extends BaseTestCase {
 
     protected function setup() : void {
         parent::setUp();
-        $this->repo = $this->em->getRepository(TermOfUse::class);
+        $this->repo = $this->entityManager->getRepository(TermOfUse::class);
     }
 }

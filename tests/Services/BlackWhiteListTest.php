@@ -8,23 +8,23 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace AppBundle\Tests\Services;
+namespace App\Tests\Services;
 
-use AppBundle\DataFixtures\ORM\LoadBlacklist;
-use AppBundle\DataFixtures\ORM\LoadWhitelist;
-use AppBundle\Services\BlackWhiteList;
-use Nines\UtilBundle\Tests\Util\BaseTestCase;
+use App\DataFixtures\BlacklistFixtures;
+use App\DataFixtures\WhitelistFixtures;
+use App\Services\BlackWhiteList;
+use Nines\UtilBundle\Tests\ControllerBaseCase;
 
-class BlackWhiteListTest extends BaseTestCase {
+class BlackWhiteListTest extends ControllerBaseCase {
     /**
      * @var BlackWhiteList
      */
     protected $list;
 
-    public function getFixtures() {
+    public function fixtures() : array {
         return [
-            LoadBlacklist::class,
-            LoadWhitelist::class,
+            BlacklistFixtures::class,
+            WhitelistFixtures::class,
         ];
     }
 
@@ -33,19 +33,19 @@ class BlackWhiteListTest extends BaseTestCase {
     }
 
     public function testIsWhitelisted() : void {
-        $this->assertTrue($this->list->isWhitelisted(LoadWhitelist::UUIDS[0]));
-        $this->assertTrue($this->list->isWhitelisted(strtolower(LoadWhitelist::UUIDS[0])));
+        $this->assertTrue($this->list->isWhitelisted(WhitelistFixtures::UUIDS[0]));
+        $this->assertTrue($this->list->isWhitelisted(strtolower(WhitelistFixtures::UUIDS[0])));
 
-        $this->assertFalse($this->list->isWhitelisted(LoadBlacklist::UUIDS[0]));
-        $this->assertFalse($this->list->isWhitelisted(strtolower(LoadBlacklist::UUIDS[0])));
+        $this->assertFalse($this->list->isWhitelisted(BlacklistFixtures::UUIDS[0]));
+        $this->assertFalse($this->list->isWhitelisted(strtolower(BlacklistFixtures::UUIDS[0])));
     }
 
     public function testIsBlacklisted() : void {
-        $this->assertTrue($this->list->isBlacklisted(LoadBlacklist::UUIDS[0]));
-        $this->assertTrue($this->list->isBlacklisted(strtolower(LoadBlacklist::UUIDS[0])));
+        $this->assertTrue($this->list->isBlacklisted(BlacklistFixtures::UUIDS[0]));
+        $this->assertTrue($this->list->isBlacklisted(strtolower(BlacklistFixtures::UUIDS[0])));
 
-        $this->assertFalse($this->list->isBlacklisted(LoadWhitelist::UUIDS[0]));
-        $this->assertFalse($this->list->isBlacklisted(strtolower(LoadWhitelist::UUIDS[0])));
+        $this->assertFalse($this->list->isBlacklisted(WhitelistFixtures::UUIDS[0]));
+        $this->assertFalse($this->list->isBlacklisted(strtolower(WhitelistFixtures::UUIDS[0])));
     }
 
     protected function setup() : void {

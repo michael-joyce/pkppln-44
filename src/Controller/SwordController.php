@@ -23,9 +23,9 @@ use Exception;
 use Knp\Bundle\PaginatorBundle\Definition\PaginatorAwareInterface;
 use Nines\UtilBundle\Controller\PaginatorTrait;
 use Psr\Log\LoggerAwareTrait;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use SimpleXMLElement;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -167,9 +167,9 @@ class SwordController extends AbstractController  implements PaginatorAwareInter
      *
      * @return array
      *
-     * @Method("GET")
+     *
      * @Template()
-     * @Route("/sd-iri.{_format}",
+     * @Route("/sd-iri.{_format}", methods={"GET"},
      *  name="sword_service_document",
      *  defaults={"_format": "xml"},
      *  requirements={"_format": "xml"}
@@ -211,11 +211,11 @@ class SwordController extends AbstractController  implements PaginatorAwareInter
      *
      * @return Response
      *
-     * @Route("/col-iri/{uuid}", name="sword_create_deposit", requirements={
+     * @Route("/col-iri/{uuid}", methods={"POST"}, name="sword_create_deposit", requirements={
      *      "uuid": ".{36}",
      * })
      * @ParamConverter("journal", options={"mapping": {"uuid"="uuid"}})
-     * @Method("POST")
+     *
      */
     public function createDepositAction(Request $request, Journal $journal, JournalBuilder $journalBuilder, DepositBuilder $depositBuilder) {
         $accepting = $this->checkAccess($journal->getUuid());
@@ -250,13 +250,13 @@ class SwordController extends AbstractController  implements PaginatorAwareInter
      *
      * @return Response
      *
-     * @Route("/cont-iri/{journal_uuid}/{deposit_uuid}/state", name="sword_statement", requirements={
+     * @Route("/cont-iri/{journal_uuid}/{deposit_uuid}/state", methods={"GET"}, name="sword_statement", requirements={
      *      "journal_uuid": ".{36}",
      *      "deposit_uuid": ".{36}"
      * })
      * @ParamConverter("journal", options={"mapping": {"journal_uuid"="uuid"}})
      * @ParamConverter("deposit", options={"mapping": {"deposit_uuid"="depositUuid"}})
-     * @Method("GET")
+     *
      */
     public function statementAction(Request $request, Journal $journal, Deposit $deposit) {
         $accepting = $this->checkAccess($journal->getUuid());
@@ -283,13 +283,13 @@ class SwordController extends AbstractController  implements PaginatorAwareInter
      *
      * @return Response
      *
-     * @Route("/cont-iri/{journal_uuid}/{deposit_uuid}/edit", name="sword_edit", requirements={
+     * @Route("/cont-iri/{journal_uuid}/{deposit_uuid}/edit", methods={"PUT"}, name="sword_edit", requirements={
      *      "journal_uuid": ".{36}",
      *      "deposit_uuid": ".{36}"
      * })
      * @ParamConverter("journal", options={"mapping": {"journal_uuid"="uuid"}})
      * @ParamConverter("deposit", options={"mapping": {"deposit_uuid"="depositUuid"}})
-     * @Method("PUT")
+     *
      */
     public function editAction(Request $request, Journal $journal, Deposit $deposit, DepositBuilder $builder) {
         $accepting = $this->checkAccess($journal->getUuid());

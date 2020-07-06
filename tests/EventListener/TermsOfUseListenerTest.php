@@ -8,17 +8,17 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace AppBundle\Tests\EventListener;
+namespace App\Tests\EventListener;
 
-use AppBundle\Entity\TermOfUse;
-use AppBundle\Entity\TermOfUseHistory;
-use Nines\UtilBundle\Tests\Util\BaseTestCase;
+use App\Entity\TermOfUse;
+use App\Entity\TermOfUseHistory;
+use Nines\UtilBundle\Tests\ControllerBaseCase;
 
 /**
  * Description of TermsOfUseListenerTest.
  */
-class TermsOfUseListenerTest extends BaseTestCase {
-    protected function getFixtures() {
+class TermsOfUseListenerTest extends ControllerBaseCase {
+    protected function fixtures() : array {
         return [];
     }
 
@@ -28,10 +28,10 @@ class TermsOfUseListenerTest extends BaseTestCase {
         $term->setKeyCode('t1');
         $term->setWeight(1);
 
-        $this->em->persist($term);
-        $this->em->flush();
+        $this->entityManager->persist($term);
+        $this->entityManager->flush();
 
-        $history = $this->em->getRepository(TermOfUseHistory::class)->findOneBy([
+        $history = $this->entityManager->getRepository(TermOfUseHistory::class)->findOneBy([
             'termId' => $term->getId(),
         ]);
         $this->assertNotNull($history);
@@ -49,15 +49,15 @@ class TermsOfUseListenerTest extends BaseTestCase {
         $term->setKeyCode('t1');
         $term->setWeight(1);
 
-        $this->em->persist($term);
-        $this->em->flush();
+        $this->entityManager->persist($term);
+        $this->entityManager->flush();
 
         $term->setContent('updated');
         $term->setKeyCode('u1');
         $term->setWeight(3);
-        $this->em->flush();
+        $this->entityManager->flush();
 
-        $history = $this->em->getRepository(TermOfUseHistory::class)->findOneBy([
+        $history = $this->entityManager->getRepository(TermOfUseHistory::class)->findOneBy([
             'termId' => $term->getId(),
             'action' => 'update',
         ]);
@@ -76,16 +76,16 @@ class TermsOfUseListenerTest extends BaseTestCase {
         $term->setKeyCode('t1');
         $term->setWeight(1);
 
-        $this->em->persist($term);
-        $this->em->flush();
+        $this->entityManager->persist($term);
+        $this->entityManager->flush();
 
         // save for later.
         $termId = $term->getId();
 
-        $this->em->remove($term);
-        $this->em->flush();
+        $this->entityManager->remove($term);
+        $this->entityManager->flush();
 
-        $history = $this->em->getRepository(TermOfUseHistory::class)->findOneBy([
+        $history = $this->entityManager->getRepository(TermOfUseHistory::class)->findOneBy([
             'termId' => $termId,
             'action' => 'delete',
         ]);

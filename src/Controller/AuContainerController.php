@@ -13,11 +13,11 @@ namespace App\Controller;
 use App\Entity\AuContainer;
 use Knp\Bundle\PaginatorBundle\Definition\PaginatorAwareInterface;
 use Nines\UtilBundle\Controller\PaginatorTrait;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * AuContainer controller. AuContainers are read-only.
@@ -29,8 +29,7 @@ class AuContainerController extends AbstractController  implements PaginatorAwar
     /**
      * Lists all AuContainer entities.
      *
-     * @Route("/", name="aucontainer")
-     * @Method("GET")
+     * @Route("/", name="aucontainer", methods={"GET"})
      * @Template()
      *
      * @return array
@@ -59,8 +58,7 @@ class AuContainerController extends AbstractController  implements PaginatorAwar
     /**
      * Finds and displays a AuContainer entity.
      *
-     * @Route("/{id}", name="aucontainer_show")
-     * @Method("GET")
+     * @Route("/{id}", name="aucontainer_show", methods={"GET"})
      * @Template()
      *
      * @param string $id

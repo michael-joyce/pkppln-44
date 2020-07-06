@@ -16,8 +16,8 @@ use App\Form\TermOfUseType;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Bundle\PaginatorBundle\Definition\PaginatorAwareInterface;
 use Nines\UtilBundle\Controller\PaginatorTrait;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+
+use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -36,8 +36,8 @@ class TermOfUseController extends AbstractController implements PaginatorAwareIn
      *
      * @return array
      *
-     * @Route("/", name="termofuse_index")
-     * @Method("GET")
+     * @Route("/", name="termofuse_index", methods={"GET"})
+     *
      * @Template()
      */
     public function indexAction(Request $request) {
@@ -60,8 +60,8 @@ class TermOfUseController extends AbstractController implements PaginatorAwareIn
      *                                Array data for the template processor or a redirect to the TermOfUse.
      *
      * @Security("is_granted('ROLE_ADMIN')")
-     * @Route("/new", name="termofuse_new")
-     * @Method({"GET", "POST"})
+     * @Route("/new", name="termofuse_new", methods={"GET","POST"})
+     *
      * @Template()
      */
     public function newAction(Request $request) {
@@ -90,8 +90,8 @@ class TermOfUseController extends AbstractController implements PaginatorAwareIn
      *
      * @return array
      *
-     * @Route("/{id}", name="termofuse_show")
-     * @Method("GET")
+     * @Route("/{id}", name="termofuse_show", methods={"GET"})
+     *
      * @Template()
      */
     public function showAction(EntityManagerInterface $em, TermOfUse $termOfUse) {
@@ -113,8 +113,8 @@ class TermOfUseController extends AbstractController implements PaginatorAwareIn
      *                                Array data for the template processor or a redirect to the TermOfUse.
      *
      * @Security("is_granted('ROLE_ADMIN')")
-     * @Route("/{id}/edit", name="termofuse_edit")
-     * @Method({"GET", "POST"})
+     * @Route("/{id}/edit", name="termofuse_edit", methods={"GET","POST"})
+     *
      * @Template()
      */
     public function editAction(Request $request, TermOfUse $termOfUse) {
@@ -142,8 +142,8 @@ class TermOfUseController extends AbstractController implements PaginatorAwareIn
      *                                A redirect to the termofuse_index.
      *
      * @Security("is_granted('ROLE_ADMIN')")
-     * @Route("/{id}/delete", name="termofuse_delete")
-     * @Method("GET")
+     * @Route("/{id}/delete", name="termofuse_delete", methods={"GET"})
+     *
      */
     public function deleteAction(Request $request, TermOfUse $termOfUse) {
         $em = $this->getDoctrine()->getManager();

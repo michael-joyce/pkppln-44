@@ -21,7 +21,7 @@ use Exception;
 use GuzzleHttp\Client;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -30,7 +30,7 @@ use Symfony\Component\Filesystem\Filesystem;
 /**
  * Fetch all the content of one or more journals from LOCKSS via LOCKSSOMatic.
  */
-class FetchContentCommand extends ContainerAwareCommand {
+class FetchContentCommand extends Command {
     /**
      * @var Registry
      */

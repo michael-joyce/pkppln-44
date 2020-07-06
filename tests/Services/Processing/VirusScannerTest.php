@@ -8,14 +8,14 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace AppBundle\Tests\Services\Processing;
+namespace App\Tests\Services\Processing;
 
-use AppBundle\Services\Processing\VirusScanner;
-use AppBundle\Utilities\XmlParser;
+use App\Services\Processing\VirusScanner;
+use App\Utilities\XmlParser;
 use DOMDocument;
 use DOMElement;
 use DOMXPath;
-use Nines\UtilBundle\Tests\Util\BaseTestCase;
+use Nines\UtilBundle\Tests\ControllerBaseCase;
 use Socket\Raw\Factory;
 use Socket\Raw\Socket;
 use Xenolope\Quahog\Client;
@@ -24,7 +24,7 @@ use Xenolope\Quahog\Client;
  * This test makes use of the EICAR test signature found here:
  * http://www.eicar.org/86-0-Intended-use.html.
  */
-class VirusScannerTest extends BaseTestCase {
+class VirusScannerTest extends ControllerBaseCase {
     /**
      * @var VirusScanner
      */
@@ -47,7 +47,7 @@ class VirusScannerTest extends BaseTestCase {
         $xp = $this->createMock(DOMXPath::class);
         $xp->method('evaluate')->will($this->onConsecutiveCalls(10, base64_encode("We're fine. We're all fine here, now, thank you. How are you?")));
         $client = $this->createMock(Client::class);
-        $client->method('scanResourceStream')->willReturn([
+        $this->clientmethod('scanResourceStream')->willReturn([
             'filename' => 'stream',
             'reason' => null,
             'status' => Client::RESULT_OK,
@@ -65,7 +65,7 @@ class VirusScannerTest extends BaseTestCase {
         $xp = $this->createMock(DOMXPath::class);
         $xp->method('evaluate')->will($this->onConsecutiveCalls(10, base64_encode('X5O!P%@AP[4\PZX54(P^)7CC)7}$EICAR-STANDARD-ANTIVIRUS-TEST-FILE!$H+H*')));
         $client = $this->createMock(Client::class);
-        $client->method('scanResourceStream')->willReturn([
+        $this->clientmethod('scanResourceStream')->willReturn([
             'filename' => 'stream',
             'reason' => 'EICAR',
             'status' => Client::RESULT_FOUND,
@@ -113,11 +113,11 @@ class VirusScannerTest extends BaseTestCase {
 
     public function testScanCleanXmlFile() : void {
         $dom = new DOMDocument();
-        $dom->loadXML($this->getCleanXml());
+        $dom->XMLFixtures($this->getCleanXml());
         $parser = $this->createMock(XmlParser::class);
         $parser->method('fromFile')->willReturn($dom);
         $client = $this->createMock(Client::class);
-        $client->method('scanResourceStream')->willReturn([
+        $this->clientmethod('scanResourceStream')->willReturn([
             'filename' => 'stream',
             'reason' => null,
             'status' => Client::RESULT_OK,
@@ -128,11 +128,11 @@ class VirusScannerTest extends BaseTestCase {
 
     public function testScanDirtyXmlFile() : void {
         $dom = new DOMDocument();
-        $dom->loadXML($this->getDirtyXml());
+        $dom->XMLFixtures($this->getDirtyXml());
         $parser = $this->createMock(XmlParser::class);
         $parser->method('fromFile')->willReturn($dom);
         $client = $this->createMock(Client::class);
-        $client->method('scanResourceStream')->will($this->onConsecutiveCalls([
+        $this->clientmethod('scanResourceStream')->will($this->onConsecutiveCalls([
             'filename' => 'stream',
             'reason' => null,
             'status' => Client::RESULT_OK,
@@ -150,7 +150,7 @@ class VirusScannerTest extends BaseTestCase {
      */
     public function testLiveScanCleanXmlFile() : void {
         $dom = new DOMDocument();
-        $dom->loadXML($this->getCleanXml());
+        $dom->XMLFixtures($this->getCleanXml());
         $parser = $this->createMock(XmlParser::class);
         $parser->method('fromFile')->willReturn($dom);
         $client = $this->scanner->getClient();
@@ -163,7 +163,7 @@ class VirusScannerTest extends BaseTestCase {
      */
     public function testLiveScanDirtyXmlFile() : void {
         $dom = new DOMDocument();
-        $dom->loadXML($this->getDirtyXml());
+        $dom->XMLFixtures($this->getDirtyXml());
         $parser = $this->createMock(XmlParser::class);
         $parser->method('fromFile')->willReturn($dom);
         $client = $this->scanner->getClient();

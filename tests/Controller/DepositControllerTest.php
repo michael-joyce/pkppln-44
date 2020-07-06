@@ -8,86 +8,86 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace AppBundle\Tests\Controller;
+namespace App\Tests\Controller;
 
-use AppBundle\DataFixtures\ORM\LoadDeposit;
-use AppBundle\DataFixtures\ORM\LoadJournal;
-use Nines\UserBundle\DataFixtures\ORM\LoadUser;
-use Nines\UtilBundle\Tests\Util\BaseTestCase;
+use App\DataFixtures\DepositFixtures;
+use App\DataFixtures\JournalFixtures;
+use Nines\UserBundle\DataFixtures\UserFixtures;
+use Nines\UtilBundle\Tests\ControllerBaseCase;
 
-class DepositControllerTest extends BaseTestCase {
-    protected function getFixtures() {
+class DepositControllerTest extends ControllerBaseCase {
+    protected function fixtures() : array {
         return [
-            LoadUser::class,
-            LoadDeposit::class,
-            LoadJournal::class,
+            UserFixtures::class,
+            DepositFixtures::class,
+            JournalFixtures::class,
         ];
     }
 
     public function testAnonIndex() : void {
-        $client = $this->makeClient();
-        $crawler = $client->request('GET', '/journal/1/deposit/');
-        $this->assertSame(302, $client->getResponse()->getStatusCode());
+
+        $crawler = $this->client->request('GET', '/journal/1/deposit/');
+        $this->assertSame(302, $this->client->getResponse()->getStatusCode());
     }
 
     public function testUserIndex() : void {
-        $client = $this->makeClient(LoadUser::USER);
-        $crawler = $client->request('GET', '/journal/1/deposit/');
-        $this->assertSame(200, $client->getResponse()->getStatusCode());
+        $this->login('user.user');
+        $crawler = $this->client->request('GET', '/journal/1/deposit/');
+        $this->assertSame(200, $this->client->getResponse()->getStatusCode());
     }
 
     public function testAdminIndex() : void {
-        $client = $this->makeClient(LoadUser::ADMIN);
-        $crawler = $client->request('GET', '/journal/1/deposit/');
-        $this->assertSame(200, $client->getResponse()->getStatusCode());
+        $this->login('user.admin');
+        $crawler = $this->client->request('GET', '/journal/1/deposit/');
+        $this->assertSame(200, $this->client->getResponse()->getStatusCode());
     }
 
     public function testAnonShow() : void {
-        $client = $this->makeClient();
-        $crawler = $client->request('GET', '/journal/1/deposit/1');
-        $this->assertSame(302, $client->getResponse()->getStatusCode());
+
+        $crawler = $this->client->request('GET', '/journal/1/deposit/1');
+        $this->assertSame(302, $this->client->getResponse()->getStatusCode());
     }
 
     public function testUserShow() : void {
-        $client = $this->makeClient(LoadUser::USER);
-        $crawler = $client->request('GET', '/journal/1/deposit/1');
-        $this->assertSame(200, $client->getResponse()->getStatusCode());
+        $this->login('user.user');
+        $crawler = $this->client->request('GET', '/journal/1/deposit/1');
+        $this->assertSame(200, $this->client->getResponse()->getStatusCode());
     }
 
     public function testAdminShow() : void {
-        $client = $this->makeClient(LoadUser::ADMIN);
-        $crawler = $client->request('GET', '/journal/1/deposit/1');
-        $this->assertSame(200, $client->getResponse()->getStatusCode());
+        $this->login('user.admin');
+        $crawler = $this->client->request('GET', '/journal/1/deposit/1');
+        $this->assertSame(200, $this->client->getResponse()->getStatusCode());
     }
 
     public function testAnonSearch() : void {
-        $client = $this->makeClient();
-        $formCrawler = $client->request('GET', '/journal/2/deposit/search');
-        $this->assertSame(302, $client->getResponse()->getStatusCode());
-        $this->assertTrue($client->getResponse()->isRedirect());
+
+        $formCrawler = $this->client->request('GET', '/journal/2/deposit/search');
+        $this->assertSame(302, $this->client->getResponse()->getStatusCode());
+        $this->assertTrue($this->client->getResponse()->isRedirect());
     }
 
     public function testUserSearch() : void {
-        $client = $this->makeClient(LoadUser::USER);
-        $formCrawler = $client->request('GET', '/journal/2/deposit/search');
-        $this->assertSame(200, $client->getResponse()->getStatusCode());
+        $this->login('user.user');
+        $formCrawler = $this->client->request('GET', '/journal/2/deposit/search');
+        $this->assertSame(200, $this->client->getResponse()->getStatusCode());
         $form = $formCrawler->selectButton('Search')->form([
             'q' => 'A584',
         ]);
-        $client->submit($form);
-        $this->assertSame(200, $client->getresponse()->getStatusCode());
-        $this->assertSame(1, $client->getCrawler()->filter('td:contains("92ED9A27-A584-4487-A3F9-997379FBA182")')->count());
+        $this->client->submit($form);
+        $this->assertSame(200, $this->client->getresponse()->getStatusCode());
+        $this->assertSame(1, $this->client->getCrawler()->filter('td:contains("92ED9A27-A584-4487-A3F9-997379FBA182")')->count());
     }
 
     public function testAdminSearch() : void {
-        $client = $this->makeClient(LoadUser::ADMIN);
-        $formCrawler = $client->request('GET', '/journal/2/deposit/search');
-        $this->assertSame(200, $client->getResponse()->getStatusCode());
+        $this->login('user.admin');
+        $formCrawler = $this->client->request('GET', '/journal/2/deposit/search');
+        $this->assertSame(200, $this->client->getResponse()->getStatusCode());
         $form = $formCrawler->selectButton('Search')->form([
             'q' => 'A584',
         ]);
-        $client->submit($form);
-        $this->assertSame(200, $client->getresponse()->getStatusCode());
-        $this->assertSame(1, $client->getCrawler()->filter('td:contains("92ED9A27-A584-4487-A3F9-997379FBA182")')->count());
+        $this->client->submit($form);
+        $this->assertSame(200, $this->client->getresponse()->getStatusCode());
+        $this->assertSame(1, $this->client->getCrawler()->filter('td:contains("92ED9A27-A584-4487-A3F9-997379FBA182")')->count());
     }
 }

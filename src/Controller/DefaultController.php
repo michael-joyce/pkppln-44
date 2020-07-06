@@ -14,8 +14,8 @@ use App\Entity\Deposit;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Bundle\PaginatorBundle\Definition\PaginatorAwareInterface;
 use Nines\UtilBundle\Controller\PaginatorTrait;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+
+use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -37,7 +37,7 @@ class DefaultController extends AbstractController  implements PaginatorAwareInt
      *
      * @return Response
      *
-     * @Route("/", name="homepage")
+     * @Route("/", name="homepage", methods={"GET"})
      */
     public function indexAction(EntityManagerInterface $em) {
         $user = $this->getUser();
@@ -62,7 +62,7 @@ class DefaultController extends AbstractController  implements PaginatorAwareInt
      *
      * @param string $state
      *
-     * @Route("/browse/{state}", name="deposit_browse")
+     * @Route("/browse/{state}", name="deposit_browse", methods={"GET"})
      * @Template()
      */
     public function browseAction(Request $request, EntityManagerInterface $em, $state) {
@@ -91,8 +91,8 @@ class DefaultController extends AbstractController  implements PaginatorAwareInt
      *
      * @return array
      *
-     * @Route("/deposit_search", name="all_deposit_search")
-     * @Method("GET")
+     * @Route("/deposit_search", name="all_deposit_search", methods={"GET"})
+     *
      * @Security("is_granted('ROLE_USER')")
      * @Template()
      */

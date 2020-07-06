@@ -8,27 +8,27 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace AppBundle\Tests\Repository;
+namespace App\Tests\Repository;
 
-use AppBundle\DataFixtures\ORM\LoadJournal;
-use AppBundle\Entity\Blacklist;
-use AppBundle\Entity\Journal;
-use AppBundle\Entity\Whitelist;
-use AppBundle\Repository\JournalRepository;
-use Nines\UtilBundle\Tests\Util\BaseTestCase;
+use App\DataFixtures\JournalFixtures;
+use App\Entity\Blacklist;
+use App\Entity\Journal;
+use App\Entity\Whitelist;
+use App\Repository\JournalRepository;
+use Nines\UtilBundle\Tests\ControllerBaseCase;
 
 /**
  * Description of JournalRepositoryTest.
  */
-class JournalRepositoryTest extends BaseTestCase {
+class JournalRepositoryTest extends ControllerBaseCase {
     /**
      * @return JournalRepository
      */
     private $repo;
 
-    protected function getFixtures() {
+    protected function fixtures() : array {
         return [
-            LoadJournal::class,
+            JournalFixtures::class,
         ];
     }
 
@@ -38,24 +38,24 @@ class JournalRepositoryTest extends BaseTestCase {
 
     public function testGetJournalsToPingListed() : void {
         $whitelist = new Whitelist();
-        $whitelist->setUuid(LoadJournal::UUIDS[0]);
+        $whitelist->setUuid(JournalFixtures::UUIDS[0]);
         $whitelist->setComment('Test');
-        $this->em->persist($whitelist);
+        $this->entityManager->persist($whitelist);
 
         $blacklist = new Blacklist();
-        $blacklist->setUuid(LoadJournal::UUIDS[1]);
+        $blacklist->setUuid(JournalFixtures::UUIDS[1]);
         $blacklist->setComment('Test');
-        $this->em->persist($blacklist);
+        $this->entityManager->persist($blacklist);
 
-        $this->em->flush();
+        $this->entityManager->flush();
 
         $this->assertSame(2, count($this->repo->getJournalsToPing()));
     }
 
     public function testGetJournalsToPingPingErrors() : void {
-        $journal = $this->em->find(Journal::class, 1);
+        $journal = $this->entityManager->find(Journal::class, 1);
         $journal->setStatus('ping-error');
-        $this->em->flush();
+        $this->entityManager->flush();
 
         $this->assertSame(3, count($this->repo->getJournalsToPing()));
     }
@@ -83,6 +83,6 @@ class JournalRepositoryTest extends BaseTestCase {
 
     protected function setup() : void {
         parent::setUp();
-        $this->repo = $this->em->getRepository(Journal::class);
+        $this->repo = $this->entityManager->getRepository(Journal::class);
     }
 }

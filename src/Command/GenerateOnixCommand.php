@@ -15,7 +15,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Internal\Hydration\IterableResult;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -26,7 +26,7 @@ use XMLWriter;
  *
  * @see http://www.editeur.org/127/ONIX-PH/
  */
-class GenerateOnixCommand extends ContainerAwareCommand {
+class GenerateOnixCommand extends Command {
     public const BATCH_SIZE = 50;
 
     /**

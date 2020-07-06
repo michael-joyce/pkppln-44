@@ -13,7 +13,7 @@ namespace App\Command\Shell;
 use DateTime;
 use Psr\Log\LoggerInterface;
 use Swift_Message;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -25,7 +25,7 @@ use Twig\Environment;
 /**
  * Send reminders about journals that haven't contacted the PLN in a while.
  */
-class HealthReminderCommand extends ContainerAwareCommand {
+class HealthReminderCommand extends Command {
     /**
      * @var Logger
      */

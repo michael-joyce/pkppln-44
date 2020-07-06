@@ -8,24 +8,24 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace AppBundle\Tests\Services\Processing;
+namespace App\Tests\Services\Processing;
 
-use AppBundle\Entity\Deposit;
-use AppBundle\Entity\Journal;
-use AppBundle\Services\Processing\Harvester;
+use App\Entity\Deposit;
+use App\Entity\Journal;
+use App\Services\Processing\Harvester;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
-use Nines\UtilBundle\Tests\Util\BaseTestCase;
+use Nines\UtilBundle\Tests\ControllerBaseCase;
 use Psr\Http\Message\StreamInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Description of HarvesterTest.
  */
-class HarvesterTest extends BaseTestCase {
+class HarvesterTest extends ControllerBaseCase {
     private $harvester;
 
     public function testInstance() : void {

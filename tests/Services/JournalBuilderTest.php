@@ -8,19 +8,19 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace AppBundle\Tests\Services;
+namespace App\Tests\Services;
 
-use AppBundle\DataFixtures\ORM\LoadJournal;
-use AppBundle\Entity\Journal;
-use AppBundle\Services\JournalBuilder;
-use AppBundle\Utilities\Namespaces;
+use App\DataFixtures\JournalFixtures;
+use App\Entity\Journal;
+use App\Services\JournalBuilder;
+use App\Utilities\Namespaces;
 use DateTime;
-use Nines\UtilBundle\Tests\Util\BaseTestCase;
+use Nines\UtilBundle\Tests\ControllerBaseCase;
 
 /**
  * Description of JournalBuilderTest.
  */
-class JournalBuilderTest extends BaseTestCase {
+class JournalBuilderTest extends ControllerBaseCase {
     /**
      * @var JournalBuilder
      */
@@ -129,7 +129,7 @@ ENDXML;
     }
 
     public function testFromRequestExisting() : void {
-        $this->journal = $this->builder->fromRequest(LoadJournal::UUIDS[1], 'http://example.com/journal');
+        $this->journal = $this->builder->fromRequest(JournalFixtures::UUIDS[1], 'http://example.com/journal');
         $this->assertSame('healthy', $this->journal->getStatus());
     }
 

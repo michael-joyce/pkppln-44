@@ -17,7 +17,7 @@ use DOMXPath;
 use Exception;
 use Monolog\Registry;
 use Psr\Log\LoggerInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -33,7 +33,7 @@ use Twig\Environment;
  *
  * @author mjoyce
  */
-class ExtractDepositCommand extends ContainerAwareCommand {
+class ExtractDepositCommand extends Command {
     /**
      * @var Registry
      */

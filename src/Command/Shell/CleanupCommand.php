@@ -18,7 +18,7 @@ use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -26,7 +26,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Clean completed deposits from the file system.
  */
-class CleanupCommand extends ContainerAwareCommand {
+class CleanupCommand extends Command {
     /**
      * @var Logger
      */

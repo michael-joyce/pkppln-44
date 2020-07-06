@@ -13,7 +13,7 @@ namespace App\Command;
 use App\Entity\Journal;
 use App\Services\Ping;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -22,7 +22,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Ping the journals to make sure they're up and running.
  */
-class PingCommand extends ContainerAwareCommand {
+class PingCommand extends Command {
     /**
      * Fully configured ping service.
      *

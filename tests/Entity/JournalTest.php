@@ -8,16 +8,16 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace AppBundle\Tests\Entity;
+namespace App\Tests\Entity;
 
-use AppBundle\Entity\Journal;
+use App\Entity\Journal;
 use DateTime;
-use Nines\UtilBundle\Tests\Util\BaseTestCase;
+use Nines\UtilBundle\Tests\ControllerBaseCase;
 
 /**
  * Description of JournalTest.
  */
-class JournalTest extends BaseTestCase {
+class JournalTest extends ControllerBaseCase {
     private $journal;
 
     public function testInstance() : void {

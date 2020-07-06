@@ -8,9 +8,9 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace AppBundle\Tests\Utilities;
+namespace App\Tests\Utilities;
 
-use AppBundle\Utilities\XmlParser;
+use App\Utilities\XmlParser;
 use Exception;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;

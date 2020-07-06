@@ -16,9 +16,9 @@ use App\Services\FilePaths;
 use Knp\Bundle\PaginatorBundle\Definition\PaginatorAwareInterface;
 use Nines\UtilBundle\Controller\PaginatorTrait;
 use Psr\Log\LoggerAwareTrait;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -47,8 +47,8 @@ class LockssController extends AbstractController  implements PaginatorAwareInte
      *
      * @return BinaryFileResponse
      *
-     * @Route("/fetch/{journalUuid}/{depositUuid}.zip", name="fetch")
-     * @Method("GET")
+     * @Route("/fetch/{journalUuid}/{depositUuid}.zip", name="fetch", methods={"GET"})
+     *
      * @ParamConverter("journal", class="App:Journal", options={"mapping": {"journalUuid"="uuid"}})
      * @ParamConverter("deposit", class="App:Deposit", options={"mapping": {"depositUuid"="depositUuid"}})
      */
@@ -71,8 +71,8 @@ class LockssController extends AbstractController  implements PaginatorAwareInte
      *
      * @return Response
      *
-     * @Route("/permission", name="lockss_permission")
-     * @Method("GET")
+     * @Route("/permission", name="lockss_permission", methods={"GET"})
+     *
      */
     public function permissionAction(Request $request) {
         $this->logger->notice("{$request->getClientIp()} - permission");

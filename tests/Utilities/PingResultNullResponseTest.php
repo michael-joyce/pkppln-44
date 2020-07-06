@@ -8,9 +8,9 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace AppBundle\Tests\Utilities;
+namespace App\Tests\Utilities;
 
-use AppBundle\Utilities\PingResult;
+use App\Utilities\PingResult;
 use PHPUnit\Framework\TestCase;
 
 /**

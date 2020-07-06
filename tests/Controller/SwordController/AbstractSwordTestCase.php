@@ -8,27 +8,27 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace AppBundle\Tests\Controller\SwordController;
+namespace App\Tests\Controller\SwordController;
 
-use AppBundle\DataFixtures\ORM\LoadBlacklist;
-use AppBundle\DataFixtures\ORM\LoadDeposit;
-use AppBundle\DataFixtures\ORM\LoadJournal;
-use AppBundle\DataFixtures\ORM\LoadTermOfUse;
-use AppBundle\DataFixtures\ORM\LoadWhitelist;
-use AppBundle\Utilities\Namespaces;
+use App\DataFixtures\BlacklistFixtures;
+use App\DataFixtures\DepositFixtures;
+use App\DataFixtures\JournalFixtures;
+use App\DataFixtures\TermOfUseFixtures;
+use App\DataFixtures\WhitelistFixtures;
+use App\Utilities\Namespaces;
 use Exception;
-use Nines\UtilBundle\Tests\Util\BaseTestCase;
+use Nines\UtilBundle\Tests\ControllerBaseCase;
 use SimpleXMLElement;
 use Symfony\Component\BrowserKit\Client;
 
-abstract class AbstractSwordTestCase extends BaseTestCase {
+abstract class AbstractSwordTestCase extends ControllerBaseCase {
     /**
      * @var Client
      */
     protected $testClient;
 
     /**
-     * @param Client $client
+     * @param Client $this->client
      *
      * @return SimpleXMLElement
      */
@@ -39,13 +39,13 @@ abstract class AbstractSwordTestCase extends BaseTestCase {
         return $xml;
     }
 
-    public function getFixtures() {
+    public function fixtures() : array {
         return [
-            LoadJournal::class,
-            LoadDeposit::class,
-            LoadTermOfUse::class,
-            LoadWhitelist::class,
-            LoadBlacklist::class,
+            JournalFixtures::class,
+            DepositFixtures::class,
+            TermOfUseFixtures::class,
+            WhitelistFixtures::class,
+            BlacklistFixtures::class,
         ];
     }
 

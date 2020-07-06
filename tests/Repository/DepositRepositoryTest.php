@@ -8,27 +8,27 @@ declare(strict_types=1);
  * with this source code in the file LICENSE.
  */
 
-namespace AppBundle\Tests\Repository;
+namespace App\Tests\Repository;
 
-use AppBundle\DataFixtures\ORM\LoadDeposit;
-use AppBundle\DataFixtures\ORM\LoadJournal;
-use AppBundle\Entity\Deposit;
-use AppBundle\Repository\DepositRepository;
-use Nines\UtilBundle\Tests\Util\BaseTestCase;
+use App\DataFixtures\DepositFixtures;
+use App\DataFixtures\JournalFixtures;
+use App\Entity\Deposit;
+use App\Repository\DepositRepository;
+use Nines\UtilBundle\Tests\ControllerBaseCase;
 
 /**
  * Description of DepositRepositoryTest.
  */
-class DepositRepositoryTest extends BaseTestCase {
+class DepositRepositoryTest extends ControllerBaseCase {
     /**
      * @return DepositRepository
      */
     private $repo;
 
-    protected function getFixtures() {
+    protected function fixtures() : array {
         return [
-            LoadDeposit::class,
-            LoadJournal::class,
+            DepositFixtures::class,
+            JournalFixtures::class,
         ];
     }
 
@@ -64,6 +64,6 @@ class DepositRepositoryTest extends BaseTestCase {
 
     protected function setup() : void {
         parent::setUp();
-        $this->repo = $this->em->getRepository(Deposit::class);
+        $this->repo = $this->entityManager->getRepository(Deposit::class);
     }
 }
