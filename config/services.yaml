@@ -19,6 +19,10 @@ parameters:
     pln.service_uri: '%env(string:PLN_SERVICE_URI)%'
     pln.accepting: '%env(bool:PLN_ACCEPTING)%'
 
+    pln.network_default: ~
+    pln.network_accepting: ~
+    pln.network_oldojs: ~
+
     pln.min_ojs_version: 2.4.8.0
     pln.held_versions: 3.0.0.0
     pln.max_harvest_attempts: 5
@@ -43,6 +47,14 @@ services:
     App\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments', 'knp_paginator.injectable']
+
+    App\Controller\LockssController:
+        calls:
+            - [ setLogger, ['@monolog.logger.lockss'] ]
+
+    App\Controller\SwordController:
+        calls:
+            - [ setLogger, ['@monolog.logger.sword'] ]
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
