@@ -44,7 +44,7 @@ class JournalBuilder {
      * @return Journal
      */
     public function fromXml(SimpleXMLElement $xml, $uuid) {
-        $journal = $this->em->getRepository('App:Journal')->findOneBy([
+        $journal = $this->em->getRepository(Journal::class)->findOneBy([
             'uuid' => strtoupper($uuid),
         ]);
         if (null === $journal) {

@@ -105,6 +105,7 @@ class Ping {
         $whitelist->setUuid($journal->getUuid());
         $whitelist->setComment("{$journal->getUrl()} added by ping.");
         $this->em->persist($whitelist);
+        $this->em->flush();
     }
 
     /**

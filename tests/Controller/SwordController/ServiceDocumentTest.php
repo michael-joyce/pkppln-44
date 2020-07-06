@@ -98,6 +98,6 @@ class ServiceDocumentTest extends AbstractSwordTestCase {
         $this->entityManager->clear();
         $this->assertCount($count, $this->entityManager->getRepository('App:Journal')->findAll());
         $journal = $this->entityManager->getRepository('App:Journal')->findOneBy(['uuid' => WhitelistFixtures::UUIDS[0]]);
-        $this->assertSame('http://example.com', $journal->getUrl());
+        $this->assertSame('http://example.com/journal/0', $journal->getUrl());
     }
 }

@@ -146,7 +146,7 @@ ENDXML;
 
         $journal = $this->getReference('journal.1');
         $this->ping->process($journal, $result);
-        $this->entityManager->flush();
+        $this->entityManager->clear();
         $this->assertSame('healthy', $journal->getStatus());
         $this->assertTrue($this->list->isListed($journal->getUuid()));
     }

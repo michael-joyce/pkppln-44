@@ -26,6 +26,12 @@ class JournalBuilderTest extends ControllerBaseCase {
      */
     private $builder;
 
+    public function fixtures() : array {
+        return [
+            JournalFixtures::class,
+        ];
+    }
+
     private function getXml() {
         $data = <<<'ENDXML'
 <?xml version="1.0" encoding="utf-8"?>
@@ -129,7 +135,7 @@ ENDXML;
     }
 
     public function testFromRequestExisting() : void {
-        $this->journal = $this->builder->fromRequest(JournalFixtures::UUIDS[1], 'http://example.com/journal');
+        $this->journal = $this->builder->fromRequest(JournalFixtures::UUIDS[1], 'http://example.com/journal/0');
         $this->assertSame('healthy', $this->journal->getStatus());
     }
 

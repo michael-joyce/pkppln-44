@@ -60,12 +60,14 @@
                         <th>After</th>
                     </tr>
                 </thead>
-                {% for key,data in item.changeset if key not in ['id', 'created', 'updated'] %}
+                {% for key,data in item.changeset %}
+                    {% if key not in ['id', 'created', 'updated'] %}
                     <tr>
                         <th>{{ key }}</th>
                         <td>{{ data[0] }}</td>
                         <td>{{ data[1] }}</td>
                     </tr>
+                    {% endif %}
                 {% endfor %}
             </table>
         </div>
