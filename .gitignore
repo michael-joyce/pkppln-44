@@ -17,12 +17,14 @@
 
 # PHPStorm config.
 /.idea
-.yarn-integrity
-public/yarn
-config/deploy.yaml
+
+# libraries
+/public/yarn
+/config/deploy.yaml
 *.sql
-jquery.collection.js
-templates/jquery.collection.html.twig
-public/docs
-public/images/blog
+/templates/jquery.collection.html.twig
+/public/js/jquery.collection.js
+
+# docs etc.
+/public/docs
 /data
