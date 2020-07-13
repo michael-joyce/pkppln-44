@@ -1,3 +1,4 @@
 [submodule "deployment"]
 	path = deployment
-	url = git@github.com:ubermichael/deployment
+	url = https://github.com/ubermichael/deployment.git
+
