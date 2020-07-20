@@ -28,6 +28,11 @@
                 <td>{% if journal.contacted %}{{ journal.contacted|date }}{% endif %}</td>
             </tr>
             <tr>
+                <th>Service Document</th>
+                <td><a href='{{ url('sword_service_document', {'On-Behalf-Of': journal.uuid, 'Journal-Url': journal.url}) }}'>Full URL</a>
+                </td>
+            </tr>
+            <tr>
                 <th>Ojs Version</th>
                 <td>{{ journal.ojsVersion }}</td>
             </tr>

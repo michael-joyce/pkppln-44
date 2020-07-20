@@ -24,7 +24,7 @@ parameters:
     pln.network_oldojs: This journal must be running OJS 2.4.8 to make deposits to the PKP PLN.
 
     pln.min_ojs_version: 2.4.8.0
-    pln.held_versions: 3.0.0.0
+    pln.held_versions: ~
     pln.max_harvest_attempts: 5
     pln.max_au: 100000000
     pln.max_upload: 1000000
