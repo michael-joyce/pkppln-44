@@ -20,7 +20,7 @@ prerequisites listed above.
 You may also consider this Vagrant setup, which will create a complete working 
 application environment in a Centos 7 virtual machine.
 
-https://git.lib.sfu.ca/mjoyce/pkppn-v2-vagrant
+https://github.com/ubermichael/pkppln-44
 
 Install
 -------
@@ -30,8 +30,8 @@ somewhere accessible to the web. The instructions below assume that the applicat
 will be accessed at http://somehost/pkppln
 
 ```bash
-$ git clone https://git.lib.sfu.ca/mjoyce/pkppln-v2.git
-$ sudo mv pkppln-v2 /var/www/html/pkppln
+$ git clone https://github.com/ubermichael/pkppln-44
+$ sudo mv pkppln-44 /var/www/html/pkppln
 $ cd /var/www/html/pkppln
 $ git submodule update --init
 ```
