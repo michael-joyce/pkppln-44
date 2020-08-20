@@ -71,8 +71,10 @@ Finally, create the database tables and the administrator account.
 
 ```bash
 $ ./bin/console doctrine:schema:update --force
-$ ./bin/console fos:user:create --super-admin admin@example.com supersecret Admin Library
-$ ./bin/console fos:user:promote admin@example.com ROLE_ADMIN
+$ ./bin/console nines:user:create admin@example.com "Alice Administrator" "Simon Fraser University"
+$ ./bin/console nines:user:activate admin@example.com
+$ ./bin/console nines:user:password admin@example.com my_secret_password
+$ ./bin/console nines:user:promote admin@example.com ROLE_ADMIN
 ```
 
 You should be able to login at http://servername/pkppln/
