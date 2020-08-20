@@ -10,7 +10,7 @@ Requirements
  * MySQL >= 5.6
  * Git
  * Composer
- * Bower
+ * Yarn
  
 This application has been tested with Apache and mod_php and php-fpm. It 
 may work with various Nginx setups, but they are untested and unsupported. These 
@@ -51,7 +51,7 @@ you used to create the database above. The remainder of the defaults should
 work fine.
 
 ```bash
-$ bower install
+$ yarn
 $ /usr/local/bin/composer install --quiet
 ```
 
