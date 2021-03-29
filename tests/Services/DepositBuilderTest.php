@@ -16,6 +16,7 @@ use App\Entity\Deposit;
 use App\Services\DepositBuilder;
 use App\Utilities\Namespaces;
 use DateTime;
+use DateTimeImmutable;
 use Nines\UtilBundle\Tests\ControllerBaseCase;
 
 /**
@@ -69,7 +70,7 @@ ENDXML;
     }
 
     public function testReceived() : void {
-        $this->assertInstanceOf(DateTime::class, $this->deposit->getReceived());
+        $this->assertInstanceOf(DateTimeImmutable::class, $this->deposit->getReceived());
     }
 
     public function testProcessingLog() : void {
