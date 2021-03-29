@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -17,7 +17,8 @@ use Symfony\Component\Filesystem\Filesystem;
 /**
  * Calculate file paths.
  */
-class FilePaths {
+class FilePaths
+{
     /**
      * Base directory where the files are stored.
      *
@@ -42,7 +43,7 @@ class FilePaths {
      * @param string $projectDir
      * @param FileSystem $fs
      */
-    public function __construct($root, $projectDir, FileSystem $fs = null) {
+    public function __construct($root, $projectDir, ?FileSystem $fs = null) {
         if ($root && '/' !== $root[0]) {
             $this->root = $projectDir . '/' . $root;
         } else {

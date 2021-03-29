@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -19,7 +19,8 @@ use Nines\UtilBundle\Tests\ControllerBaseCase;
 /**
  * Description of DepositRepositoryTest.
  */
-class DepositRepositoryTest extends ControllerBaseCase {
+class DepositRepositoryTest extends ControllerBaseCase
+{
     /**
      * @return DepositRepository
      */
@@ -34,32 +35,32 @@ class DepositRepositoryTest extends ControllerBaseCase {
 
     public function testSearchQueryUuid() : void {
         $result = $this->repo->searchQuery('A584');
-        $this->assertSame(1, count($result->execute()));
+        $this->assertCount(1, $result->execute());
     }
 
     public function testSearchQueryUrl() : void {
         $result = $this->repo->searchQuery('1.zip');
-        $this->assertSame(1, count($result->execute()));
+        $this->assertCount(1, $result->execute());
     }
 
     public function testSearchQueryUuidWithJournal() : void {
         $result = $this->repo->searchQuery('A584', $this->getReference('journal.1'));
-        $this->assertSame(1, count($result->execute()));
+        $this->assertCount(1, $result->execute());
     }
 
     public function testSearchQueryUrlWithJorunal() : void {
         $result = $this->repo->searchQuery('1.zip', $this->getReference('journal.1'));
-        $this->assertSame(1, count($result->execute()));
+        $this->assertCount(1, $result->execute());
     }
 
     public function testSearchQueryUuidWithOtherJournal() : void {
         $result = $this->repo->searchQuery('A584', $this->getReference('journal.2'));
-        $this->assertSame(0, count($result->execute()));
+        $this->assertCount(0, $result->execute());
     }
 
     public function testSearchQueryUrlWithOtherJorunal() : void {
         $result = $this->repo->searchQuery('1.zip', $this->getReference('journal.2'));
-        $this->assertSame(0, count($result->execute()));
+        $this->assertCount(0, $result->execute());
     }
 
     protected function setup() : void {

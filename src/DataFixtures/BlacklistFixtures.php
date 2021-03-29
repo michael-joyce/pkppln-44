@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -17,7 +17,8 @@ use Doctrine\Persistence\ObjectManager;
 /**
  * LoadBlacklist form.
  */
-class BlacklistFixtures extends Fixture {
+class BlacklistFixtures extends Fixture
+{
     public const UUIDS = [
         'AC54ED1A-9795-4EED-94FD-D80CB62E0C84',
         'B156FACD-5210-4111-B4C2-D5C0C348D93A',

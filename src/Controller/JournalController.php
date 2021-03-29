@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -28,7 +28,8 @@ use Symfony\Component\Routing\Annotation\Route;
  * @Security("is_granted('ROLE_USER')")
  * @Route("/journal")
  */
-class JournalController extends AbstractController implements PaginatorAwareInterface {
+class JournalController extends AbstractController implements PaginatorAwareInterface
+{
     use PaginatorTrait;
 
     /**
@@ -38,7 +39,7 @@ class JournalController extends AbstractController implements PaginatorAwareInte
      *
      * @Route("/", name="journal_index", methods={"GET"})
      *
-     * @Template()
+     * @Template
      */
     public function indexAction(Request $request) {
         $em = $this->getDoctrine()->getManager();
@@ -62,7 +63,7 @@ class JournalController extends AbstractController implements PaginatorAwareInte
      *
      * @Route("/search", name="journal_search", methods={"GET"})
      *
-     * @Template()
+     * @Template
      */
     public function searchAction(Request $request) {
         $em = $this->getDoctrine()->getManager();
@@ -89,7 +90,7 @@ class JournalController extends AbstractController implements PaginatorAwareInte
      *
      * @Route("/{id}", name="journal_show", methods={"GET"})
      *
-     * @Template()
+     * @Template
      */
     public function showAction(Journal $journal, BlackWhiteList $list) {
         return [
@@ -105,7 +106,7 @@ class JournalController extends AbstractController implements PaginatorAwareInte
      *
      * @Route("/{id}/ping", name="journal_ping", methods={"GET"})
      *
-     * @Template()
+     * @Template
      */
     public function pingAction(Journal $journal, Ping $ping, EntityManagerInterface $em) {
         $result = $ping->ping($journal);

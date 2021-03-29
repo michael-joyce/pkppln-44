@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -11,13 +11,14 @@ declare(strict_types=1);
 namespace App\Tests\Entity;
 
 use App\Entity\Journal;
-use DateTime;
+use DateTimeImmutable;
 use Nines\UtilBundle\Tests\ControllerBaseCase;
 
 /**
  * Description of JournalTest.
  */
-class JournalTest extends ControllerBaseCase {
+class JournalTest extends ControllerBaseCase
+{
     private $journal;
 
     public function testInstance() : void {
@@ -30,8 +31,8 @@ class JournalTest extends ControllerBaseCase {
     }
 
     public function testSetNotified() : void {
-        $this->journal->setNotified(new DateTime());
-        $this->assertInstanceOf(DateTime::class, $this->journal->getNotified());
+        $this->journal->setNotified(new DateTimeImmutable());
+        $this->assertInstanceOf(DateTimeImmutable::class, $this->journal->getNotified());
     }
 
     protected function setup() : void {

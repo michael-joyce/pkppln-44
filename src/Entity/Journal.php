@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use DateTime;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
@@ -22,11 +23,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Journal.
  *
  * @ORM\Table(name="journal", indexes={
- * @ORM\Index(columns={"uuid", "title", "issn", "url", "email", "publisher_name", "publisher_url"}, flags={"fulltext"})
+ *     @ORM\Index(columns={"uuid", "title", "issn", "url", "email", "publisher_name", "publisher_url"}, flags={"fulltext"})
  * })
  * @ORM\Entity(repositoryClass="App\Repository\JournalRepository")
  */
-class Journal extends AbstractEntity {
+class Journal extends AbstractEntity
+{
     /**
      * List of states where a deposit has been sent to LOCKSSOMatic.
      *
@@ -161,7 +163,7 @@ class Journal extends AbstractEntity {
     public function __construct() {
         parent::__construct();
         $this->status = 'healthy';
-        $this->contacted = new DateTime();
+        $this->contacted = new DateTimeImmutable();
         $this->termsAccepted = false;
         $this->deposits = new ArrayCollection();
     }
@@ -185,7 +187,7 @@ class Journal extends AbstractEntity {
      * @return Journal
      */
     public function setUuid($uuid) {
-        $this->uuid = strtoupper($uuid);
+        $this->uuid = mb_strtoupper($uuid);
 
         return $this;
     }
@@ -204,7 +206,7 @@ class Journal extends AbstractEntity {
      *
      * @return Journal
      */
-    public function setContacted(DateTime $contacted) {
+    public function setContacted(DateTimeImmutable $contacted) {
         $this->contacted = $contacted;
 
         return $this;
@@ -246,7 +248,7 @@ class Journal extends AbstractEntity {
      *
      * @return Journal
      */
-    public function setNotified(DateTime $notified) {
+    public function setNotified(DateTimeImmutable $notified) {
         $this->notified = $notified;
 
         return $this;

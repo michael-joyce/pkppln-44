@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -12,7 +12,8 @@ namespace App\Tests\Controller\SwordController;
 
 use App\Entity\Whitelist;
 
-class StatementTest extends AbstractSwordTestCase {
+class StatementTest extends AbstractSwordTestCase
+{
     // journal not whitelisted
     public function testStatementNotWhitelisted() : void {
         $this->client->request('GET', '/api/sword/2.0/cont-iri/04F2C06E-35B8-43C1-B60C-1934271B0B7E/F93A8108-B705-4763-A592-B718B00BD4EA/state');

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -19,7 +19,8 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * Custom doctrine queries for deposits.
  */
-class DepositRepository extends ServiceEntityRepository {
+class DepositRepository extends ServiceEntityRepository
+{
     public function __construct(ManagerRegistry $registry) {
         parent::__construct($registry, Deposit::class);
     }
@@ -34,7 +35,7 @@ class DepositRepository extends ServiceEntityRepository {
      *
      * @return Query
      */
-    public function searchQuery($q, Journal $journal = null) {
+    public function searchQuery($q, ?Journal $journal = null) {
         $qb = $this->createQueryBuilder('d');
         $qb->where('CONCAT(d.depositUuid, d.url) LIKE :q');
         $qb->setParameter('q', '%' . $q . '%');

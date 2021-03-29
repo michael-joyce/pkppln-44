@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -22,7 +22,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Ping the journals to make sure they're up and running.
  */
-class PingCommand extends Command {
+class PingCommand extends Command
+{
     /**
      * Fully configured ping service.
      *
@@ -63,6 +64,7 @@ class PingCommand extends Command {
     protected function execute(InputInterface $input, OutputInterface $output) : void {
         $all = $input->getOption('all');
         $journals = $this->findJournals($all);
+
         foreach ($journals as $journal) {
             $output->writeln($journal->getUuid());
             $result = $this->ping->ping($journal);

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -13,7 +13,7 @@ namespace App\Command\Shell;
 use App\Entity\Journal;
 use App\Services\Ping;
 use AppUserBundle\Entity\User;
-use DateTime;
+use DateTimeImmutable;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\XmlParseException;
@@ -31,7 +31,8 @@ use Twig\Environment;
  * Ping all the journals that haven't contacted the PLN in a while, and send
  * notifications to interested users.
  */
-class HealthCheckCommand extends Command {
+class HealthCheckCommand extends Command
+{
     /**
      * @var Logger
      */
@@ -41,6 +42,7 @@ class HealthCheckCommand extends Command {
      * @var Ping
      */
     protected $ping;
+
     /**
      * @var TwigEngine
      */
@@ -84,6 +86,7 @@ class HealthCheckCommand extends Command {
             'days' => $days,
         ]);
         $mailer = $this->getContainer()->get('mailer');
+
         foreach ($users as $user) {
             $message = Swift_Message::newInstance(
                 'Automated notification from the PKP PLN',
@@ -157,10 +160,10 @@ class HealthCheckCommand extends Command {
             if ($this->pingJournal($journal)) {
                 $this->logger->notice("Ping Success {$journal->getUrl()})");
                 $journal->setStatus('healthy');
-                $journal->setContacted(new DateTime());
+                $journal->setContacted(new DateTimeImmutable());
             } else {
                 $journal->setStatus('unhealthy');
-                $journal->setNotified(new DateTime());
+                $journal->setNotified(new DateTimeImmutable());
             }
         }
 

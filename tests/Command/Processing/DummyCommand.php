@@ -1,12 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
+ * This source file is subject to the GPL v2, bundled
+ * with this source code in the file LICENSE.
+ */
+
 namespace App\Tests\Command\Processing;
 
 use App\Command\Processing\AbstractProcessingCmd;
 use App\Entity\Deposit;
 use Doctrine\ORM\EntityManagerInterface;
 
-class DummyCommand extends AbstractProcessingCmd {
+class DummyCommand extends AbstractProcessingCmd
+{
     private $return;
 
     public function __construct(EntityManagerInterface $em, $return) {

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -16,7 +16,8 @@ use Exception;
 /**
  * Wrapper around some XML parsing.
  */
-class XmlParser {
+class XmlParser
+{
     /**
      * Options passed to LibXML.
      */
@@ -64,7 +65,7 @@ class XmlParser {
         $changes = 0;
         while ($buffer = fread($fromHandle, self::BLOCKSIZE)) {
             $filtered = iconv('UTF-8', 'UTF-8//IGNORE', $buffer);
-            $changes += (strlen($buffer) - strlen($filtered));
+            $changes += (mb_strlen($buffer) - mb_strlen($filtered));
             fwrite($toHandle, $filtered);
         }
 
@@ -94,7 +95,7 @@ class XmlParser {
             return $dom;
         }
         $error = libxml_get_last_error();
-        if (false === strpos($error->message, 'Input is not proper UTF-8')) {
+        if (false === mb_strpos($error->message, 'Input is not proper UTF-8')) {
             throw new Exception("{$error->message} at {$error->file}:{$error->line}:{$error->column}.");
         }
         $filteredFilename = tempnam(sys_get_temp_dir(), 'pkppln-');

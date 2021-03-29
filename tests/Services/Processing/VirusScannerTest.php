@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -24,7 +24,8 @@ use Xenolope\Quahog\Client;
  * This test makes use of the EICAR test signature found here:
  * http://www.eicar.org/86-0-Intended-use.html.
  */
-class VirusScannerTest extends ControllerBaseCase {
+class VirusScannerTest extends ControllerBaseCase
+{
     /**
      * @var VirusScanner
      */

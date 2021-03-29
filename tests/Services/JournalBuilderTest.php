@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -14,23 +14,18 @@ use App\DataFixtures\JournalFixtures;
 use App\Entity\Journal;
 use App\Services\JournalBuilder;
 use App\Utilities\Namespaces;
-use DateTime;
+use DateTimeImmutable;
 use Nines\UtilBundle\Tests\ControllerBaseCase;
 
 /**
  * Description of JournalBuilderTest.
  */
-class JournalBuilderTest extends ControllerBaseCase {
+class JournalBuilderTest extends ControllerBaseCase
+{
     /**
      * @var JournalBuilder
      */
     private $builder;
-
-    public function fixtures() : array {
-        return [
-            JournalFixtures::class,
-        ];
-    }
 
     private function getXml() {
         $data = <<<'ENDXML'
@@ -66,6 +61,12 @@ ENDXML;
         return $xml;
     }
 
+    public function fixtures() : array {
+        return [
+            JournalFixtures::class,
+        ];
+    }
+
     public function testInstance() : void {
         $this->assertInstanceOf(JournalBuilder::class, self::$container->get(JournalBuilder::class));
     }
@@ -77,7 +78,7 @@ ENDXML;
 
     public function testGetContacted() : void {
         $this->journal = $this->builder->fromXml($this->getXml(), 'B99FE131-48B5-440A-A552-4F1BF2BFDE82');
-        $this->assertInstanceOf(DateTime::class, $this->journal->getContacted());
+        $this->assertInstanceOf(DateTimeImmutable::class, $this->journal->getContacted());
     }
 
     /**

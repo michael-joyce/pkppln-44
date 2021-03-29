@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -17,7 +17,8 @@ use SimpleXMLElement;
 /**
  * Description of PingResult.
  */
-class PingResult {
+class PingResult
+{
     /**
      * HTTP request response.
      *
@@ -52,7 +53,7 @@ class PingResult {
      * @param ResponseInterface $response
      * @param string $errors
      */
-    public function __construct(ResponseInterface $response = null, $errors = null) {
+    public function __construct(?ResponseInterface $response = null, $errors = null) {
         $this->response = $response;
         if ($response) {
             $this->content = $response->getBody()->getContents();
@@ -269,6 +270,7 @@ class PingResult {
             return [];
         }
         $articles = [];
+
         foreach (Xpath::query($this->xml, '//articles/article') as $node) {
             $articles[] = [
                 'date' => (string) $node['pubDate'],

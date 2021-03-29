@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -15,7 +15,8 @@ use App\DataFixtures\JournalFixtures;
 use Nines\UserBundle\DataFixtures\UserFixtures;
 use Nines\UtilBundle\Tests\ControllerBaseCase;
 
-class DepositControllerTest extends ControllerBaseCase {
+class DepositControllerTest extends ControllerBaseCase
+{
     protected function fixtures() : array {
         return [
             UserFixtures::class,
@@ -25,7 +26,6 @@ class DepositControllerTest extends ControllerBaseCase {
     }
 
     public function testAnonIndex() : void {
-
         $crawler = $this->client->request('GET', '/journal/1/deposit/');
         $this->assertSame(302, $this->client->getResponse()->getStatusCode());
     }
@@ -43,7 +43,6 @@ class DepositControllerTest extends ControllerBaseCase {
     }
 
     public function testAnonShow() : void {
-
         $crawler = $this->client->request('GET', '/journal/1/deposit/1');
         $this->assertSame(302, $this->client->getResponse()->getStatusCode());
     }
@@ -61,7 +60,6 @@ class DepositControllerTest extends ControllerBaseCase {
     }
 
     public function testAnonSearch() : void {
-
         $formCrawler = $this->client->request('GET', '/journal/2/deposit/search');
         $this->assertSame(302, $this->client->getResponse()->getStatusCode());
         $this->assertTrue($this->client->getResponse()->isRedirect());

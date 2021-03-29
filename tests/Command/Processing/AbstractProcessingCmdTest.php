@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -21,7 +21,8 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * @author michael
  */
-class AbstractProcessingCmdTest extends ControllerBaseCase {
+class AbstractProcessingCmdTest extends ControllerBaseCase
+{
     /**
      * @var OutputInterface
      */
@@ -113,7 +114,7 @@ class AbstractProcessingCmdTest extends ControllerBaseCase {
 
         $cmd = new DummyCommand($this->entityManager, 'held');
         $deposits = $cmd->getDeposits();
-        $this->assertSame(1, count($deposits));
+        $this->assertCount(1, $deposits);
         $this->assertSame($deposit->getDepositUuid(), $deposits[0]->getDepositUuid());
     }
 
@@ -124,7 +125,7 @@ class AbstractProcessingCmdTest extends ControllerBaseCase {
 
         $cmd = new DummyCommand($this->entityManager, 'held');
         $deposits = $cmd->getDeposits(true);
-        $this->assertSame(1, count($deposits));
+        $this->assertCount(1, $deposits);
         $this->assertSame($deposit->getDepositUuid(), $deposits[0]->getDepositUuid());
     }
 
@@ -135,7 +136,7 @@ class AbstractProcessingCmdTest extends ControllerBaseCase {
 
         $cmd = new DummyCommand($this->entityManager, 'held');
         $deposits = $cmd->getDeposits(false, [1]);
-        $this->assertSame(1, count($deposits));
+        $this->assertCount(1, $deposits);
         $this->assertSame($deposit->getDepositUuid(), $deposits[0]->getDepositUuid());
     }
 
@@ -146,7 +147,7 @@ class AbstractProcessingCmdTest extends ControllerBaseCase {
 
         $cmd = new DummyCommand($this->entityManager, 'held');
         $deposits = $cmd->getDeposits(true, [1]);
-        $this->assertSame(1, count($deposits));
+        $this->assertCount(1, $deposits);
         $this->assertSame($deposit->getDepositUuid(), $deposits[0]->getDepositUuid());
     }
 

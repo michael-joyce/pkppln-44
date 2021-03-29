@@ -3,14 +3,14 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
 
 namespace App\Command\Shell;
 
-use DateTime;
+use DateTimeImmutable;
 use Psr\Log\LoggerInterface;
 use Swift_Message;
 use Symfony\Bundle\TwigBundle\TwigEngine;
@@ -25,11 +25,13 @@ use Twig\Environment;
 /**
  * Send reminders about journals that haven't contacted the PLN in a while.
  */
-class HealthReminderCommand extends Command {
+class HealthReminderCommand extends Command
+{
     /**
      * @var Logger
      */
     protected $logger;
+
     /**
      * @var TwigEngine
      */
@@ -74,6 +76,7 @@ class HealthReminderCommand extends Command {
             'days' => $days,
         ]);
         $mailer = $this->getContainer()->get('mailer');
+
         foreach ($users as $user) {
             $message = Swift_Message::newInstance(
                 'Automated reminder from the PKP PLN',
@@ -109,7 +112,7 @@ class HealthReminderCommand extends Command {
         $this->sendReminders($days, $users, $journals);
 
         foreach ($journals as $journal) {
-            $journal->setNotified(new DateTime());
+            $journal->setNotified(new DateTimeImmutable());
         }
 
         if ( ! $input->getOption('dry-run')) {

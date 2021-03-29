@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -22,7 +22,8 @@ use org\bovigo\vfs\vfsStreamDirectory;
 /**
  * Description of PayloadValidatorTest.
  */
-class PayloadValidatorTest extends ControllerBaseCase {
+class PayloadValidatorTest extends ControllerBaseCase
+{
     /**
      * @var PayloadValidator
      */
@@ -46,7 +47,7 @@ class PayloadValidatorTest extends ControllerBaseCase {
      */
     public function testHashFile($alg, $name, $data) : void {
         $file = vfsStream::newFile('deposit.zip')->withContent($data)->at($this->root);
-        $this->assertSame(strtoupper(hash($alg, $data)), $this->validator->hashFile($name, $file->url()));
+        $this->assertSame(mb_strtoupper(hash($alg, $data)), $this->validator->hashFile($name, $file->url()));
     }
 
     public function hashFileData() {

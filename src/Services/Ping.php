@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -13,7 +13,7 @@ namespace App\Services;
 use App\Entity\Journal;
 use App\Entity\Whitelist;
 use App\Utilities\PingResult;
-use DateTime;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use GuzzleHttp\Client;
@@ -21,7 +21,8 @@ use GuzzleHttp\Client;
 /**
  * Ping service.
  */
-class Ping {
+class Ping
+{
     /**
      * Http client configuration.
      */
@@ -90,7 +91,7 @@ class Ping {
 
             return;
         }
-        $journal->setContacted(new DateTime());
+        $journal->setContacted(new DateTimeImmutable());
         $journal->setTitle($result->getJournalTitle());
         $journal->setOjsVersion($result->getOjsRelease());
         $journal->setTermsAccepted('yes' === $result->areTermsAccepted());

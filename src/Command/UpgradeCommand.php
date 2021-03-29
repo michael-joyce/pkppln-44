@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -18,7 +18,7 @@ use App\Entity\Journal;
 use App\Entity\TermOfUse;
 use App\Entity\TermOfUseHistory;
 use App\Entity\Whitelist;
-use DateTime;
+use DateTimeImmutable;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -31,7 +31,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Upgrade a PKP PLN instance from version 1 to version 2.
  */
-class UpgradeCommand extends Command {
+class UpgradeCommand extends Command
+{
     /**
      * Doctrine connection to the old database.
      *
@@ -164,7 +165,7 @@ class UpgradeCommand extends Command {
             $entry = new Whitelist();
             $entry->setComment($row['comment']);
             $entry->setUuid($row['uuid']);
-            $entry->setCreated(new DateTime($row['created']));
+            $entry->setCreated(new DateTimeImmutable($row['created']));
 
             return $entry;
         };
@@ -179,7 +180,7 @@ class UpgradeCommand extends Command {
             $entry = new Blacklist();
             $entry->setComment($row['comment']);
             $entry->setUuid($row['uuid']);
-            $entry->setCreated(new DateTime($row['created']));
+            $entry->setCreated(new DateTimeImmutable($row['created']));
 
             return $entry;
         };
@@ -193,7 +194,7 @@ class UpgradeCommand extends Command {
         $callback = function ($row) {
             $entry = new User();
             $entry->setEmail($row['username']);
-            $entry->setActive($row['enabled'] == 1);
+            $entry->setActive(1 === $row['enabled']);
             $entry->setPassword($row['password']);
             $entry->setRoles(unserialize($row['roles']));
             $entry->setFullname($row['fullname']);
@@ -215,8 +216,8 @@ class UpgradeCommand extends Command {
             $term->setWeight($row['weight']);
             $term->setKeyCode($row['key_code']);
             $term->setContent($row['content']);
-            $term->setCreated(new DateTime($row['created']));
-            $term->setUpdated(new DateTime($row['updated']));
+            $term->setCreated(new DateTimeImmutable($row['created']));
+            $term->setUpdated(new DateTimeImmutable($row['updated']));
 
             return $term;
         };
@@ -236,8 +237,8 @@ class UpgradeCommand extends Command {
             $history->setAction($row['action']);
             $history->setUser($row['user']);
             $history->setChangeSet(unserialize($row['change_set']));
-            $history->setCreated(new DateTime($row['created']));
-            $history->setUpdated(new DateTime($row['created']));
+            $history->setCreated(new DateTimeImmutable($row['created']));
+            $history->setUpdated(new DateTimeImmutable($row['created']));
 
             return $history;
         };
@@ -251,10 +252,10 @@ class UpgradeCommand extends Command {
         $callback = function ($row) {
             $journal = new Journal();
             $journal->setUuid($row['uuid']);
-            $journal->setContacted(new DateTime($row['contacted']));
+            $journal->setContacted(new DateTimeImmutable($row['contacted']));
             $journal->setTermsAccepted($row['terms_accepted']);
             if ($row['notified']) {
-                $journal->setNotified(new DateTime($row['notified']));
+                $journal->setNotified(new DateTimeImmutable($row['notified']));
             }
             $journal->setTitle($row['title']);
             if ('unknown' !== $row['issn']) {
@@ -315,11 +316,11 @@ class UpgradeCommand extends Command {
                 $deposit->setFileType($row['file_type']);
             }
             $deposit->setDepositUuid($row['deposit_uuid']);
-            $deposit->setCreated(new DateTime($row['received']));
+            $deposit->setCreated(new DateTimeImmutable($row['received']));
             $deposit->setAction($row['action']);
             $deposit->setVolume($row['volume']);
             $deposit->setIssue($row['issue']);
-            $deposit->setPubDate(new DateTime($row['pub_date']));
+            $deposit->setPubDate(new DateTimeImmutable($row['pub_date']));
             $deposit->setChecksumType($row['checksum_type']);
             $deposit->setChecksumValue($row['checksum_value']);
             $deposit->setUrl($row['url']);
@@ -330,7 +331,7 @@ class UpgradeCommand extends Command {
             $deposit->setPackageChecksumType($row['package_checksum_type']);
             $deposit->setPackageChecksumValue($row['package_checksum_value']);
             if ($row['deposit_date']) {
-                $deposit->setDepositDate(new DateTime($row['deposit_date']));
+                $deposit->setDepositDate(new DateTimeImmutable($row['deposit_date']));
             }
             if ( ! preg_match('|^http://pkp-pln|', $row['deposit_receipt'])) {
                 $deposit->setDepositReceipt($row['deposit_receipt']);
@@ -383,6 +384,7 @@ class UpgradeCommand extends Command {
     public function execute(InputInterface $input, OutputInterface $output) : void {
         if ( ! $input->getOption('force')) {
             $output->writeln('Will not run without --force.');
+
             exit;
         }
         $this->em->getConnection()->getConfiguration()->setSQLLogger(null);

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -12,7 +12,8 @@ namespace App\Services;
 
 use DOMDocument;
 
-abstract class AbstractValidator {
+abstract class AbstractValidator
+{
     /**
      * @var array
      */
@@ -24,6 +25,8 @@ abstract class AbstractValidator {
     public function __construct() {
         $this->errors = [];
     }
+
+    abstract public function validate(DOMDocument $dom, $path, $clearErrors = true);
 
     /**
      * Callback for a validation or parsing error.
@@ -51,8 +54,6 @@ abstract class AbstractValidator {
             ];
         }
     }
-
-    abstract public function validate(DOMDocument $dom, $path, $clearErrors = true);
 
     /**
      * Return true if the document had errors.

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -26,7 +26,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Clean completed deposits from the file system.
  */
-class CleanupCommand extends Command {
+class CleanupCommand extends Command
+{
     /**
      * @var Logger
      */
@@ -72,6 +73,7 @@ class CleanupCommand extends Command {
         }
         $directoryIterator = new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS);
         $fileIterator = new RecursiveIteratorIterator($directoryIterator, RecursiveIteratorIterator::CHILD_FIRST);
+
         foreach ($fileIterator as $file) {
             if ($file->isDir()) {
                 if (true === $force) {
@@ -121,6 +123,7 @@ class CleanupCommand extends Command {
         $iterator = $q->iterate();
 
         $i = 0;
+
         foreach ($iterator as $row) {
             $deposit = $row[0];
             $this->processDeposit($deposit, $force);

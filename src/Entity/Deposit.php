@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use DateTime;
+use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Nines\UtilBundle\Entity\AbstractEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -19,11 +20,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Deposit.
  *
  * @ORM\Table(name="deposit", indexes={
- * @ORM\Index(columns={"deposit_uuid", "url"}, flags={"fulltext"})
+ *     @ORM\Index(columns={"deposit_uuid", "url"}, flags={"fulltext"})
  * })
  * @ORM\Entity(repositoryClass="App\Repository\DepositRepository")
  */
-class Deposit extends AbstractEntity {
+class Deposit extends AbstractEntity
+{
     /**
      * Default OJS version.
      *
@@ -356,7 +358,7 @@ class Deposit extends AbstractEntity {
      * @return Deposit
      */
     public function setDepositUuid($depositUuid) {
-        $this->depositUuid = strtoupper($depositUuid);
+        $this->depositUuid = mb_strtoupper($depositUuid);
 
         return $this;
     }
@@ -459,7 +461,7 @@ class Deposit extends AbstractEntity {
      *
      * @return Deposit
      */
-    public function setPubDate(DateTime $pubDate) {
+    public function setPubDate(DateTimeImmutable $pubDate) {
         $this->pubDate = $pubDate;
 
         return $this;
@@ -482,7 +484,7 @@ class Deposit extends AbstractEntity {
      * @return Deposit
      */
     public function setChecksumType($checksumType) {
-        $this->checksumType = strtolower($checksumType);
+        $this->checksumType = mb_strtolower($checksumType);
 
         return $this;
     }
@@ -504,7 +506,7 @@ class Deposit extends AbstractEntity {
      * @return Deposit
      */
     public function setChecksumValue($checksumValue) {
-        $this->checksumValue = strtoupper($checksumValue);
+        $this->checksumValue = mb_strtoupper($checksumValue);
 
         return $this;
     }
@@ -677,7 +679,7 @@ class Deposit extends AbstractEntity {
      */
     public function setPackageChecksumType($packageChecksumType) {
         if ($packageChecksumType) {
-            $this->packageChecksumType = strtolower($packageChecksumType);
+            $this->packageChecksumType = mb_strtolower($packageChecksumType);
         }
 
         return $this;
@@ -701,7 +703,7 @@ class Deposit extends AbstractEntity {
      */
     public function setPackageChecksumValue($packageChecksumValue) {
         if ($packageChecksumValue) {
-            $this->packageChecksumValue = strtoupper($packageChecksumValue);
+            $this->packageChecksumValue = mb_strtoupper($packageChecksumValue);
         }
 
         return $this;
@@ -721,7 +723,7 @@ class Deposit extends AbstractEntity {
      *
      * @return Deposit
      */
-    public function setDepositDate(DateTime $depositDate) {
+    public function setDepositDate(DateTimeImmutable $depositDate) {
         $this->depositDate = $depositDate;
 
         return $this;
@@ -819,7 +821,7 @@ class Deposit extends AbstractEntity {
      *
      * @return Deposit
      */
-    public function setJournal(Journal $journal = null) {
+    public function setJournal(?Journal $journal = null) {
         $this->journal = $journal;
 
         return $this;
@@ -841,7 +843,7 @@ class Deposit extends AbstractEntity {
      *
      * @return Deposit
      */
-    public function setAuContainer(AuContainer $auContainer = null) {
+    public function setAuContainer(?AuContainer $auContainer = null) {
         $this->auContainer = $auContainer;
 
         return $this;

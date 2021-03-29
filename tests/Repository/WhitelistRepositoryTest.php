@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -18,7 +18,8 @@ use Nines\UtilBundle\Tests\ControllerBaseCase;
 /**
  * Description of WhitelistRepositoryTest.
  */
-class WhitelistRepositoryTest extends ControllerBaseCase {
+class WhitelistRepositoryTest extends ControllerBaseCase
+{
     /**
      * @return WhitelistRepository
      */
@@ -33,7 +34,7 @@ class WhitelistRepositoryTest extends ControllerBaseCase {
     public function testSearchQuery() : void {
         $query = $this->repo->searchQuery('960CD4D9');
         $result = $query->execute();
-        $this->assertSame(1, count($result));
+        $this->assertCount(1, $result);
     }
 
     protected function setup() : void {

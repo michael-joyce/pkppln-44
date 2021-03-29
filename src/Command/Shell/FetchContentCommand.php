@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -30,7 +30,8 @@ use Symfony\Component\Filesystem\Filesystem;
 /**
  * Fetch all the content of one or more journals from LOCKSS via LOCKSSOMatic.
  */
-class FetchContentCommand extends Command {
+class FetchContentCommand extends Command
+{
     /**
      * @var Registry
      */
@@ -45,6 +46,7 @@ class FetchContentCommand extends Command {
      * @var FilePaths
      */
     protected $filePaths;
+
     /**
      * @var Logger
      */
@@ -118,7 +120,7 @@ class FetchContentCommand extends Command {
                 'decode_content' => false,
                 'save_to' => $filepath,
             ]);
-            $hash = strtoupper(hash_file($deposit->getPackageChecksumType(), $filepath));
+            $hash = mb_strtoupper(hash_file($deposit->getPackageChecksumType(), $filepath));
             if ($hash !== $deposit->getPackageChecksumValue()) {
                 $this->logger->warning("Package checksum failed. Expected {$deposit->getPackageChecksumValue()} but got {$hash}");
             }
@@ -161,6 +163,7 @@ class FetchContentCommand extends Command {
     public function execute(InputInterface $input, OutputInterface $output) : void {
         $journalIds = $input->getArgument('journals');
         $journals = $this->getJournals($journalIds);
+
         foreach ($journals as $journal) {
             $this->downloadJournal($journal);
         }

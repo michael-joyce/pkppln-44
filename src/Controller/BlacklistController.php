@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -28,7 +28,8 @@ use Symfony\Component\Routing\Annotation\Route;
  * @Security("is_granted('ROLE_USER')")
  * @Route("/blacklist")
  */
-class BlacklistController extends AbstractController implements PaginatorAwareInterface {
+class BlacklistController extends AbstractController implements PaginatorAwareInterface
+{
     use PaginatorTrait;
 
     /**
@@ -37,7 +38,7 @@ class BlacklistController extends AbstractController implements PaginatorAwareIn
      * @return array
      *
      * @Route("/", name="blacklist_index", methods={"GET"})
-     * @Template()
+     * @Template
      */
     public function indexAction(Request $request) {
         $em = $this->getDoctrine()->getManager();
@@ -57,7 +58,7 @@ class BlacklistController extends AbstractController implements PaginatorAwareIn
      *
      * @Route("/search", name="blacklist_search", methods={"GET"})
      *
-     * @Template()
+     * @Template
      */
     public function searchAction(Request $request) {
         $em = $this->getDoctrine()->getManager();
@@ -84,9 +85,9 @@ class BlacklistController extends AbstractController implements PaginatorAwareIn
      *                                Array data for the template processor or a redirect to the Blacklist.
      *
      * @Security("is_granted('ROLE_ADMIN')")
-     * @Route("/new", name="blacklist_new", methods={"GET","POST"})
+     * @Route("/new", name="blacklist_new", methods={"GET", "POST"})
      *
-     * @Template()
+     * @Template
      */
     public function newAction(Request $request) {
         $blacklist = new Blacklist();
@@ -116,7 +117,7 @@ class BlacklistController extends AbstractController implements PaginatorAwareIn
      *
      * @Route("/{id}", name="blacklist_show", methods={"GET"})
      *
-     * @Template()
+     * @Template
      */
     public function showAction(EntityManagerInterface $em, Blacklist $blacklist) {
         $repo = $em->getRepository(Journal::class);
@@ -135,9 +136,9 @@ class BlacklistController extends AbstractController implements PaginatorAwareIn
      *                                Array data for the template processor or a redirect to the Blacklist.
      *
      * @Security("is_granted('ROLE_ADMIN')")
-     * @Route("/{id}/edit", name="blacklist_edit", methods={"GET","POST"})
+     * @Route("/{id}/edit", name="blacklist_edit", methods={"GET", "POST"})
      *
-     * @Template()
+     * @Template
      */
     public function editAction(Request $request, Blacklist $blacklist) {
         $editForm = $this->createForm(BlacklistType::class, $blacklist);

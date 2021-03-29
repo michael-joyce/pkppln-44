@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -15,7 +15,8 @@ use App\Entity\Whitelist;
 use Nines\UserBundle\DataFixtures\UserFixtures;
 use Nines\UtilBundle\Tests\ControllerBaseCase;
 
-class WhitelistControllerTest extends ControllerBaseCase {
+class WhitelistControllerTest extends ControllerBaseCase
+{
     protected function fixtures() : array {
         return [
             UserFixtures::class,
@@ -24,7 +25,6 @@ class WhitelistControllerTest extends ControllerBaseCase {
     }
 
     public function testAnonIndex() : void {
-
         $crawler = $this->client->request('GET', '/whitelist/');
         $this->assertSame(302, $this->client->getResponse()->getStatusCode());
     }
@@ -44,7 +44,6 @@ class WhitelistControllerTest extends ControllerBaseCase {
     }
 
     public function testAnonShow() : void {
-
         $crawler = $this->client->request('GET', '/whitelist/1');
         $this->assertSame(302, $this->client->getResponse()->getStatusCode());
         $this->assertSame(0, $crawler->selectLink('Edit')->count());
@@ -68,7 +67,6 @@ class WhitelistControllerTest extends ControllerBaseCase {
     }
 
     public function testAnonSearch() : void {
-
         $formCrawler = $this->client->request('GET', '/whitelist/search');
         $this->assertSame(302, $this->client->getResponse()->getStatusCode());
         $this->assertTrue($this->client->getResponse()->isRedirect());
@@ -99,7 +97,6 @@ class WhitelistControllerTest extends ControllerBaseCase {
     }
 
     public function testAnonEdit() : void {
-
         $crawler = $this->client->request('GET', '/whitelist/1/edit');
         $this->assertSame(302, $this->client->getResponse()->getStatusCode());
         $this->assertTrue($this->client->getResponse()->isRedirect());
@@ -129,7 +126,6 @@ class WhitelistControllerTest extends ControllerBaseCase {
     }
 
     public function testAnonNew() : void {
-
         $crawler = $this->client->request('GET', '/whitelist/new');
         $this->assertSame(302, $this->client->getResponse()->getStatusCode());
         $this->assertTrue($this->client->getResponse()->isRedirect());
@@ -159,7 +155,6 @@ class WhitelistControllerTest extends ControllerBaseCase {
     }
 
     public function testAnonDelete() : void {
-
         $crawler = $this->client->request('GET', '/whitelist/1/delete');
         $this->assertSame(302, $this->client->getResponse()->getStatusCode());
         $this->assertTrue($this->client->getResponse()->isRedirect());

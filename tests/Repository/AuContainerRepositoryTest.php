@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -13,7 +13,8 @@ namespace App\Entity;
 use App\DataFixtures\AuContainerFixtures;
 use Nines\UtilBundle\Tests\ControllerBaseCase;
 
-class AuContainerRepositoryTest extends ControllerBaseCase {
+class AuContainerRepositoryTest extends ControllerBaseCase
+{
     /**
      * @var AuContainer
      */
@@ -22,7 +23,7 @@ class AuContainerRepositoryTest extends ControllerBaseCase {
     public function testGetOpenContainer() : void {
         $c = $this->repository->getOpenContainer();
         $this->assertInstanceOf('App\Entity\AuContainer', $c);
-        $this->assertSame(true, $c->isOpen());
+        $this->assertTrue($c->isOpen());
         $this->assertSame(2, $c->getId());
     }
 

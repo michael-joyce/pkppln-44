@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -28,7 +28,8 @@ use Symfony\Component\Routing\Annotation\Route;
  * @Security("is_granted('ROLE_USER')")
  * @Route("/termofuse")
  */
-class TermOfUseController extends AbstractController implements PaginatorAwareInterface {
+class TermOfUseController extends AbstractController implements PaginatorAwareInterface
+{
     use PaginatorTrait;
 
     /**
@@ -38,7 +39,7 @@ class TermOfUseController extends AbstractController implements PaginatorAwareIn
      *
      * @Route("/", name="termofuse_index", methods={"GET"})
      *
-     * @Template()
+     * @Template
      */
     public function indexAction(Request $request) {
         $em = $this->getDoctrine()->getManager();
@@ -60,9 +61,9 @@ class TermOfUseController extends AbstractController implements PaginatorAwareIn
      *                                Array data for the template processor or a redirect to the TermOfUse.
      *
      * @Security("is_granted('ROLE_ADMIN')")
-     * @Route("/new", name="termofuse_new", methods={"GET","POST"})
+     * @Route("/new", name="termofuse_new", methods={"GET", "POST"})
      *
-     * @Template()
+     * @Template
      */
     public function newAction(Request $request) {
         $termOfUse = new TermOfUse();
@@ -92,7 +93,7 @@ class TermOfUseController extends AbstractController implements PaginatorAwareIn
      *
      * @Route("/{id}", name="termofuse_show", methods={"GET"})
      *
-     * @Template()
+     * @Template
      */
     public function showAction(EntityManagerInterface $em, TermOfUse $termOfUse) {
         // This can't just be $termOfUse->getHistory() or something because there
@@ -113,9 +114,9 @@ class TermOfUseController extends AbstractController implements PaginatorAwareIn
      *                                Array data for the template processor or a redirect to the TermOfUse.
      *
      * @Security("is_granted('ROLE_ADMIN')")
-     * @Route("/{id}/edit", name="termofuse_edit", methods={"GET","POST"})
+     * @Route("/{id}/edit", name="termofuse_edit", methods={"GET", "POST"})
      *
-     * @Template()
+     * @Template
      */
     public function editAction(Request $request, TermOfUse $termOfUse) {
         $editForm = $this->createForm(TermOfUseType::class, $termOfUse);

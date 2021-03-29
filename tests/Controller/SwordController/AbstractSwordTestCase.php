@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -19,10 +19,9 @@ use App\Utilities\Namespaces;
 use Exception;
 use Nines\UtilBundle\Tests\ControllerBaseCase;
 use SimpleXMLElement;
-use Symfony\Component\BrowserKit\Client;
 
-abstract class AbstractSwordTestCase extends ControllerBaseCase {
-
+abstract class AbstractSwordTestCase extends ControllerBaseCase
+{
     protected function getXml() {
         $xml = new SimpleXMLElement($this->client->getResponse()->getContent());
         Namespaces::registerNamespaces($xml);

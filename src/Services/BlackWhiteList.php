@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -18,7 +18,8 @@ use Doctrine\ORM\EntityManagerInterface;
 /**
  * Description of BlackWhiteList.
  */
-class BlackWhiteList {
+class BlackWhiteList
+{
     /**
      * Entity manager.
      *
@@ -39,7 +40,7 @@ class BlackWhiteList {
      * @param string $uuid
      */
     private function getEntry(ObjectRepository $repo, $uuid) {
-        return null !== $repo->findOneBy(['uuid' => strtoupper($uuid)]);
+        return null !== $repo->findOneBy(['uuid' => mb_strtoupper($uuid)]);
     }
 
     /**

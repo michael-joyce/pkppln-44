@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -11,14 +11,15 @@ declare(strict_types=1);
 namespace App\DataFixtures;
 
 use App\Entity\Journal;
-use DateTime;
+use DateTimeImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
 /**
  * LoadJournal form.
  */
-class JournalFixtures extends Fixture {
+class JournalFixtures extends Fixture
+{
     public const UUIDS = [
         '44428B12-CDC4-453E-8157-319004CD8CE6',
         '04F2C06E-35B8-43C1-B60C-1934271B0B7E',
@@ -33,7 +34,7 @@ class JournalFixtures extends Fixture {
         for ($i = 0; $i < 4; $i++) {
             $fixture = new Journal();
             $fixture->setUuid(self::UUIDS[$i]);
-            $fixture->setContacted(new DateTime("2018-{$i}-{$i}T12:00:00"));
+            $fixture->setContacted(new DateTimeImmutable("2018-{$i}-{$i}T12:00:00"));
             $fixture->setOjsVersion('2.4.8.' . $i);
             $fixture->setTitle('Title ' . $i);
             $fixture->setIssn('1234-123' . $i);

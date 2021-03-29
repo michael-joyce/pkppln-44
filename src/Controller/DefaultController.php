@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -24,8 +24,10 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Default controller.
  */
-class DefaultController extends AbstractController implements PaginatorAwareInterface {
+class DefaultController extends AbstractController implements PaginatorAwareInterface
+{
     use PaginatorTrait;
+
     /**
      * The LOCKSS permision statement.
      */
@@ -62,7 +64,7 @@ class DefaultController extends AbstractController implements PaginatorAwareInte
      * @param string $state
      *
      * @Route("/browse/{state}", name="deposit_browse", methods={"GET"})
-     * @Template()
+     * @Template
      */
     public function browseAction(Request $request, EntityManagerInterface $em, $state) {
         $repo = $em->getRepository(Deposit::class);
@@ -93,7 +95,7 @@ class DefaultController extends AbstractController implements PaginatorAwareInte
      * @Route("/deposit_search", name="all_deposit_search", methods={"GET"})
      *
      * @Security("is_granted('ROLE_USER')")
-     * @Template()
+     * @Template
      */
     public function depositSearchAction(Request $request) {
         $em = $this->getDoctrine()->getManager();

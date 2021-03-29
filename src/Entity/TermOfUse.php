@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -19,7 +19,8 @@ use Nines\UtilBundle\Entity\AbstractEntity;
  * @ORM\Table(name="term_of_use")
  * @ORM\Entity(repositoryClass="App\Repository\TermOfUseRepository")
  */
-class TermOfUse extends AbstractEntity {
+class TermOfUse extends AbstractEntity
+{
     /**
      * The "weight" of the term. Heavier terms are sorted lower.
      *

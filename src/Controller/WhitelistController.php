@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -28,7 +28,8 @@ use Symfony\Component\Routing\Annotation\Route;
  * @Security("is_granted('ROLE_USER')")
  * @Route("/whitelist")
  */
-class WhitelistController extends AbstractController implements PaginatorAwareInterface {
+class WhitelistController extends AbstractController implements PaginatorAwareInterface
+{
     use PaginatorTrait;
 
     /**
@@ -38,7 +39,7 @@ class WhitelistController extends AbstractController implements PaginatorAwareIn
      *
      * @Route("/", name="whitelist_index", methods={"GET"})
      *
-     * @Template()
+     * @Template
      */
     public function indexAction(Request $request) {
         $em = $this->getDoctrine()->getManager();
@@ -58,7 +59,7 @@ class WhitelistController extends AbstractController implements PaginatorAwareIn
      *
      * @Route("/search", name="whitelist_search", methods={"GET"})
      *
-     * @Template()
+     * @Template
      */
     public function searchAction(Request $request) {
         $em = $this->getDoctrine()->getManager();
@@ -85,9 +86,9 @@ class WhitelistController extends AbstractController implements PaginatorAwareIn
      *                                Array data for the template processor or a redirect to the Whitelist.
      *
      * @Security("is_granted('ROLE_ADMIN')")
-     * @Route("/new", name="whitelist_new", methods={"GET","POST"})
+     * @Route("/new", name="whitelist_new", methods={"GET", "POST"})
      *
-     * @Template()
+     * @Template
      */
     public function newAction(Request $request) {
         $whitelist = new Whitelist();
@@ -117,7 +118,7 @@ class WhitelistController extends AbstractController implements PaginatorAwareIn
      *
      * @Route("/{id}", name="whitelist_show", methods={"GET"})
      *
-     * @Template()
+     * @Template
      */
     public function showAction(EntityManagerInterface $em, Whitelist $whitelist) {
         $repo = $em->getRepository(Journal::class);
@@ -136,9 +137,9 @@ class WhitelistController extends AbstractController implements PaginatorAwareIn
      *                                Array data for the template processor or a redirect to the Whitelist.
      *
      * @Security("is_granted('ROLE_ADMIN')")
-     * @Route("/{id}/edit", name="whitelist_edit", methods={"GET","POST"})
+     * @Route("/{id}/edit", name="whitelist_edit", methods={"GET", "POST"})
      *
-     * @Template()
+     * @Template
      */
     public function editAction(Request $request, Whitelist $whitelist) {
         $editForm = $this->createForm(WhitelistType::class, $whitelist);

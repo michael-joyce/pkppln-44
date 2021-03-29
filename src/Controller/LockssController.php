@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -15,7 +15,6 @@ use App\Entity\Journal;
 use App\Services\FilePaths;
 use Knp\Bundle\PaginatorBundle\Definition\PaginatorAwareInterface;
 use Nines\UtilBundle\Controller\PaginatorTrait;
-use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,8 +29,14 @@ use Symfony\Component\Routing\Annotation\Route;
 /**
  * Lockss Controller for handling all interaction with the LOCKSS network.
  */
-class LockssController extends AbstractController implements PaginatorAwareInterface {
+class LockssController extends AbstractController implements PaginatorAwareInterface
+{
     use PaginatorTrait;
+
+    /**
+     * The LOCKSS permision statement.
+     */
+    public const PERMISSION_STMT = 'LOCKSS system has permission to collect, preserve, and serve this Archival Unit.';
 
     /**
      * The logger instance.
@@ -42,18 +47,10 @@ class LockssController extends AbstractController implements PaginatorAwareInter
 
     /**
      * Sets a logger.
-     *
-     * @param LoggerInterface $lockssLogger
      */
-    public function setLogger(LoggerInterface $lockssLogger)
-    {
+    public function setLogger(LoggerInterface $lockssLogger) : void {
         $this->logger = $lockssLogger;
     }
-
-    /**
-     * The LOCKSS permision statement.
-     */
-    public const PERMISSION_STMT = 'LOCKSS system has permission to collect, preserve, and serve this Archival Unit.';
 
     /**
      * Fetch a processed and packaged deposit.
@@ -65,8 +62,8 @@ class LockssController extends AbstractController implements PaginatorAwareInter
      *
      * @Route("/fetch/{journalUuid}/{depositUuid}.zip", name="fetch", methods={"GET"})
      *
-     * @ParamConverter("journal", class="App:Journal", options={"mapping": {"journalUuid"="uuid"}})
-     * @ParamConverter("deposit", class="App:Deposit", options={"mapping": {"depositUuid"="depositUuid"}})
+     * @ParamConverter("journal", class="App:Journal", options={"mapping": {"journalUuid": "uuid"}})
+     * @ParamConverter("deposit", class="App:Deposit", options={"mapping": {"depositUuid": "depositUuid"}})
      */
     public function fetchAction(Request $request, Journal $journal, Deposit $deposit, FilePaths $fp) {
         $this->logger->notice("{$request->getClientIp()} - fetch - {$journal->getUuid()} - {$deposit->getDepositUuid()}");

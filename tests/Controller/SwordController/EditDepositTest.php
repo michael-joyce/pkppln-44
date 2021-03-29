@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -13,7 +13,8 @@ namespace App\Tests\Controller\SwordController;
 use App\Entity\Whitelist;
 use Symfony\Component\HttpFoundation\Response;
 
-class EditDepositTest extends AbstractSwordTestCase {
+class EditDepositTest extends AbstractSwordTestCase
+{
     private function getEditXml() {
         return <<<'ENDXML'
 <entry
@@ -115,7 +116,7 @@ ENDXML;
         $this->assertSame($depositCount + 1, count($this->entityManager->getRepository('App:Deposit')->findAll()));
 
         $deposit = $this->entityManager->getRepository('App:Deposit')->findOneBy([
-            'depositUuid' => strtoupper('d38e7ecb-7d7e-408d-94b0-b00d434fdbd2'),
+            'depositUuid' => mb_strtoupper('d38e7ecb-7d7e-408d-94b0-b00d434fdbd2'),
         ]);
         $this->assertSame('55CA6286E3E4F4FBA5D0448333FA99FC5A404A73', $deposit->getChecksumValue());
         $this->assertSame('depositedByJournal', $deposit->getState());

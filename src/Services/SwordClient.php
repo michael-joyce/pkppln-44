@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -13,7 +13,7 @@ namespace App\Services;
 use App\Entity\Deposit;
 use App\Utilities\Namespaces;
 use App\Utilities\ServiceDocument;
-use DateTime;
+use DateTimeImmutable;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
@@ -27,7 +27,8 @@ use Twig\Environment;
 /**
  * Description of SwordClient.
  */
-class SwordClient {
+class SwordClient
+{
     /**
      * Configuration for the http client.
      */
@@ -156,7 +157,7 @@ class SwordClient {
      *
      * @return Response
      */
-    public function request($method, $url, array $headers = [], $xml = null, Deposit $deposit = null, array $options = []) {
+    public function request($method, $url, array $headers = [], $xml = null, ?Deposit $deposit = null, array $options = []) {
         try {
             $request = new Request($method, $url, $headers, $xml);
 
@@ -217,7 +218,7 @@ class SwordClient {
         if (count($locationHeader) > 0) {
             $deposit->setDepositReceipt($locationHeader[0]);
         }
-        $deposit->setDepositDate(new DateTime());
+        $deposit->setDepositDate(new DateTimeImmutable());
 
         return true;
     }

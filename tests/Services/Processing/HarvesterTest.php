@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -25,7 +25,8 @@ use Symfony\Component\Filesystem\Filesystem;
 /**
  * Description of HarvesterTest.
  */
-class HarvesterTest extends ControllerBaseCase {
+class HarvesterTest extends ControllerBaseCase
+{
     private $harvester;
 
     public function testInstance() : void {
@@ -40,9 +41,9 @@ class HarvesterTest extends ControllerBaseCase {
         $fs = $this->createMock(Filesystem::class);
 
         $output = '';
-        $fs->method('appendToFile')->will($this->returnCallback(function ($path, $bytes) use (&$output) : void {
+        $fs->method('appendToFile')->willReturnCallback(function ($path, $bytes) use (&$output) : void {
             $output .= $bytes;
-        }));
+        });
         $this->harvester->setFilesystem($fs);
         $this->harvester->writeDeposit('', $response);
         $this->assertSame('abcdef', $output);

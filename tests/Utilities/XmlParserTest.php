@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -19,7 +19,8 @@ use PHPUnit\Framework\TestCase;
 /**
  * Description of XpathTest.
  */
-class XmlParserTest extends TestCase {
+class XmlParserTest extends TestCase
+{
     /**
      * @var XmlParser
      */

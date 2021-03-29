@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -15,14 +15,14 @@ use App\DataFixtures\JournalFixtures;
 use App\Entity\Deposit;
 use App\Services\DepositBuilder;
 use App\Utilities\Namespaces;
-use DateTime;
 use DateTimeImmutable;
 use Nines\UtilBundle\Tests\ControllerBaseCase;
 
 /**
  * Description of DepositBuilderTest.
  */
-class DepositBuilderTest extends ControllerBaseCase {
+class DepositBuilderTest extends ControllerBaseCase
+{
     private $deposit;
 
     private function getXml() {

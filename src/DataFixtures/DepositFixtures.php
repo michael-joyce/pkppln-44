@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace App\DataFixtures;
 
 use App\Entity\Deposit;
-use DateTime;
+use DateTimeImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -19,7 +19,8 @@ use Doctrine\Persistence\ObjectManager;
 /**
  * LoadDeposit form.
  */
-class DepositFixtures extends Fixture implements DependentFixtureInterface {
+class DepositFixtures extends Fixture implements DependentFixtureInterface
+{
     public const UUIDS = [
         'F93A8108-B705-4763-A592-B718B00BD4EA',
         '4ECC5D8B-ECC9-435C-A072-6DCF198ACD6D',
@@ -40,7 +41,7 @@ class DepositFixtures extends Fixture implements DependentFixtureInterface {
             $fixture->setAction('add');
             $fixture->setVolume(1);
             $fixture->setIssue($i + 1);
-            $fixture->setPubDate(new DateTime("2016-{$i}-{$i}T12:00:00"));
+            $fixture->setPubDate(new DateTimeImmutable("2016-{$i}-{$i}T12:00:00"));
             $fixture->setChecksumType('sha1');
             $fixture->setChecksumValue(sha1(self::UUIDS[$i]));
             $fixture->setUrl("http://example.com/path/to/{$i}.zip");

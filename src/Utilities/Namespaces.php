@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -15,7 +15,8 @@ use SimpleXMLElement;
 /**
  * Simplify handling namespaces for SWORD XML documents.
  */
-class Namespaces {
+class Namespaces
+{
     public const NS = [
         'dcterms' => 'http://purl.org/dc/terms/',
         'sword' => 'http://purl.org/net/sword/',

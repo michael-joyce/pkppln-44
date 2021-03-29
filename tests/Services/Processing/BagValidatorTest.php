@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -20,7 +20,8 @@ use whikloj\BagItTools\Bag;
 /**
  * Description of PayloadValidatorTest.
  */
-class BagValidatorTest extends ControllerBaseCase {
+class BagValidatorTest extends ControllerBaseCase
+{
     /**
      * @var BagValidator
      */
@@ -63,7 +64,7 @@ class BagValidatorTest extends ControllerBaseCase {
         $this->validator->setBagReader($reader);
 
         $this->validator->processDeposit($deposit);
-        $this->assertSame(1, count($deposit->getErrorLog()));
+        $this->assertCount(1, $deposit->getErrorLog());
         $this->assertStringStartsWith('Bag validation error for foo', $deposit->getErrorLog()[0]);
     }
 

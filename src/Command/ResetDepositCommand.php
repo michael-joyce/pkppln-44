@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -22,7 +22,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Reset the processing status on one or more deposits.
  */
-class ResetDepositCommand extends Command {
+class ResetDepositCommand extends Command
+{
     /**
      * Number of deposits to process in one batch.
      */
@@ -57,6 +58,7 @@ class ResetDepositCommand extends Command {
         $state = $input->getArgument('state');
         $iterator = $this->getDepositIterator($ids);
         $i = 0;
+
         foreach ($iterator as $row) {
             $i++;
             /** @var Deposit $deposit */
@@ -99,7 +101,7 @@ class ResetDepositCommand extends Command {
      * @return Deposit[]|IterableResult
      *                                  Iterator for all the deposits to reset.
      */
-    public function getDepositIterator(array $ids = null) {
+    public function getDepositIterator(?array $ids = null) {
         $qb = $this->em->createQueryBuilder();
         $qb->select('d')->from('App:Deposit', 'd');
         if ($ids && count($ids)) {

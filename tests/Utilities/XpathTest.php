@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -17,7 +17,8 @@ use PHPUnit\Framework\TestCase;
 /**
  * Description of XpathTest.
  */
-class XpathTest extends TestCase {
+class XpathTest extends TestCase
+{
     private function getXml() {
         $data = <<<'ENDXML'
         <root>
@@ -58,6 +59,6 @@ ENDXML;
     public function testQuery() : void {
         $xml = $this->getXml();
         $result = Xpath::query($xml, '/root/*');
-        $this->assertSame(2, count($result));
+        $this->assertCount(2, $result);
     }
 }

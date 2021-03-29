@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -20,7 +20,8 @@ use RecursiveIteratorIterator;
  *
  * @see SwordClient
  */
-class StatusChecker {
+class StatusChecker
+{
     /**
      * Sword client to communicate with LOCKSS.
      *
@@ -55,6 +56,7 @@ class StatusChecker {
     private function delTree($path) : void {
         $directoryIterator = new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS);
         $fileIterator = new RecursiveIteratorIterator($directoryIterator, RecursiveIteratorIterator::CHILD_FIRST);
+
         foreach ($fileIterator as $file) {
             if ($file->isDir()) {
                 rmdir($file->getRealPath());

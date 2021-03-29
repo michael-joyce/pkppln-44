@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -14,7 +14,8 @@ use App\DataFixtures\DepositFixtures;
 use Nines\UserBundle\DataFixtures\UserFixtures;
 use Nines\UtilBundle\Tests\ControllerBaseCase;
 
-class DefaultControllerTest extends ControllerBaseCase {
+class DefaultControllerTest extends ControllerBaseCase
+{
     protected function fixtures() : array {
         return [
             DepositFixtures::class,
@@ -23,7 +24,6 @@ class DefaultControllerTest extends ControllerBaseCase {
     }
 
     public function testAnonIndex() : void {
-
         $crawler = $this->client->request('GET', '/');
         $this->assertSame(200, $this->client->getResponse()->getStatusCode());
     }
@@ -41,7 +41,6 @@ class DefaultControllerTest extends ControllerBaseCase {
     }
 
     public function testAnonDepositDepositSearch() : void {
-
         $formCrawler = $this->client->request('GET', '/deposit_search');
         $this->assertSame(302, $this->client->getResponse()->getStatusCode());
         $this->assertTrue($this->client->getResponse()->isRedirect());
@@ -72,21 +71,18 @@ class DefaultControllerTest extends ControllerBaseCase {
     }
 
     public function testFetchActionJournalMismatch() : void {
-
         $crawler = $this->client->request('GET', '/fetch/44428B12-CDC4-453E-8157-319004CD8CE6/F93A8108-B705-4763-A592-B718B00BD4EA.zip');
         $this->assertSame(400, $this->client->getResponse()->getStatusCode());
         $this->assertStringContainsStringIgnoringCase('Journal ID does not match', $this->client->getResponse()->getContent());
     }
 
     public function testFetchActionDeposit404() : void {
-
         $crawler = $this->client->request('GET', '/fetch/04F2C06E-35B8-43C1-B60C-1934271B0B7E/F93A8108-B705-4763-A592-B718B00BD4EA.zip');
         $this->assertSame(404, $this->client->getResponse()->getStatusCode());
         $this->assertStringContainsStringIgnoringCase('Deposit not found.', $this->client->getResponse()->getContent());
     }
 
     public function testPermissionAction() : void {
-
         $crawler = $this->client->request('GET', '/permission');
         $this->assertSame(200, $this->client->getResponse()->getStatusCode());
         $this->assertStringContainsStringIgnoringCase('LOCKSS system has permission', $this->client->getResponse()->getContent());

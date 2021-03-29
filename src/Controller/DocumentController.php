@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -26,7 +26,8 @@ use Symfony\Component\Routing\Annotation\Route;
  * @Security("is_granted('ROLE_USER')")
  * @Route("/document")
  */
-class DocumentController extends AbstractController implements PaginatorAwareInterface {
+class DocumentController extends AbstractController implements PaginatorAwareInterface
+{
     use PaginatorTrait;
 
     /**
@@ -36,7 +37,7 @@ class DocumentController extends AbstractController implements PaginatorAwareInt
      *
      * @Route("/", name="document_index", methods={"GET"})
      *
-     * @Template()
+     * @Template
      */
     public function indexAction(Request $request) {
         $em = $this->getDoctrine()->getManager();
@@ -58,9 +59,9 @@ class DocumentController extends AbstractController implements PaginatorAwareInt
      *                                Array data for the template processor or a redirect to the Document.
      *
      * @Security("is_granted('ROLE_ADMIN')")
-     * @Route("/new", name="document_new", methods={"GET","POST"})
+     * @Route("/new", name="document_new", methods={"GET", "POST"})
      *
-     * @Template()
+     * @Template
      */
     public function newAction(Request $request) {
         $document = new Document();
@@ -90,7 +91,7 @@ class DocumentController extends AbstractController implements PaginatorAwareInt
      *
      * @Route("/{id}", name="document_show", methods={"GET"})
      *
-     * @Template()
+     * @Template
      */
     public function showAction(Document $document) {
         return [
@@ -105,9 +106,9 @@ class DocumentController extends AbstractController implements PaginatorAwareInt
      *                                Array data for the template processor or a redirect to the Document.
      *
      * @Security("is_granted('ROLE_ADMIN')")
-     * @Route("/{id}/edit", name="document_edit", methods={"GET","POST"})
+     * @Route("/{id}/edit", name="document_edit", methods={"GET", "POST"})
      *
-     * @Template()
+     * @Template
      */
     public function editAction(Request $request, Document $document) {
         $editForm = $this->createForm(DocumentType::class, $document);

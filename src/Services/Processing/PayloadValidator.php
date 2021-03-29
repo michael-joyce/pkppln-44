@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -17,7 +17,8 @@ use Exception;
 /**
  * Validate the size and checksum of a downloaded deposit.
  */
-class PayloadValidator {
+class PayloadValidator
+{
     /**
      * Buffer size for the hashing.
      */
@@ -58,7 +59,7 @@ class PayloadValidator {
     public function hashFile($algorithm, $filepath) {
         $handle = fopen($filepath, 'r');
         $context = null;
-        switch (strtolower($algorithm)) {
+        switch (mb_strtolower($algorithm)) {
             case 'sha-1':
             case 'sha1':
                 $context = hash_init('sha1');
@@ -77,7 +78,7 @@ class PayloadValidator {
         $hash = hash_final($context);
         fclose($handle);
 
-        return strtoupper($hash);
+        return mb_strtoupper($hash);
     }
 
     /**

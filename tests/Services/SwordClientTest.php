@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -28,7 +28,8 @@ use SimpleXMLElement;
 /**
  * Description of PingTest.
  */
-class SwordClientTest extends ControllerBaseCase {
+class SwordClientTest extends ControllerBaseCase
+{
     /**
      * @var SwordClient
      */
@@ -140,7 +141,7 @@ ENDXML;
         $sd = $this->swordClient->serviceDocument();
         $this->assertInstanceOf(ServiceDocument::class, $sd);
 
-        $this->assertSame(1, count($container));
+        $this->assertCount(1, $container);
         $transaction = $container[0];
         $this->assertSame('GET', $transaction['request']->getMethod());
         $this->assertSame(
@@ -198,7 +199,7 @@ ENDXML;
         $result = $this->swordClient->createDeposit($deposit);
         $this->assertTrue($result);
 
-        $this->assertSame(2, count($container));
+        $this->assertCount(2, $container);
         $request = $container[1]['request'];
         $this->assertSame('POST', $request->getMethod());
         $this->assertSame(
@@ -259,7 +260,7 @@ ENDXML;
         $deposit->setDepositReceipt(null);
         $result = $this->swordClient->receipt($deposit);
         $this->assertNull($result);
-        $this->assertSame(0, count($container));
+        $this->assertCount(0, $container);
     }
 
     public function testGetDepositReceipt() : void {
@@ -277,7 +278,7 @@ ENDXML;
         $result = $this->swordClient->receipt($deposit);
         $this->assertInstanceOf(SimpleXMLElement::class, $result);
 
-        $this->assertSame(1, count($container));
+        $this->assertCount(1, $container);
         $request = $container[0]['request'];
         $this->assertSame('GET', $request->getMethod());
         $this->assertSame('http://example.com/receipt/1', (string) $request->getUri());
@@ -299,7 +300,7 @@ ENDXML;
         $result = $this->swordClient->statement($deposit);
         $this->assertInstanceOf(SimpleXMLElement::class, $result);
 
-        $this->assertSame(2, count($container));
+        $this->assertCount(2, $container);
         $request = $container[1]['request'];
         $this->assertSame('GET', $request->getMethod());
         $this->assertSame('http://path/to/statement', (string) $request->getUri());
@@ -328,7 +329,7 @@ ENDXML;
         $result = $this->swordClient->fetch($deposit);
         $this->assertSame('vfs://root/path.zip', $result);
 
-        $this->assertSame(3, count($container));
+        $this->assertCount(3, $container);
         $request = $container[2]['request'];
         $this->assertSame('GET', $request->getMethod());
         $this->assertSame('http://path/to/deposit', (string) $request->getUri());

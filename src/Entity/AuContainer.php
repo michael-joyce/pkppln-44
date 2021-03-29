@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -19,11 +19,12 @@ use Nines\UtilBundle\Entity\AbstractEntity;
  * AuContainer organizes the deposits by size to abstract the responsibility
  * away from LOCKSSOMatic.
  *
- * @ORM\Table()
+ * @ORM\Table
  * @ORM\HasLifecycleCallbacks
  * @ORM\Entity(repositoryClass="App\Repository\AuContainerRepository")
  */
-class AuContainer extends AbstractEntity {
+class AuContainer extends AbstractEntity
+{
     /**
      * List of deposits in one AU.
      *
@@ -115,6 +116,7 @@ class AuContainer extends AbstractEntity {
      */
     public function getSize() {
         $size = 0;
+
         foreach ($this->deposits as $deposit) {
             $size += $deposit->getPackageSize();
         }

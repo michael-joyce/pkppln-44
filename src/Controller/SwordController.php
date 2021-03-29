@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -17,7 +17,7 @@ use App\Services\BlackWhiteList;
 use App\Services\DepositBuilder;
 use App\Services\JournalBuilder;
 use App\Utilities\Namespaces;
-use DateTime;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Knp\Bundle\PaginatorBundle\Definition\PaginatorAwareInterface;
@@ -38,7 +38,8 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  *
  * @Route("/api/sword/2.0")
  */
-class SwordController extends AbstractController implements PaginatorAwareInterface {
+class SwordController extends AbstractController implements PaginatorAwareInterface
+{
     use PaginatorTrait;
     use LoggerAwareTrait;
 
@@ -110,7 +111,7 @@ class SwordController extends AbstractController implements PaginatorAwareInterf
      * @return bool
      */
     private function checkAccess($uuid) {
-        if( ! $uuid) {
+        if ( ! $uuid) {
             return false;
         }
         if ($this->blackwhitelist->isWhitelisted($uuid)) {
@@ -169,15 +170,15 @@ class SwordController extends AbstractController implements PaginatorAwareInterf
      *
      * @return array
      *
-     * @Template()
+     * @Template
      * @Route("/sd-iri.{_format}", methods={"GET"},
-     *  name="sword_service_document",
-     *  defaults={"_format": "xml"},
-     *  requirements={"_format": "xml"}
+     *     name="sword_service_document",
+     *     defaults={"_format": "xml"},
+     *     requirements={"_format": "xml"}
      * )
      */
     public function serviceDocumentAction(Request $request, JournalBuilder $builder) {
-        $obh = strtoupper($this->fetchHeader($request, 'On-Behalf-Of'));
+        $obh = mb_strtoupper($this->fetchHeader($request, 'On-Behalf-Of'));
         $journalUrl = $this->fetchHeader($request, 'Journal-Url');
         $accepting = $this->checkAccess($obh);
         $this->logger->notice("{$request->getClientIp()} - service document - {$obh} - {$journalUrl} - accepting: " . ($accepting ? 'yes' : 'no'));
@@ -213,9 +214,9 @@ class SwordController extends AbstractController implements PaginatorAwareInterf
      * @return Response
      *
      * @Route("/col-iri/{uuid}", methods={"POST"}, name="sword_create_deposit", requirements={
-     *      "uuid": ".{36}",
+     *     "uuid": ".{36}",
      * })
-     * @ParamConverter("journal", options={"mapping": {"uuid"="uuid"}})
+     * @ParamConverter("journal", options={"mapping": {"uuid": "uuid"}})
      */
     public function createDepositAction(Request $request, Journal $journal, JournalBuilder $journalBuilder, DepositBuilder $depositBuilder) {
         $accepting = $this->checkAccess($journal->getUuid());
@@ -251,11 +252,11 @@ class SwordController extends AbstractController implements PaginatorAwareInterf
      * @return Response
      *
      * @Route("/cont-iri/{journal_uuid}/{deposit_uuid}/state", methods={"GET"}, name="sword_statement", requirements={
-     *      "journal_uuid": ".{36}",
-     *      "deposit_uuid": ".{36}"
+     *     "journal_uuid": ".{36}",
+     *     "deposit_uuid": ".{36}"
      * })
-     * @ParamConverter("journal", options={"mapping": {"journal_uuid"="uuid"}})
-     * @ParamConverter("deposit", options={"mapping": {"deposit_uuid"="depositUuid"}})
+     * @ParamConverter("journal", options={"mapping": {"journal_uuid": "uuid"}})
+     * @ParamConverter("deposit", options={"mapping": {"deposit_uuid": "depositUuid"}})
      */
     public function statementAction(Request $request, Journal $journal, Deposit $deposit) {
         $accepting = $this->checkAccess($journal->getUuid());
@@ -266,7 +267,7 @@ class SwordController extends AbstractController implements PaginatorAwareInterf
         if ($journal !== $deposit->getJournal()) {
             throw new BadRequestHttpException('Deposit does not belong to journal.', null, 400);
         }
-        $journal->setContacted(new DateTime());
+        $journal->setContacted(new DateTimeImmutable());
         $journal->setStatus('healthy');
         $this->em->flush();
         $response = $this->render('sword/statement.xml.twig', [
@@ -283,11 +284,11 @@ class SwordController extends AbstractController implements PaginatorAwareInterf
      * @return Response
      *
      * @Route("/cont-iri/{journal_uuid}/{deposit_uuid}/edit", methods={"PUT"}, name="sword_edit", requirements={
-     *      "journal_uuid": ".{36}",
-     *      "deposit_uuid": ".{36}"
+     *     "journal_uuid": ".{36}",
+     *     "deposit_uuid": ".{36}"
      * })
-     * @ParamConverter("journal", options={"mapping": {"journal_uuid"="uuid"}})
-     * @ParamConverter("deposit", options={"mapping": {"deposit_uuid"="depositUuid"}})
+     * @ParamConverter("journal", options={"mapping": {"journal_uuid": "uuid"}})
+     * @ParamConverter("deposit", options={"mapping": {"deposit_uuid": "depositUuid"}})
      */
     public function editAction(Request $request, Journal $journal, Deposit $deposit, DepositBuilder $builder) {
         $accepting = $this->checkAccess($journal->getUuid());

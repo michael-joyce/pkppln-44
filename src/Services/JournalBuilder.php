@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -12,14 +12,15 @@ namespace App\Services;
 
 use App\Entity\Journal;
 use App\Utilities\Xpath;
-use DateTime;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use SimpleXMLElement;
 
 /**
  * Journal builder service.
  */
-class JournalBuilder {
+class JournalBuilder
+{
     /**
      * Doctrine instance.
      *
@@ -45,7 +46,7 @@ class JournalBuilder {
      */
     public function fromXml(SimpleXMLElement $xml, $uuid) {
         $journal = $this->em->getRepository(Journal::class)->findOneBy([
-            'uuid' => strtoupper($uuid),
+            'uuid' => mb_strtoupper($uuid),
         ]);
         if (null === $journal) {
             $journal = new Journal();
@@ -59,7 +60,7 @@ class JournalBuilder {
         $journal->setPublisherName(Xpath::getXmlValue($xml, '//pkp:publisherName'));
         // &amp; -> &.
         $journal->setPublisherUrl(html_entity_decode(Xpath::getXmlValue($xml, '//pkp:publisherUrl')));
-        $journal->setContacted(new DateTime());
+        $journal->setContacted(new DateTimeImmutable());
         $this->em->persist($journal);
 
         return $journal;
@@ -75,7 +76,7 @@ class JournalBuilder {
      */
     public function fromRequest($uuid, $url) {
         $journal = $this->em->getRepository('App:Journal')->findOneBy([
-            'uuid' => strtoupper($uuid),
+            'uuid' => mb_strtoupper($uuid),
         ]);
         if (null === $journal) {
             $journal = new Journal();
@@ -85,7 +86,7 @@ class JournalBuilder {
             $this->em->persist($journal);
         }
         $journal->setUrl($url);
-        $journal->setContacted(new DateTime());
+        $journal->setContacted(new DateTimeImmutable());
         if ('new' !== $journal->getStatus()) {
             $journal->setStatus('healthy');
         }

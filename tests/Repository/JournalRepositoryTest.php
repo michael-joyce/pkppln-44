@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -20,7 +20,8 @@ use Nines\UtilBundle\Tests\ControllerBaseCase;
 /**
  * Description of JournalRepositoryTest.
  */
-class JournalRepositoryTest extends ControllerBaseCase {
+class JournalRepositoryTest extends ControllerBaseCase
+{
     /**
      * @return JournalRepository
      */
@@ -33,7 +34,7 @@ class JournalRepositoryTest extends ControllerBaseCase {
     }
 
     public function testGetJournalsToPingNoListed() : void {
-        $this->assertSame(4, count($this->repo->getJournalsToPing()));
+        $this->assertCount(4, $this->repo->getJournalsToPing());
     }
 
     public function testGetJournalsToPingListed() : void {
@@ -49,7 +50,7 @@ class JournalRepositoryTest extends ControllerBaseCase {
 
         $this->entityManager->flush();
 
-        $this->assertSame(2, count($this->repo->getJournalsToPing()));
+        $this->assertCount(2, $this->repo->getJournalsToPing());
     }
 
     public function testGetJournalsToPingPingErrors() : void {
@@ -57,7 +58,7 @@ class JournalRepositoryTest extends ControllerBaseCase {
         $journal->setStatus('ping-error');
         $this->entityManager->flush();
 
-        $this->assertSame(3, count($this->repo->getJournalsToPing()));
+        $this->assertCount(3, $this->repo->getJournalsToPing());
     }
 
     /**
@@ -66,7 +67,7 @@ class JournalRepositoryTest extends ControllerBaseCase {
     public function testSearchQuery() : void {
         $query = $this->repo->searchQuery('CDC4');
         $result = $query->execute();
-        $this->assertSame(1, count($result));
+        $this->assertCount(1, $result);
     }
 
     public function searchQueryData() {

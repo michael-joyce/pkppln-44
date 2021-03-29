@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -24,7 +24,8 @@ use Xenolope\Quahog\Client;
 /**
  * Virus scanning service, via ClamAV.
  */
-class VirusScanner {
+class VirusScanner
+{
     /**
      * Buffer size for extracting embedded files.
      */
@@ -126,13 +127,14 @@ class VirusScanner {
      *
      * @return array
      */
-    public function scanXmlFile($pathname, Client $client, XmlParser $parser = null) {
+    public function scanXmlFile($pathname, Client $client, ?XmlParser $parser = null) {
         if ( ! $parser) {
             $parser = new XmlParser();
         }
         $dom = $parser->fromFile($pathname);
         $xp = new DOMXPath($dom);
         $results = [];
+
         foreach ($xp->query('//embed') as $embed) {
             $filename = $embed->attributes->getNamedItem('filename')->nodeValue;
             $r = $this->scanEmbed($embed, $xp, $client);
@@ -154,8 +156,9 @@ class VirusScanner {
     public function scanEmbededFiles(PharData $phar, Client $client) {
         $results = [];
         $parser = new XmlParser();
+
         foreach (new RecursiveIteratorIterator($phar) as $file) {
-            if ('.xml' !== substr($file->getFilename(), -4)) {
+            if ('.xml' !== mb_substr($file->getFilename(), -4)) {
                 continue;
             }
             $results = array_merge($this->scanXmlFile($file->getPathname(), $client, $parser), $results);
@@ -171,6 +174,7 @@ class VirusScanner {
      */
     public function scanArchiveFiles(PharData $phar, Client $client) {
         $results = [];
+
         foreach (new RecursiveIteratorIterator($phar) as $file) {
             $fh = fopen($file->getPathname(), 'rb');
             $r = $client->scanResourceStream($fh);
@@ -191,7 +195,7 @@ class VirusScanner {
      *
      * @return bool
      */
-    public function processDeposit(Deposit $deposit, Client $client = null) {
+    public function processDeposit(Deposit $deposit, ?Client $client = null) {
         if (null === $client) {
             $client = $this->getClient();
         }

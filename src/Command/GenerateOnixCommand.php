@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -26,7 +26,8 @@ use XMLWriter;
  *
  * @see http://www.editeur.org/127/ONIX-PH/
  */
-class GenerateOnixCommand extends Command {
+class GenerateOnixCommand extends Command
+{
     public const BATCH_SIZE = 50;
 
     /**
@@ -79,6 +80,7 @@ class GenerateOnixCommand extends Command {
             'Deposited',
         ]);
         $i = 0;
+
         foreach ($iterator as $row) {
             /** @var Journal $journal */
             $journal = $row[0];
@@ -86,6 +88,7 @@ class GenerateOnixCommand extends Command {
             if (0 === $deposits->count()) {
                 continue;
             }
+
             foreach ($deposits as $deposit) {
                 if (null === $deposit->getDepositDate()) {
                     continue;

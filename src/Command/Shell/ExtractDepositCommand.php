@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -33,11 +33,13 @@ use Twig\Environment;
  *
  * @author mjoyce
  */
-class ExtractDepositCommand extends Command {
+class ExtractDepositCommand extends Command
+{
     /**
      * @var Registry
      */
     protected $em;
+
     /**
      * @var Logger
      */
@@ -77,7 +79,7 @@ class ExtractDepositCommand extends Command {
         $fs = new Filesystem();
         $useSrcNames = $input->getOption('source-names');
 
-        if ('/' !== substr($path, -1, 1)) {
+        if ('/' !== mb_substr($path, -1, 1)) {
             $path .= '/';
         }
         if ( ! $fs->exists($path)) {
@@ -92,6 +94,7 @@ class ExtractDepositCommand extends Command {
         }
         $xp = new DOMXPath($dom);
         gc_enable();
+
         foreach ($xp->query('//embed') as $embedded) {
             // @var DOMNamedNodeMap
             $attrs = $embedded->attributes;

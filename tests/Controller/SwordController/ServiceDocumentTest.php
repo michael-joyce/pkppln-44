@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /*
- * (c) 2020 Michael Joyce <mjoyce@sfu.ca>
+ * (c) 2021 Michael Joyce <mjoyce@sfu.ca>
  * This source file is subject to the GPL v2, bundled
  * with this source code in the file LICENSE.
  */
@@ -13,7 +13,8 @@ namespace App\Tests\Controller\SwordController;
 use App\DataFixtures\WhitelistFixtures;
 use App\Entity\Journal;
 
-class ServiceDocumentTest extends AbstractSwordTestCase {
+class ServiceDocumentTest extends AbstractSwordTestCase
+{
     public function testServiceDocument() : void {
         $this->client->request('GET', '/api/sword/2.0/sd-iri', [], [], [
             'HTTP_On-Behalf-Of' => '7AD045C9-89E6-4ACA-8363-56FE9A45C34F',
