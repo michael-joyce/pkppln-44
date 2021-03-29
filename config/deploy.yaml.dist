@@ -12,7 +12,7 @@ hostname:
 .settings:
     application: ~
     repository: ~
-    branch: master
+    branch: main
     shared_dirs:
         - var/log
         - var/sessions
