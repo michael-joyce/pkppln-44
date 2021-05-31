@@ -34,18 +34,6 @@ class XmlParserTest extends TestCase
     /**
      * @dataProvider badUtf8Data
      *
-     * @param mixed $expected
-     * @param mixed $data
-     */
-    public function testFilter($expected, $data) : void {
-        $sourceFile = vfsStream::newFile('bad.xml')->withContent($data)->at($this->root);
-        $destFile = vfsStream::newFile('filtered.xml')->at($this->root);
-        $this->assertSame($expected, $this->parser->filter($sourceFile->url(), $destFile->url()));
-    }
-
-    /**
-     * @dataProvider badUtf8Data
-     *
      * @param mixed $removed
      * @param mixed $data
      */
