@@ -105,7 +105,7 @@ class XmlValidator
 
     public function processDeposit(Deposit $deposit) {
         $harvestedPath = $this->filePaths->getHarvestFile($deposit);
-        $bag = $bag = $this->bagReader->readBag($harvestedPath);
+        $bag = $this->bagReader->readBag($harvestedPath);
         $report = '';
 
         $issuePath = $bag->getBagRoot() . '/data/' . 'Issue' . $deposit->getDepositUuid() . '.xml';
@@ -113,10 +113,11 @@ class XmlValidator
         $root = $dom->documentElement;
         if ($root->hasAttributeNS('http://www.w3.org/2001/XMLSchema-instance', 'schemaLocation')) {
             $this->schemaValidator->validate($dom, $bag->getBagRoot() . '/data/');
+            $this->reportErrors($this->schemaValidator->getErrors(), $report);
         } else {
             $this->dtdValidator->validate($dom, $bag->getBagRoot() . '/data/');
+            $this->reportErrors($this->dtdValidator->getErrors(), $report);
         }
-        $this->reportErrors($this->dtdValidator->getErrors(), $report);
         if (trim($report)) {
             $deposit->addToProcessingLog($report);
 

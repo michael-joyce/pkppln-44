@@ -30,8 +30,15 @@ class DtdValidator extends AbstractValidator
         if (null === $dom->doctype) {
             return;
         }
-        $oldHandler = set_error_handler([$this, 'validationError']);
-        $dom->validate();
-        set_error_handler($oldHandler);
+        $oldErrors = libxml_use_internal_errors(true);
+        if($dom->validate()) {
+            return;
+        }
+        $errors = libxml_get_errors();
+        libxml_clear_errors();
+        foreach($errors as $error) {
+            $this->validationError($error->code, $error->message, $error->file, $error->line, '');
+        }
+        libxml_use_internal_errors($oldErrors);
     }
 }
