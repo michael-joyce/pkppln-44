@@ -23,6 +23,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Nines\UserBundle\Entity\User;
+use Nines\UtilBundle\Entity\AbstractEntity;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -131,18 +132,19 @@ class UpgradeCommand extends Command
      * new one.
      *
      * @param string $table
+     *
+     * @throws \Doctrine\DBAL\Exception|\Doctrine\DBAL\Driver\Exception
      */
     public function upgradeTable($table, callable $callback) : void {
-        $countQuery = $this->source->query("SELECT count(*) c FROM {$table}");
-        $countQuery->execute();
-        $countRow = $countQuery->fetch();
+        $countQuery = $this->source->executeQuery("SELECT count(*) c FROM {$table}");
+        $countRow = $countQuery->fetchAssociative();
         echo "upgrading {$countRow['c']} entities in {$table}.\n";
 
-        $query = $this->source->query("SELECT * FROM {$table}");
+        $query = $this->source->executeQuery("SELECT * FROM {$table}");
         $n = 0;
-        $query->execute();
         echo "{$n}\r";
-        while ($row = $query->fetch()) {
+        while ($row = $query->fetchAssociative()) {
+            /** @var AbstractEntity $entity */
             $entity = $callback($row);
             if ($entity) {
                 $this->em->persist($entity);
@@ -194,11 +196,12 @@ class UpgradeCommand extends Command
         $callback = function ($row) {
             $entry = new User();
             $entry->setEmail($row['username']);
-            $entry->setActive(1 === $row['enabled']);
+            $entry->setActive((bool)$row['enabled']);
             $entry->setPassword($row['password']);
             $entry->setRoles(unserialize($row['roles']));
             $entry->setFullname($row['fullname']);
             $entry->setAffiliation($row['institution']);
+            $entry->setLogin($row['last_login'] ? new DateTimeImmutable($row['last_login']) : null);
 
             return $entry;
         };
